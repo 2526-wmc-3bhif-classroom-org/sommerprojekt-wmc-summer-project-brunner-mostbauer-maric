@@ -21,8 +21,10 @@ Auch die Suche der passenden Fahrschule in der Nähe wird vereinfacht.
 
 == Konsequenzen der Nichtdurchführung
 
-
+Einen Führerschein zu bekommen, bleibt weiterhin ein komplizierter Vorgang für Anfänger, der sie abschrecken kann und dafür sorgt, dass diese Personen hilfe von Führerscheinabsolventen benötigen.
 
 == Erforderliche Ressourcen
 
-
+* Kleines Team (3 Personen)
+* Eventuelle Kosten für API.
+* Testgeräte für mobile und Desktop
