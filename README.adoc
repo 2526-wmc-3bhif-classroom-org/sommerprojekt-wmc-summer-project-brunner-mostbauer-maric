@@ -1,0 +1,8 @@
+= Driving school planer
+Jan Brunner, Julian Mostbauer, Luka Maric
+1.0.0, {docdate}
+:experimental:
+:sectnums:
+
+== Project proposal
+https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/[Link to project proposal]
