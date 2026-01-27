@@ -28,3 +28,4 @@ Einen Führerschein zu bekommen, bleibt weiterhin ein komplizierter Vorgang für
 * Kleines Team (3 Personen)
 * Eventuelle Kosten für API.
 * Testgeräte für mobile und Desktop
+
