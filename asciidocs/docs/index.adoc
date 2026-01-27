@@ -1,5 +1,4 @@
 = Projektantrag - Fahrschulplaner
-
 Jan Brunner, Julian Mostbauer, Luka Maric
 1.0.0, {docdate}
 
