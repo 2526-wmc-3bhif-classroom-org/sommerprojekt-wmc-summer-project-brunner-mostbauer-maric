@@ -1,4 +1,28 @@
-= Index page
-ifndef::imagesdir[:imagesdir: images]
+= Projektantrag - Fahrschulplaner
 
-image::img.png[]
+Jan Brunner, Julian Mostbauer, Luka Maric
+1.0.0, {docdate}
+
+:sectnums:
+:experimental:
+
+== Geplantes Vorhaben
+
+Eine Webanwendung zum Organisieren des Führerscheins.
+Es werden Fahrschulen in der Nähe vorgeschlagen, Preise verglichen, Termine vorgeplant und Deadlines vorgegeben.
+Zudem soll auch noch ein Lernplan erstellt werden.
+
+== Nutzen des Projektes
+
+Ein klarer Einstieg für Personen, die sich nicht Auskennen oder noch nicht mit dem Vorgang vertraut sind.
+Klare Deadlines damit man die Führerscheinprüfung so effizient wie möglich absolviert und das man klar sieht wie lange seine eigenen Dokumente noch gültig sind.
+Außerdem hilft eine Checkliste dabei keine Dokumente oder Termine zu vergessen.
+Auch die Suche der passenden Fahrschule in der Nähe wird vereinfacht.
+
+== Konsequenzen der Nichtdurchführung
+
+
+
+== Erforderliche Ressourcen
+
+
