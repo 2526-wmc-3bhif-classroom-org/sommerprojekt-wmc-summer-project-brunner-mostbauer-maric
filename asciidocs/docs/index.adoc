@@ -1,30 +1,14 @@
-= Projektantrag - Fahrschulplaner
+= Fahrschulplaner
 Jan Brunner, Julian Mostbauer, Luka Maric
 1.0.0, {docdate}
 
 :sectnums:
 :experimental:
 
-== Geplantes Vorhaben
+== Docs
+https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/project-proposal.html[Project proposal]
 
-Eine Webanwendung zum Organisieren des Führerscheins.
-Es werden Fahrschulen in der Nähe vorgeschlagen, Preise verglichen, Termine vorgeplant und Deadlines vorgegeben.
-Zudem soll auch noch ein Lernplan erstellt werden.
 
-== Nutzen des Projektes
-
-Ein klarer Einstieg für Personen, die sich nicht Auskennen oder noch nicht mit dem Vorgang vertraut sind.
-Klare Deadlines damit man die Führerscheinprüfung so effizient wie möglich absolviert und das man klar sieht wie lange seine eigenen Dokumente noch gültig sind.
-Außerdem hilft eine Checkliste dabei keine Dokumente oder Termine zu vergessen.
-Auch die Suche der passenden Fahrschule in der Nähe wird vereinfacht.
-
-== Konsequenzen der Nichtdurchführung
-
-Einen Führerschein zu bekommen, bleibt weiterhin ein komplizierter Vorgang für Anfänger, der sie abschrecken kann und dafür sorgt, dass diese Personen hilfe von Führerscheinabsolventen benötigen.
-
-== Erforderliche Ressourcen
-
-* Kleines Team (3 Personen)
-* Eventuelle Kosten für API.
-* Testgeräte für mobile und Desktop
+== Slides
+https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/slides/porject-proposal-slides.html[Project proposal]
 
