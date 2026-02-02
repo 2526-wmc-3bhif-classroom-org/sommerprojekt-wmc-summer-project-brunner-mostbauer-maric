@@ -8,6 +8,7 @@ Jan Brunner, Julian Mostbauer, Luka Maric
 == Docs
 https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/project-proposal.html[Project proposal]
 
+https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/specification.html[Specification]
 
 == Slides
 https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/slides/project-proposal-slides.html[Project proposal]
