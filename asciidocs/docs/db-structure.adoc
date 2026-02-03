@@ -1,0 +1,55 @@
+= Datenbank Struktur
+Jan Brunner, Julian Mostbauer, Luka Maric
+1.0.0, {docdate}
+
+:sectnums:
+:experimental:
+
+[plantuml, db, png]
+----
+@startuml
+skinparam linetype ortho
+
+entity User{
+UserName
+Email
+}
+
+entity DrivingSchool{
+Name
+Location
+}
+
+entity Document{
+StartTime
+}
+
+entity DocType{
+ExpirationDuration
+}
+
+entity Appointment{
+DateTime
+Location
+}
+
+entity LicenseType{
+Name
+}
+
+entity UserPlan{
+StartTime
+}
+
+UserPlan "*" -- "1" DrivingSchool
+UserPlan "1" -- "*" Document
+DocType "1" -- "*" Document
+Appointment "*" -- "1" UserPlan
+DrivingSchool "*" -- "*" LicenseType
+User "1" -- "1" UserPlan
+LicenseType "1" -- "*" UserPlan
+
+@enduml
+
+Authentication for users not yet planned.
+----
