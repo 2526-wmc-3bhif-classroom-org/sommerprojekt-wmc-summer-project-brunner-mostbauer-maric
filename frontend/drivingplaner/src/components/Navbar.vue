@@ -60,16 +60,17 @@
             v-motion
             :initial="{ opacity: 0, y: -10, scale: 0.95 }"
             :enter="{ opacity: 1, y: 0, scale: 1 }"
-            class="absolute right-0 mt-3 w-48 bg-zinc-900 border rounded-xl shadow-2xl py-2 z-[60]"
-            :style="{ borderColor: 'rgba(var(--main-color-rgb), 0.2)' }"
+            class="group absolute right-0 mt-3 w-48 bg-zinc-900 border border-white/70 hover:border-main-hover rounded-xl shadow-2xl py-2 z-[60] transition-colors duration-500 ease-in-out"
         >
           <a href="/profile"
-             class="block px-4 py-2 text-white/70 hover:text-main hover:bg-white/5 transition-colors">Profile</a>
+             class="block px-4 py-2 text-white/70 hover:text-main hover:bg-white/5 transition-colors duration-300">Profile</a>
           <a href="/settings"
-             class="block px-4 py-2 text-white/70 hover:text-main hover:bg-white/5 transition-colors">Settings</a>
-          <hr :style="{ borderColor: 'rgba(var(--main-color-rgb), 0.1)' }" class="my-1"/>
-          <a href="/logout" v-if="login" class="block px-4 py-2 text-red-400 hover:bg-red-500/10 transition-colors">Logout</a>
-          <a href="/login" v-if="!login" class="block px-4 py-2 text-green-400 hover:bg-green-500/10 transition-colors">Login</a>
+             class="block px-4 py-2 text-white/70 hover:text-main hover:bg-white/5 transition-colors duration-300">Settings</a>
+
+          <hr class="my-1 border-white/70 group-hover:border-main-hover transition-colors duration-500 ease-in-out" />
+
+          <a href="/logout" v-if="login" class="block px-4 py-2 text-red-400 hover:bg-red-500/10 transition-colors duration-300">Logout</a>
+          <a href="/login" v-if="!login" class="block px-4 py-2 text-green-400 hover:bg-green-500/10 transition-colors duration-300">Login</a>
         </div>
       </div>
 
