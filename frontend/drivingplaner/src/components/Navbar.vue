@@ -22,7 +22,7 @@
               :class="[
                 item.active ? 'text-main' : 'text-white/50 group-hover:text-white',
                 'relative text-lg font-medium tracking-wide transition-colors duration-500',
-                'after:content-[\'\'] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:bg-main-hover after:transition-all after:duration-500',
+                'after:content-[\'\'] after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:bg-main-hover after:transition-all after:duration-500',
                 item.active ? 'after:w-full' : 'after:w-0'
               ]"
           >
@@ -84,7 +84,7 @@ import {ref, onMounted, onUnmounted} from "vue";
 
 
 const login = ref(false);
-// This are the values for the navbar links on the left side
+// These are the values for the navbar links on the left side
 const navigation = reactive([
   {name: 'HOME', href: '#', active: true},
   {name: 'CALENDAR', href: '/calendar', active: false},
