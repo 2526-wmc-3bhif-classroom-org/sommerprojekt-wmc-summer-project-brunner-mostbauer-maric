@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import Button from 'primevue/button'
+import Card from 'primevue/card'
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+
 </template>
+
+
