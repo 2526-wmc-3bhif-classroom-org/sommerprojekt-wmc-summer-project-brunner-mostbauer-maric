@@ -1,56 +1,12 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="dark">
-<head>
+<html lang="de">
+  <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="./src/assets/tmp_logo.png">
-    <title>Driving Planer | Fahrschulen</title>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-
-    <style>
-        :root { --primary: #10adff; }
-        main { padding-top: 2rem; }
-        .web-link { padding: 2px 10px; font-size: 0.8rem; }
-    </style>
-</head>
-<body>
-
-    <nav class="container">
-        <ul><li><strong>🚗 Driving Planer</strong></li></ul>
-        <ul>
-            <li><a href="#" class="secondary">Startseite</a></li>
-            <li><a href="#" role="button" class="outline">Login</a></li>
-        </ul>
-    </nav>
-
-    <main class="container">
-        <hgroup>
-            <h1>Fahrschul-Datenbank</h1>
-            <p>Daten werden direkt aus der CSV geladen.</p>
-        </hgroup>
-
-        <details>
-            <summary role="button" class="secondary">Tabelle anzeigen / verbergen</summary>
-            <div class="table-container">
-                <table class="striped">
-                    <thead>
-                        <tr>
-                            <th>Fahrschule</th>
-                            <th>Ort</th>
-                            <th>Inhaber</th>
-                            <th>Kontakt</th>
-                        </tr>
-                    </thead>
-                    <tbody id="csv-content">
-                        <tr><td colspan="4" aria-busy="true">Suche Datei...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </details>
-        <div id="app"></div>
-    </main>
-
-    
-</body>
+    <title>Driving Planer</title>
+  </head>
+  <body>
+    <div id="app"></div> <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>
