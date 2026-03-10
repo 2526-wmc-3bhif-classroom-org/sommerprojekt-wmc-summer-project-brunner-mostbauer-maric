@@ -472,72 +472,72 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fahrschule</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /api/schools</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte alle Fahrschulen abfragen können.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fahrschule</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /api/schools/:schoolId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte eine bestimmt Fahrschule abfragen können (über den Name der Fahrschule).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fahrschule</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte einen Kommentar zur einer bestimmten Fahrschule speichern.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /api/ratings/:schoolId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte eine Bewertung zur einer bestimmten Fahrschule speichern.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fahrschule</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /api/ratings/:schoolId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte alle Kommentare von einer bestimmten Fahrschule abfragen können.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Benutzer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /api/users/</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte einen Benutzer erstellen können</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Benutzer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DELETE /api/users/:userId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte einen Benutzer löschen können.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Benutzer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /api/users/:userId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte einen einzelnen Benutzer abfragen können.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Benutzer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PATCH /api/users/:userId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Im Nachhinein möchte ich Benutzerdaten ändern können.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Dokument</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /api/docs</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte als Benutzer Dokumentdaten speichern können.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Dokument</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte als Benutzer meine eigenen Dokumentdaten abfragen können, egal ob alle oder ein bestimmtes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /api/docs/:userId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte als Benutzer meine eigenen Dokumentdaten abfragen können</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dokument</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /api/docs/:userId/:docId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte als Benutzer eines meiner eigenen Dokumentdaten abfragen können</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Termin</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PATCH /api/users/:userId/appointment/:appointmentId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Als Benutzer möchte ich Termine verschieben können.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bewertungen / Kommentare</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte als Benutzer eine Bewertung mit einem zusätzlichen Kommentar an eine Fahrschule schreiben (an unsere Übersicht anfügen).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /api/ratings/:schoolId/:ratingId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte als Benutzer auf Kommentare von anderen Benutzern mit einem Kommentar reagieren können.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bewertungen / Kommentare</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte als Benutzer auf Kommentare von anderen Benutzern mit einem Kommentar reagieren.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bewertungen / Kommentare</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">///</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DELETE /api/ratings/:schoolId/:ratingId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ich möchte als Benutzer meinen Kommentar auch wieder löschen können.</p></td>
 </tr>
 </tbody>
@@ -546,7 +546,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated 2026-03-10 08:05:44 UTC
+Last updated 2026-03-10 08:21:50 UTC
 </div>
 </div>
 </body>
