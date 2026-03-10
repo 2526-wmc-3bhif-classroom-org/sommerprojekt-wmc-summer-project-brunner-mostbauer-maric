@@ -1,73 +1,99 @@
 <template>
-  <tr
-    class="group border-b border-gray-100 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer"
-    @click="openLink"
-  >
-    <!-- Index -->
-    <td class="px-6 py-4 w-12">
-      <span class="text-xs font-bold text-slate-300">{{ index + 1 }}</span>
-    </td>
-
-    <!-- Fahrschule -->
-    <td class="px-6 py-4">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 transition-colors">
-          <i class="pi pi-car text-blue-500 text-sm"></i>
+  <tbody class="border-b border-gray-50 last:border-0">
+    <tr 
+      class="hover:bg-slate-50/50 transition-colors cursor-pointer group" 
+      @click="isExpanded = !isExpanded"
+    >
+      <td class="px-6 py-4 text-sm font-medium text-slate-400 w-16">{{ index + 1 }}</td>
+      
+      <td class="px-6 py-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition-colors">
+            <i class="pi pi-car text-xs"></i>
+          </div>
+          <span class="font-bold text-slate-700">{{ school.name }}</span>
         </div>
-        <span class="font-bold text-slate-800 group-hover:text-blue-600 transition-colors">{{ school.name }}</span>
-      </div>
-    </td>
+      </td>
 
-    <!-- Ort -->
-    <td class="px-6 py-4">
-      <div class="flex items-center gap-2 text-sm text-slate-500">
-        <i class="pi pi-map-marker text-slate-300 text-xs"></i>
-        {{ school.ort }}
-      </div>
-    </td>
-
-    <!-- Inhaber -->
-    <td class="px-6 py-4">
-      <div class="flex items-center gap-2 text-sm text-slate-600">
-        <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
-          <i class="pi pi-user text-slate-400 text-xs"></i>
+      <td class="px-6 py-4 text-sm text-slate-500">
+        <div class="flex items-center gap-1">
+          <i class="pi pi-map-marker text-[10px] text-slate-300"></i>
+          {{ school.ort }}
         </div>
-        {{ school.inhaber }}
-      </div>
-    </td>
+      </td>
 
-    <!-- Aktion -->
-    <td class="px-6 py-4 text-right">
-      <a
-        :href="school.link"
-        target="_blank"
-        @click.stop
-        class="inline-flex items-center gap-1.5 bg-white hover:bg-blue-600 text-slate-600 hover:text-white text-xs font-bold py-2 px-4 rounded-xl transition-all duration-200 border border-gray-200 hover:border-blue-600 hover:shadow-lg hover:shadow-blue-500/20"
-      >
-        Website
-        <i class="pi pi-external-link text-xs"></i>
-      </a>
-    </td>
-  </tr>
+      <td class="px-6 py-4 text-sm text-slate-500">{{ school.inhaber }}</td>
+
+      <td class="px-6 py-4">
+        <div class="flex gap-1">
+          <i 
+            v-for="star in 5" 
+            :key="star"
+            @click.stop="rating = star"
+            class="pi cursor-pointer transition-all hover:scale-125"
+            :class="[
+              star <= rating ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200',
+              'text-sm'
+            ]"
+          ></i>
+        </div>
+      </td>
+
+      <td class="px-6 py-4 text-right">
+        <div class="flex items-center justify-end gap-3">
+          <a 
+            v-if="school.link" 
+            :href="school.link" 
+            target="_blank" 
+            @click.stop
+            class="p-2 bg-white border border-gray-200 rounded-lg text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm"
+            title="Website öffnen"
+          >
+            <i class="pi pi-external-link text-xs"></i>
+          </a>
+          <i :class="['pi text-[10px] text-slate-300 transition-transform duration-300', isExpanded ? 'rotate-180' : '']" class="pi-chevron-down"></i>
+        </div>
+      </td>
+    </tr>
+
+    <tr v-if="isExpanded" class="bg-slate-50/50">
+      <td colspan="6" class="px-6 py-0">
+        <div class="overflow-hidden transition-all duration-300">
+          <div class="py-4 px-10">
+            <div class="bg-white border border-blue-100 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center gap-2 mb-2">
+                <i class="pi pi-pencil text-blue-400 text-xs"></i>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Deine Notizen</span>
+              </div>
+              <textarea
+                v-model="comment"
+                @click.stop
+                placeholder="Schreibe hier etwas rein..."
+                class="w-full p-3 bg-slate-50 border-none rounded-xl text-sm text-slate-700 placeholder-slate-300 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
+                rows="2"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
 </template>
 
 <script setup lang="ts">
-interface Fahrschule {
-  name: string
-  ort: string
-  inhaber: string
-  email: string
-  link: string
-}
+import { ref } from 'vue'
 
 const props = defineProps<{
-  school: Fahrschule
+  school: {
+    name: string
+    ort: string
+    inhaber: string
+    link: string
+  },
   index: number
 }>()
 
-function openLink() {
-  if (props.school.link) {
-    window.open(props.school.link, '_blank')
-  }
-}
+const isExpanded = ref(false)
+const rating = ref(0)
+const comment = ref('')
 </script>
