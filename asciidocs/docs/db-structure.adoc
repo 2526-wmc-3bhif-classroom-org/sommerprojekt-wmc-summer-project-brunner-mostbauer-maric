@@ -41,6 +41,12 @@ entity UserPlan{
 StartTime
 }
 
+entity Rating{
+    Stars
+    Comment
+    Date
+}
+
 UserPlan "*" -- "1" DrivingSchool
 UserPlan "1" -- "*" Document
 DocType "1" -- "*" Document
@@ -48,6 +54,9 @@ Appointment "*" -- "1" UserPlan
 DrivingSchool "*" -- "*" LicenseType
 User "1" -- "1" UserPlan
 LicenseType "1" -- "*" UserPlan
+
+Rating "*" -- "1" User
+Rating "*" -- "1" DrivingSchool
 
 @enduml
 
