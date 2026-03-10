@@ -52,6 +52,7 @@ const isLoggedIn = ref(false);
 const links = [
   { to: '/', title: 'Home', icon: 'pi-home' },
   { to: '/about', title: 'About', icon: 'pi-info-circle' },
+  { to: '/schools', title: 'Schools', icon: 'pi-book' },
 ]
 
 const menuItems = computed(() => {
