@@ -1,5 +1,5 @@
 <template>
-  <PageBackground >
+
   <HeaderMain title="Fahrschulplaner" height="text-7xl" class="py-12" duration="500"/>
   <div class="align-items-center m-5 w-full flex flex-auto justify-center py-12 gap-4">
     <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer hover:bg-white hover:text-black transition-colors duration-400"
@@ -43,7 +43,6 @@
   <Timeline :entries="timeLineInputQuickStart"/>
 
   <FooterCmp></FooterCmp>
-  </PageBackground>
 </template>
 
 <script setup>
@@ -53,7 +52,6 @@ import HeaderMain from "@/components/HeaderMain.vue";
 import CardMain from "@/components/CardMain.vue";
 import FooterCmp from "@/components/FooterCmp.vue";
 import Timeline from "@/components/Timeline.vue";
-import PageBackground from "@/components/PageBackground.vue";
 function scrollTo(id) {
   document.getElementById(id).scrollIntoView({ behavior: 'smooth' })
 }
