@@ -10,6 +10,9 @@ https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-
 
 https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/db-structure.html[Database structure]
 
+https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/endpoint-definition.html[Endpoint definition]
+
+
 
 == Slides
 https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/slides/project-proposal-slides.html[Project proposal]
