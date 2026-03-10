@@ -1,6 +1,15 @@
 <template>
-
   <HeaderMain title="Fahrschulplaner" height="text-7xl" class="py-18" duration="500"/>
+
+  <p class="text-center text-xl text-black/50"
+     v-motion-fade
+     :duration="500"
+  >
+    Dein intelligenter Begleiter auf dem Weg zum Führerschein
+  </p>
+
+
+
   <div class="align-items-center m-5 w-full flex flex-auto justify-center py-12 gap-4">
     <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer hover:bg-white hover:text-black transition-colors duration-400"
             v-motion
@@ -20,6 +29,25 @@
       Unsere Vorteile
     </Button>
   </div>
+
+  <div id="statistics" class="flex justify-center py-12 gap-4">
+      <div
+        v-for="stat in statistics"
+        :key="stat.description"
+        class="p-5"
+      >
+        <StatisticCard
+          :description="stat.description"
+          :borderColor="stat.borderColor"
+          :textColor="stat.textColor"
+          :backgroundColor="stat.backgroundColor"
+          :endValue="stat.endValue"
+          :duration="stat.duration"
+          :suffix="stat.suffix"
+        />
+      </div>
+  </div>
+
   <div id="advantages">
     <HeaderMain title="Unsere Vorteile" height="text-5xl" duration="500"></HeaderMain>
   </div>
@@ -61,12 +89,47 @@ import HeaderMain from "@/components/HeaderMain.vue";
 import CardMain from "@/components/CardMain.vue";
 import FooterCmp from "@/components/FooterCmp.vue";
 import Timeline from "@/components/Timeline.vue";
+import StatisticCard from "@/components/StatisticCard.vue";
+
+
+import CountUp from "vue-countup-v3"
 import {useRouter} from "vue-router";
 const router = useRouter();
 
 function scrollTo(id) {
   document.getElementById(id).scrollIntoView({ behavior: 'smooth' })
 }
+
+
+const statistics = [
+  {
+    description: "Fahrschüler",
+    borderColor: "border-blue-500",
+    textColor: "text-white",
+    backgroundColor: "bg-blue-500",
+    endValue: 500,
+    suffix: "+",
+    duration: 400,
+  },
+  {
+    description: "Erfolgsquote",
+    borderColor: "border-lime-500",
+    textColor: "text-white",
+    backgroundColor: "bg-lime-500",
+    endValue: 95,
+    suffix: "%",
+    duration: 575,
+  },
+  {
+    description: "Fahrschulen",
+    borderColor: "border-white",
+    textColor: "text-white",
+    backgroundColor: "bg-violet-700",
+    endValue: 70,
+    suffix: "+",
+    duration: 700,
+  },
+]
 
 
 const pros = [
@@ -102,7 +165,7 @@ const timeLineInputQuickStart = [
     title: "Anmeldung",
     description: "Registrieren Sie sich auf unserer Plattform und erstellen Sie Ihr Profil.",
     icon: "pi pi-user-plus",
-    duration: 400,
+    duration: 200,
     iconColor: "text-blue-500",
     borderColor: "border-blue-500",
   },
@@ -110,7 +173,7 @@ const timeLineInputQuickStart = [
     title: "Fahrschule auswählen",
     description: "Wählen Sie Ihre Fahrschule aus unserer umfangreichen Liste aus.",
     icon: "pi pi-book",
-    duration: 400,
+    duration: 200,
     iconColor: "text-violet-500",
     borderColor: "border-violet-500",
   },
@@ -118,7 +181,7 @@ const timeLineInputQuickStart = [
     title: "Fahrplan erhalten",
     description: "Erhalten Sie Ihren maßgeschneiderten Fahrplan und starten Sie Ihre Vorbereitung auf den Führerschein.",
     icon: "pi pi-check",
-    duration: 400,
+    duration: 200,
     iconColor: "text-emerald-500",
     borderColor: "border-emerald-500",
   },
@@ -126,7 +189,7 @@ const timeLineInputQuickStart = [
     title: "Plan durchführen",
     description: "Folgen Sie Ihrem Fahrplan, um sich optimal auf die theoretische und praktische Prüfung vorzubereiten.",
     icon: "pi pi-directions",
-    duration: 400,
+    duration: 200,
     iconColor: "text-yellow-500",
     borderColor: "border-yellow-500",
   },
@@ -134,7 +197,7 @@ const timeLineInputQuickStart = [
     title: "Erfolg feiern",
     description: "Bestehen Sie Ihre Prüfungen und feiern Sie Ihren Erfolg mit Familie und Freunden!",
     icon: "pi pi-star",
-    duration: 400,
+    duration: 200,
     iconColor: "text-pink-500",
     borderColor: "border-pink-500",
   }

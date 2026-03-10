@@ -22,7 +22,10 @@
     "primeicons": "^7.0.0",
     "primevue": "^4.5.4",
     "vue": "^3.5.29",
-    "vue-router": "^5.0.3"
+    "vue-countup-v3": "^1.4.2",
+    "vue-ellipse-progress": "^2.1.1",
+    "vue-router": "^5.0.3",
+    "vue3-circle-progress": "^1.0.7"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.2.1",
