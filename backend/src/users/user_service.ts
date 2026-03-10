@@ -1,4 +1,4 @@
-import { UserRepository } from "./user_repository";
+import { UserRepository } from "./user_repository.js";
 
 export class UserService {
   private static instance: UserService | null = null;
