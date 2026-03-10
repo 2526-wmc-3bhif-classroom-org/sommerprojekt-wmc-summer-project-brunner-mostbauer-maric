@@ -51,6 +51,18 @@ Jan Brunner, Julian Mostbauer, Luka Maric
 | ///
 | Als Benutzer möchte ich Termine verschieben können.
 
+| Bewertungen / Kommentare
+| ///
+| Ich möchte als Benutzer eine Bewertung mit einem zusätzlichen Kommentar an eine Fahrschule schreiben (an unsere Übersicht anfügen).
+
+| Bewertungen / Kommentare
+| ///
+| Ich möchte als Benutzer auf Kommentare von anderen Benutzern mit einem Kommentar reagieren.
+
+| Bewertungen / Kommentare
+| ///
+| Ich möchte als Benutzer meinen Kommentar auch wieder löschen können.
+
 
 
 |===
