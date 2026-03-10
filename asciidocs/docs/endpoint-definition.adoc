@@ -1,0 +1,68 @@
+= Endpoint Definition
+Jan Brunner, Julian Mostbauer, Luka Maric
+1.0.0, {docdate}
+
+
+.Definitionen
+|===
+| Sektion | Route | Funktionalität
+
+| Fahrschule
+| ///
+| Ich möchte alle Fahrschulen abfragen können.
+
+| Fahrschule
+| ///
+| Ich möchte eine bestimmt Fahrschule abfragen können (über den Name der Fahrschule).
+
+| Fahrschule
+| ///
+| Ich möchte einen Kommentar zur einer bestimmten Fahrschule speichern.
+
+| Fahrschule
+| ///
+| Ich möchte alle Kommentare von einer bestimmten Fahrschule abfragen können.
+
+| Benutzer
+| ///
+| Ich möchte einen Benutzer erstellen können
+
+| Benutzer
+| ///
+| Ich möchte einen Benutzer löschen können.
+
+| Benutzer
+| ///
+| Ich möchte einen einzelnen Benutzer abfragen können.
+
+| Benutzer
+| ///
+| Im Nachhinein möchte ich Benutzerdaten ändern können.
+
+| Dokument
+| ///
+| Ich möchte als Benutzer Dokumentdaten speichern können.
+
+| Dokument
+| ///
+| Ich möchte als Benutzer meine eigenen Dokumentdaten abfragen können, egal ob alle oder ein bestimmtes.
+
+| Termin
+| ///
+| Als Benutzer möchte ich Termine verschieben können.
+
+| Bewertungen / Kommentare
+| ///
+| Ich möchte als Benutzer eine Bewertung mit einem zusätzlichen Kommentar an eine Fahrschule schreiben (an unsere Übersicht anfügen).
+
+| Bewertungen / Kommentare
+| ///
+| Ich möchte als Benutzer auf Kommentare von anderen Benutzern mit einem Kommentar reagieren.
+
+| Bewertungen / Kommentare
+| ///
+| Ich möchte als Benutzer meinen Kommentar auch wieder löschen können.
+
+
+
+|===
