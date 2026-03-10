@@ -23,14 +23,22 @@
       type: String,
       required: false,
       default: 'border-black'
+    },
+    duration: {
+      type: Number,
+      required: false,
+      default: 1000
     }
   })
 </script>
 
 <template>
-  <div :class="['flex flex-col items-center p-4 gap-1 border-2 rounded-2xl', borderColor]">
-    <i :class="[icon, iconColor]" style="font-size: 1.5rem" />
-    <h3 class="text-center font-bold m-2 text-lg text-black">{{ title }}</h3>
+  <div :class="['flex flex-col items-center p-4 gap-1 border-2 rounded-2xl transition-all hover:shadow-xl cursor-pointer duration-300', borderColor, borderColor]"
+    v-motion-pop-visible-once
+    :duration="duration"
+  >
+    <i :class="[icon, iconColor]" style="font-size: 2rem" />
+    <h3 class="text-center font-bold m-2 text-xl text-black">{{ title }}</h3>
     <p class="text-center text-sm text-black">{{ description }}</p>
   </div>
 </template>
