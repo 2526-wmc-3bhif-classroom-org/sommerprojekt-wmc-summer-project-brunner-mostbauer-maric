@@ -4,7 +4,7 @@
       class="hover:bg-slate-50/50 transition-colors cursor-pointer group" 
       @click="isExpanded = !isExpanded"
     >
-      <td class="px-6 py-4 text-sm font-medium text-slate-400 w-16">{{ index + 1 }}</td>
+      <td class="px-6 py-4 w-4 min-w-[50px] text-sm font-medium text-slate-400">{{ index + 1 }}</td>
       
       <td class="px-6 py-4">
         <div class="flex items-center gap-3">

@@ -90,16 +90,16 @@
         </div>
 
         <div v-else class="overflow-x-auto">
-          <table class="w-full text-left">
+          <table class="w-full text-left table-fixed border-separate border-spacing-0">
             <thead>
-            <tr class="bg-slate-50 border-b border-gray-100">
-              <th class="px-6 py-3 w-16 text-xs font-bold text-slate-400 uppercase tracking-widest">#</th>
-              <th class="px-6 py-3 text-xs font-bold text-slate-400 uppercase tracking-widest">Fahrschule</th>
-              <th class="px-6 py-3 text-xs font-bold text-slate-400 uppercase tracking-widest">Ort</th>
-              <th class="px-6 py-3 text-xs font-bold text-slate-400 uppercase tracking-widest">Inhaber</th>
-              <th class="px-6 py-3 text-xs font-bold text-slate-400 uppercase tracking-widest">Bewertung</th>
-              <th class="px-6 py-3 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Aktion</th>
-            </tr>
+              <tr class="bg-slate-50 border-b border-gray-100">
+                <th class="px-6 py-3 w-15 text-xs font-bold text-slate-400 uppercase tracking-widest">#</th>
+                <th class="px-6 py-3 w-1/6 text-xs font-bold text-slate-400 uppercase tracking-widest">Fahrschule</th>
+                <th class="px-6 py-3 w-1/6 text-xs font-bold text-slate-400 uppercase tracking-widest">Ort</th>
+                <th class="px-6 py-3 text-xs font-bold text-slate-400 uppercase tracking-widest">Inhaber</th>
+                <th class="px-6 py-3 w-1/5 text-xs font-bold text-slate-400 uppercase tracking-widest">Bewertung</th>
+                <th class="px-6 py-3 w-1/4 text-xs font-bold text-slate-400 uppercase tracking-widest">Website</th>
+              </tr>
             </thead>
             <tbody>
               <DrivingSchoolLine
