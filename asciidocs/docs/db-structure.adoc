@@ -7,54 +7,72 @@ Jan Brunner, Julian Mostbauer, Luka Maric
 
 [plantuml, db, png]
 ----
-@startuml
-skinparam linetype ortho
-
 entity User{
-UserName
-Email
+  UserId
+  UserName
+  Email
 }
 
 entity DrivingSchool{
-Name
-Location
+  DrivingSchoolId
+  Name
+  Location
 }
 
 entity Document{
-StartTime
+  DocumentId
+  StartTime
+  FilePath
 }
 
 entity DocType{
-ExpirationDuration
+  DocTypeId
+  ExpirationDuration
 }
 
 entity Appointment{
-DateTime
-Location
+  AppointmentId
+  DateTime
+  Location
 }
 
 entity LicenseType{
-Name
+  LicenseTypeId
+  Name
 }
 
-entity UserPlan{
-StartTime
+entity Enrollment{
+  EnrollmentId
+  StartTime
 }
 
 entity Rating{
+    RatingId
     Stars
-    Comment
+    Content
     Date
 }
 
-UserPlan "*" -- "1" DrivingSchool
-UserPlan "1" -- "*" Document
-DocType "1" -- "*" Document
-Appointment "*" -- "1" UserPlan
-DrivingSchool "*" -- "*" LicenseType
-User "1" -- "1" UserPlan
-LicenseType "1" -- "*" UserPlan
+entity Comment{
+  CommentId
+  Content
+}
 
+entity LicenseProgram {
+  LicenseProgramId
+}
+
+
+Rating "1" -- "0..*" Comment
+Comment "0..1" -- "0..*" Comment : Parent
+
+Enrollment "1" -- "*" Document
+DocType "1" -- "*" Document
+Appointment "*" -- "1" Enrollment
+DrivingSchool "1" -- "*" LicenseProgram
+User "1" -- "*" Enrollment
+LicenseProgram "1" -- "*" Enrollment
+LicenseType "1" -- "*" LicenseProgram
 Rating "*" -- "1" User
 Rating "*" -- "1" DrivingSchool
 
