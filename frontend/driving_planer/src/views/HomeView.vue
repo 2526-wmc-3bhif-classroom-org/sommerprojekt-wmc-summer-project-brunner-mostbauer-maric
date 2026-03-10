@@ -4,7 +4,7 @@
     <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer hover:bg-white hover:text-black transition-colors duration-400"
             v-motion
             :initial="{ opacity: 0, x: -50 }"
-            :enter="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
+            :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
     >
       Jetzt anfangen
     </Button>
@@ -12,7 +12,7 @@
     <Button class="bg-white text-black text-center text-xl p-6 m-5 rounded-3xl cursor-pointer hover:bg-black hover:text-white transition-colors duration-400"
             v-motion
             :initial="{ opacity: 0, x: 50 }"
-            :enter="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
+            :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
             @click="scrollTo('advantages')"
     >
       Unsere Vorteile
@@ -34,6 +34,12 @@
     />
   </div>
 
+  <div id="start-now">
+    <HeaderMain title="Bereit loszulegen?" height="text-5xl" duration="500"></HeaderMain>
+  </div>
+
+  <Timeline :entries="timeLineInputQuickStart"/>
+
   <FooterCmp></FooterCmp>
 </template>
 
@@ -43,7 +49,7 @@
 import HeaderMain from "@/components/HeaderMain.vue";
 import CardMain from "@/components/CardMain.vue";
 import FooterCmp from "@/components/FooterCmp.vue";
-
+import Timeline from "@/components/Timeline.vue";
 
 function scrollTo(id) {
   document.getElementById(id).scrollIntoView({ behavior: 'smooth' })
@@ -76,6 +82,33 @@ const pros = [
     borderColor: "border-emerald-500",
   }
 ]
+
+
+const timeLineInputQuickStart = [
+  {
+    title: "Anmeldung",
+    description: "Registrieren Sie sich auf unserer Plattform und erstellen Sie Ihr Profil.",
+    icon: "pi pi-user-plus",
+    duration: 400,
+    iconColor: "text-blue-500",
+    borderColor: "border-blue-500",
+  },
+  {
+    title: "Bedarfsanalyse",
+    description: "Beantworten Sie einige Fragen, damit wir Ihren individuellen Fahrplan erstellen können.",
+    icon: "pi pi-question-circle",
+    duration: 400,
+    iconColor: "text-violet-500",
+    borderColor: "border-violet-500",
+  },
+  {
+    title: "Fahrplan erhalten",
+    description: "Erhalten Sie Ihren maßgeschneiderten Fahrplan und starten Sie Ihre Vorbereitung auf den Führerschein.",
+    icon: "pi pi-check",
+    duration: 400,
+    iconColor: "text-emerald-500",
+    borderColor: "border-emerald-500",
+  }]
 </script>
 
 

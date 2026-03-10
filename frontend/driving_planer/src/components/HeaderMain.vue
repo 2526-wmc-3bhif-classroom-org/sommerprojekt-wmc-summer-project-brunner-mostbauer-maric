@@ -23,7 +23,7 @@
       is="h1"
       :class="['font-black text-black text-center', height]"
       :initial="{opacity: 0, scale: 0.8}"
-      :enter="{opacity: 1, scale: 1, transition: {duration: duration}}"
+      :visible-once="{opacity: 1, scale: 1, transition: {duration: duration}}"
     >{{title}}</Motion>
   </div>
 
