@@ -1,6 +1,6 @@
 <template>
 
-  <HeaderMain title="Fahrschulplaner" height="text-7xl" class="py-12" duration="500"/>
+  <HeaderMain title="Fahrschulplaner" height="text-7xl" class="py-18" duration="500"/>
   <div class="align-items-center m-5 w-full flex flex-auto justify-center py-12 gap-4">
     <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer hover:bg-white hover:text-black transition-colors duration-400"
             v-motion
@@ -23,7 +23,7 @@
   <div id="advantages">
     <HeaderMain title="Unsere Vorteile" height="text-5xl" duration="500"></HeaderMain>
   </div>
-  <div class="flex justify-center py-16 gap-4">
+  <div class="flex justify-center py-16 gap-4 px-6">
     <CardMain
       v-for="card in pros"
       :key="card.title"

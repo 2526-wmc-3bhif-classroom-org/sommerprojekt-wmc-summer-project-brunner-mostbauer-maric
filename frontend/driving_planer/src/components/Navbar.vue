@@ -34,7 +34,7 @@
     </aside>
 
     <main class="flex-1 overflow-y-auto">
-      <div class="p-8 max-w-7xl mx-auto">
+      <div class="max-w-full mx-auto">
         <router-view />
       </div>
     </main>

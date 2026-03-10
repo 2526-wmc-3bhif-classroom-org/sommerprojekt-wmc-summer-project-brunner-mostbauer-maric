@@ -7,18 +7,18 @@
 </script>
 
 <template>
-  <hr class="border-l border-black h-full z-99 relative">
-  <footer class="flex justify-between items-start gap-4 py-8 z-99">
+  <hr class="border-l border-black h-full">
+  <footer class="flex justify-between items-start gap-4 py-8 px-5 bg-black">
 
     <div class="left gap-4">
-      <p class="text-black">© 2026 Driving Planer</p>
+      <p class="text-white">© 2026 Driving Planer</p>
     </div>
     <div class="flex flex-col">
       <a
         v-for="link in links"
         :href="link.to"
         :title="link.title"
-        class="text-black text-right"
+        class="text-white text-right"
       >
         {{link.title}}
       </a>
