@@ -8,6 +8,11 @@
       type: String,
       required: false,
       default: 'text-xl'
+    },
+    duration: {
+      type: Number,
+      required: false,
+      default: 600,
     }
   })
 </script>
@@ -17,8 +22,8 @@
     <Motion
       is="h1"
       :class="['font-black text-black text-center', height]"
-      v-motion-pop-visible-once
-      :duration="600"
+      :initial="{opacity: 0, scale: 0.8}"
+      :enter="{opacity: 1, scale: 1, transition: {duration: duration}}"
     >{{title}}</Motion>
   </div>
 

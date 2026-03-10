@@ -1,5 +1,5 @@
 <template>
-  <HeaderMain title="Driving Planer" height="text-7xl" class="py-12"/>
+  <HeaderMain title="Driving Planer" height="text-7xl" class="py-12" duration="600"/>
   <div class="align-items-center m-5 w-full flex flex-auto justify-center py-12 gap-4">
     <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer"
             v-motion
@@ -21,7 +21,7 @@
     </Button>
   </div>
   <div id="advantages">
-    <HeaderMain title="Unsere Vorteile" height="text-5xl"></HeaderMain>
+    <HeaderMain title="Unsere Vorteile" height="text-5xl" duration="900"></HeaderMain>
   </div>
   <div class="flex justify-center pt-16 gap-4">
     <CardMain
