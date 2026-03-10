@@ -2,8 +2,8 @@
 
 </template>
 
-
-
-<script lang="ts">
+<script setup>
 
 </script>
+
+
