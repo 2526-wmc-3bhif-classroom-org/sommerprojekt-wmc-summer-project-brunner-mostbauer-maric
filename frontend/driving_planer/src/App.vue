@@ -5,6 +5,5 @@ import Navbar from "@/components/Navbar.vue";
 
 <template>
   <Navbar/>
-
 </template>
 
