@@ -39,10 +39,19 @@
   <div id="start-now">
     <HeaderMain title="Bereit loszulegen?" height="text-5xl" duration="500"></HeaderMain>
   </div>
-
-  <Timeline :entries="timeLineInputQuickStart"/>
-
-  <FooterCmp></FooterCmp>
+  <div class="flex justify-center">
+    <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer hover:bg-white hover:text-black transition-colors duration-400"
+            v-motion-pop-visible-once
+            :duration="400"
+            @click="router.push('/schools')"
+    ><!-- only some sample route because we don't have a login route right now-->
+      Jetzt direkt Starten
+    </Button>
+  </div>
+  <div class="py-8">
+  <Timeline :entries="timeLineInputQuickStart" />
+  </div>
+  <FooterCmp />
 </template>
 
 <script setup>
@@ -52,6 +61,9 @@ import HeaderMain from "@/components/HeaderMain.vue";
 import CardMain from "@/components/CardMain.vue";
 import FooterCmp from "@/components/FooterCmp.vue";
 import Timeline from "@/components/Timeline.vue";
+import {useRouter} from "vue-router";
+const router = useRouter();
+
 function scrollTo(id) {
   document.getElementById(id).scrollIntoView({ behavior: 'smooth' })
 }
