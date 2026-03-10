@@ -35,5 +35,22 @@ Jan Brunner, Julian Mostbauer, Luka Maric
 | ///
 | Ich möchte einen einzelnen Benutzer abfragen können.
 
+| Benutzer
+| ///
+| Im Nachhinein möchte ich Benutzerdaten ändern können.
+
+| Dokument
+| ///
+| Ich möchte als Benutzer Dokumentdaten speichern können.
+
+| Dokument
+| ///
+| Ich möchte als Benutzer meine eigenen Dokumentdaten abfragen können, egal ob alle oder ein bestimmtes.
+
+| Termin
+| ///
+| Als Benutzer möchte ich Termine verschieben können.
+
+
 
 |===
