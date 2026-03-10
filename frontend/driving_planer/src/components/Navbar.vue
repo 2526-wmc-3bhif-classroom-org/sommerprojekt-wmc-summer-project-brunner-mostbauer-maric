@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen bg-slate-50 font-sans">
+  <div class="flex h-screen bg-slate-50 font-sans z-99 relative">
     <aside class="w-20 flex flex-col items-center py-6 bg-white border-r border-gray-200 shadow-sm">
       <nav class="flex flex-col gap-4 flex-1 w-full items-center">
         <NavbarLinks

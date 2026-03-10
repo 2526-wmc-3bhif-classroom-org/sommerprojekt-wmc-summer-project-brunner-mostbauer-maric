@@ -38,7 +38,7 @@
 </script>
 
 <template>
-  <div :class="['flex flex-col items-center justify-center p-4 gap-1 border-2 rounded-2xl transition-all hover:shadow-xl cursor-pointer duration-300 min-h-48', borderColor, maxWith]"
+  <div :class="['flex flex-col items-center justify-center p-4 gap-1 border-2 rounded-2xl transition-all hover:shadow-xl cursor-pointer duration-300 min-h-48 relative z-10 bg-white', borderColor, maxWith]"
     v-motion-pop-visible-once
     :duration="duration"
   >

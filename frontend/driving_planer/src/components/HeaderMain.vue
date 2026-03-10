@@ -18,7 +18,7 @@
 </script>
 
 <template>
-  <div class="header align-items-center p-10">
+  <div class="header align-items-center p-10 z-99 relative">
     <Motion
       is="h1"
       :class="['font-black text-black text-center', height]"

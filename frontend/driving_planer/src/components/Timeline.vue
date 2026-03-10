@@ -19,7 +19,7 @@
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center p-4 gap-1">
+  <div class="flex flex-col items-center justify-center p-4 gap-1 z-99 relative">
     <div
       v-for="(entry, index) in entries"
         :key="entry.title"

@@ -1,3 +1,15 @@
 @import 'tailwindcss';
 @import './base.css';
 
+body {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+html {
+  background-color: #f8fafc !important;
+}
+#app {
+  position: relative;
+  z-index: 1;
+}

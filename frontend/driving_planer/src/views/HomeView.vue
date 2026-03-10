@@ -1,10 +1,12 @@
 <template>
-  <HeaderMain title="Driving Planer" height="text-7xl" class="py-12" duration="500"/>
+  <PageBackground >
+  <HeaderMain title="Fahrschulplaner" height="text-7xl" class="py-12" duration="500"/>
   <div class="align-items-center m-5 w-full flex flex-auto justify-center py-12 gap-4">
     <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer hover:bg-white hover:text-black transition-colors duration-400"
             v-motion
             :initial="{ opacity: 0, x: -50 }"
             :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
+            @click="scrollTo('start-now')"
     >
       Jetzt anfangen
     </Button>
@@ -41,6 +43,7 @@
   <Timeline :entries="timeLineInputQuickStart"/>
 
   <FooterCmp></FooterCmp>
+  </PageBackground>
 </template>
 
 <script setup>
@@ -50,7 +53,7 @@ import HeaderMain from "@/components/HeaderMain.vue";
 import CardMain from "@/components/CardMain.vue";
 import FooterCmp from "@/components/FooterCmp.vue";
 import Timeline from "@/components/Timeline.vue";
-
+import PageBackground from "@/components/PageBackground.vue";
 function scrollTo(id) {
   document.getElementById(id).scrollIntoView({ behavior: 'smooth' })
 }
@@ -94,9 +97,9 @@ const timeLineInputQuickStart = [
     borderColor: "border-blue-500",
   },
   {
-    title: "Bedarfsanalyse",
-    description: "Beantworten Sie einige Fragen, damit wir Ihren individuellen Fahrplan erstellen können.",
-    icon: "pi pi-question-circle",
+    title: "Fahrschule auswählen",
+    description: "Wählen Sie Ihre Fahrschule aus unserer umfangreichen Liste aus.",
+    icon: "pi pi-book",
     duration: 400,
     iconColor: "text-violet-500",
     borderColor: "border-violet-500",
@@ -108,7 +111,24 @@ const timeLineInputQuickStart = [
     duration: 400,
     iconColor: "text-emerald-500",
     borderColor: "border-emerald-500",
-  }]
+  },
+  {
+    title: "Plan durchführen",
+    description: "Folgen Sie Ihrem Fahrplan, um sich optimal auf die theoretische und praktische Prüfung vorzubereiten.",
+    icon: "pi pi-directions",
+    duration: 400,
+    iconColor: "text-yellow-500",
+    borderColor: "border-yellow-500",
+  },
+  {
+    title: "Erfolg feiern",
+    description: "Bestehen Sie Ihre Prüfungen und feiern Sie Ihren Erfolg mit Familie und Freunden!",
+    icon: "pi pi-star",
+    duration: 400,
+    iconColor: "text-pink-500",
+    borderColor: "border-pink-500",
+  }
+]
 </script>
 
 

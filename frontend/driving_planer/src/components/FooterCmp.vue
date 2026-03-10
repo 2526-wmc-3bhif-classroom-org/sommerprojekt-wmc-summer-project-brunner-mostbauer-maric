@@ -7,8 +7,8 @@
 </script>
 
 <template>
-  <hr class="border-l border-black h-full">
-  <footer class="flex justify-between items-start gap-4 py-8">
+  <hr class="border-l border-black h-full z-99 relative">
+  <footer class="flex justify-between items-start gap-4 py-8 z-99">
 
     <div class="left gap-4">
       <p class="text-black">© 2026 Driving Planer</p>
