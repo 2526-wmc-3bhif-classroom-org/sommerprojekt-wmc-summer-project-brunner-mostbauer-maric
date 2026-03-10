@@ -3,6 +3,11 @@
     title: {
       type: String,
       required: true
+    },
+    height: {
+      type: String,
+      required: false,
+      default: 'text-xl'
     }
   })
 </script>
@@ -11,7 +16,7 @@
   <div class="header align-items-center p-10">
     <Motion
       is="h1"
-      class="text-7xl font-black text-black text-center"
+      :class="['font-black text-black text-center', height]"
       v-motion-pop-visible-once
       :duration="600"
     >{{title}}</Motion>
