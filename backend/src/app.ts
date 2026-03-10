@@ -15,4 +15,7 @@ app.listen(PORT, () => {
   console.log(`Listening on ${PORT}`);
   console.log("http://localhost:" + PORT);
 });
- 
+
+app.get("/hello", (req: Request, res: Response) => {
+  res.send("Hello World!");
+});

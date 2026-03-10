@@ -1,56 +1,133 @@
 import BetterSqlite3 from "better-sqlite3";
 import type { Database, Statement } from "better-sqlite3";
+import { Unit } from "./unit.js";
 
-const buildTables = (connection: Database) => {
-  connection.exec(`CREATE TABLE IF NOT EXISTS User (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  userName TEXT NOT NULL,
-  email TEXT NOT NULL
-);
+export const buildTables = (connection: Database) => {
+  const unit = new Unit(false);
 
-CREATE TABLE IF NOT EXISTS DrivingSchool (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  location TEXT NOT NULL
-);
+  try {
+    unit
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS User (
+        UserId INTEGER PRIMARY KEY AUTOINCREMENT,
+        UserName TEXT NOT NULL,
+        Email TEXT NOT NULL UNIQUE
+      );`,
+      )
+      .run();
 
-CREATE TABLE IF NOT EXISTS Document (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  startTime DATETIME NOT NULL,
-  docTypeId INTEGER NOT NULL,
-  userPlanId INTEGER NOT NULL,
-  FOREIGN KEY (docTypeId) REFERENCES DocType(id),
-  FOREIGN KEY (userPlanId) REFERENCES UserPlan(id)
-);
+    unit
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS DrivingSchool (
+        DrivingSchoolId INTEGER PRIMARY KEY AUTOINCREMENT,
+        Name TEXT NOT NULL,
+        Location TEXT
+      );`,
+      )
+      .run();
 
-CREATE TABLE IF NOT EXISTS DocType (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  expirationDuration INTEGER NOT NULL
-);
+    unit
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS DocType (
+        DocTypeId INTEGER PRIMARY KEY AUTOINCREMENT,
+        ExpirationDuration INTEGER -- duration in days
+      );`,
+      )
+      .run();
 
-CREATE TABLE IF NOT EXISTS Appointment (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  dateTime DATETIME NOT NULL,
-  location TEXT NOT NULL,
-  userPlanId INTEGER NOT NULL,
-  FOREIGN KEY (userPlanId) REFERENCES UserPlan(id)
-);
+    unit
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS LicenseType (
+        LicenseTypeId INTEGER PRIMARY KEY AUTOINCREMENT,
+        Name TEXT NOT NULL
+      );`,
+      )
+      .run();
 
-CREATE TABLE IF NOT EXISTS LicenseType (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL
-);
+    unit
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS LicenseProgram (
+        LicenseProgramId INTEGER PRIMARY KEY AUTOINCREMENT,
+        DrivingSchoolId INTEGER NOT NULL,
+        LicenseTypeId INTEGER NOT NULL,
+        FOREIGN KEY (DrivingSchoolId) REFERENCES DrivingSchool(DrivingSchoolId) ON DELETE CASCADE,
+        FOREIGN KEY (LicenseTypeId) REFERENCES LicenseType(LicenseTypeId) ON DELETE CASCADE
+      );`,
+      )
+      .run();
 
-CREATE TABLE IF NOT EXISTS UserPlan (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  startTime DATETIME NOT NULL,
-  userId INTEGER NOT NULL,
-  drivingSchoolId INTEGER NOT NULL,
-  licenseTypeId INTEGER NOT NULL,
-  FOREIGN KEY (userId) REFERENCES User(id),
-  FOREIGN KEY (drivingSchoolId) REFERENCES DrivingSchool(id),
-  FOREIGN KEY (licenseTypeId) REFERENCES LicenseType(id)
-);`);
+    unit
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS Enrollment (
+        EnrollmentId INTEGER PRIMARY KEY AUTOINCREMENT,
+        UserId INTEGER NOT NULL,
+        LicenseProgramId INTEGER NOT NULL,
+        StartTime TEXT,
+        FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE,
+        FOREIGN KEY (LicenseProgramId) REFERENCES LicenseProgram(LicenseProgramId) ON DELETE CASCADE
+      );`,
+      )
+      .run();
+
+    unit
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS Appointment (
+        AppointmentId INTEGER PRIMARY KEY AUTOINCREMENT,
+        EnrollmentId INTEGER NOT NULL,
+        DateTime TEXT NOT NULL,
+        Location TEXT,
+        FOREIGN KEY (EnrollmentId) REFERENCES Enrollment(EnrollmentId) ON DELETE CASCADE
+      );`,
+      )
+      .run();
+
+    unit
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS Document (
+        DocumentId INTEGER PRIMARY KEY AUTOINCREMENT,
+        EnrollmentId INTEGER NOT NULL,
+        DocTypeId INTEGER NOT NULL,
+        StartTime TEXT,
+        FilePath TEXT NOT NULL,
+        FOREIGN KEY (EnrollmentId) REFERENCES Enrollment(EnrollmentId) ON DELETE CASCADE,
+        FOREIGN KEY (DocTypeId) REFERENCES DocType(DocTypeId) ON DELETE CASCADE
+      );`,
+      )
+      .run();
+
+    unit
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS Rating (
+        RatingId INTEGER PRIMARY KEY AUTOINCREMENT,
+        UserId INTEGER NOT NULL,
+        DrivingSchoolId INTEGER NOT NULL,
+        Stars INTEGER NOT NULL CHECK (Stars BETWEEN 1 AND 5),
+        Content TEXT,
+        Date TEXT,
+        FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE,
+        FOREIGN KEY (DrivingSchoolId) REFERENCES DrivingSchool(DrivingSchoolId) ON DELETE CASCADE
+      );`,
+      )
+      .run();
+
+    unit
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS Comment (
+        CommentId INTEGER PRIMARY KEY AUTOINCREMENT,
+        RatingId INTEGER NOT NULL,
+        ParentCommentId INTEGER,
+        Content TEXT NOT NULL,
+        FOREIGN KEY (RatingId) REFERENCES Rating(RatingId) ON DELETE CASCADE,
+        FOREIGN KEY (ParentCommentId) REFERENCES Comment(CommentId) ON DELETE CASCADE
+      );`,
+      )
+      .run();
+
+    unit.complete(true);
+  } catch (err) {
+    unit.complete(false);
+    throw err;
+  }
 };
 
 export default buildTables;
@@ -59,46 +136,75 @@ export default buildTables;
 This is the current database structure:
 
 @startuml
-skinparam linetype ortho
 
 entity User{
-UserName
-Email
+  UserId
+  UserName
+  Email
 }
 
 entity DrivingSchool{
-Name
-Location
+  DrivingSchoolId
+  Name
+  Location
 }
 
 entity Document{
-StartTime
+  DocumentId
+  StartTime
+  FilePath
 }
 
 entity DocType{
-ExpirationDuration
+  DocTypeId
+  ExpirationDuration
 }
 
 entity Appointment{
-DateTime
-Location
+  AppointmentId
+  DateTime
+  Location
 }
 
 entity LicenseType{
-Name
+  LicenseTypeId
+  Name
 }
 
-entity UserPlan{
-StartTime
+entity Enrollment{
+  EnrollmentId
+  StartTime
 }
 
-UserPlan "*" -- "1" DrivingSchool
-UserPlan "1" -- "*" Document
+entity Rating{
+    RatingId
+    Stars
+    Content
+    Date
+}
+
+entity Comment{
+  CommentId
+  Content
+}
+
+entity LicenseProgram {
+  LicenseProgramId
+}
+
+
+Rating "1" -- "0..*" Comment
+Comment "0..1" -- "0..*" Comment : Parent
+
+Enrollment "1" -- "*" Document
 DocType "1" -- "*" Document
-Appointment "*" -- "1" UserPlan
-DrivingSchool "*" -- "*" LicenseType
-User "1" -- "1" UserPlan
-LicenseType "1" -- "*" UserPlan
+Appointment "*" -- "1" Enrollment
+DrivingSchool "1" -- "*" LicenseProgram
+User "1" -- "*" Enrollment
+LicenseProgram "1" -- "*" Enrollment
+LicenseType "1" -- "*" LicenseProgram
+Rating "*" -- "1" User
+Rating "*" -- "1" DrivingSchool
 
 @enduml
 */

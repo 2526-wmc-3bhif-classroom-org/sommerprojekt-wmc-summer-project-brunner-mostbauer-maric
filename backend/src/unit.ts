@@ -1,6 +1,6 @@
 import BetterSqlite3 from "better-sqlite3";
 import type { Database, Statement } from "better-sqlite3";
-import buildTables from "./db-structure.js";
+import { buildTables } from "./db-structure.js";
 
 const dbFileName = "flights.db";
 
