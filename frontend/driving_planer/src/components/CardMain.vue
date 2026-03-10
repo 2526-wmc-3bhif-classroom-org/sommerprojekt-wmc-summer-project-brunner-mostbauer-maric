@@ -33,7 +33,7 @@
 </script>
 
 <template>
-  <div :class="['flex flex-col items-center p-4 gap-1 border-2 rounded-2xl transition-all hover:shadow-xl cursor-pointer duration-300', borderColor, borderColor]"
+  <div :class="['flex flex-col items-center justify-center p-4 gap-1 border-2 rounded-2xl transition-all hover:shadow-xl cursor-pointer duration-300 min-h-48', borderColor]"
     v-motion-pop-visible-once
     :duration="duration"
   >
