@@ -20,13 +20,40 @@
       Unsere Vorteile
     </Button>
   </div>
+  <div class="flex justify-center pt-16 gap-4">
+    <CardMain
+      v-for="card in pros"
+      :key="card.title"
+      :title="card.title"
+      :description="card.description"
+      :icon="card.icon"
+    />
+  </div>
 </template>
 
 <script setup>
 
 
 import HeaderMain from "@/components/HeaderMain.vue";
+import CardMain from "@/components/CardMain.vue";
 
+const pros = [
+  {
+    title: "Individuell",
+    description: "Erstellen Sie Ihren persönlichen Fahrplan, der auf Ihre Bedürfnisse zugeschnitten ist.",
+    icon: "pi pi-user"
+  },
+  {
+    title: "Effizient",
+    description: "Optimieren Sie Ihren Lernprozess mit unserem intelligenten Planungsalgorithmus.",
+    icon: "pi pi-cog"
+  },
+  {
+    title: "Motivierend",
+    description: "Verfolgen Sie Ihren Fortschritt und bleiben Sie motiviert auf dem Weg zum Führerschein.",
+    icon: "pi pi-chart-line"
+  }
+]
 </script>
 
 
