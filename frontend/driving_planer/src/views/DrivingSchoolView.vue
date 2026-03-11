@@ -14,7 +14,7 @@
         <p class="text-slate-500">Vergleiche Fahrschulen und finde die passende für dich.</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6">
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
             <i class="pi pi-car text-blue-500"></i>
