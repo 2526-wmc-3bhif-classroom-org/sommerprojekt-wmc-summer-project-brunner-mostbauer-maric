@@ -8,35 +8,35 @@ Jan Brunner, Julian Mostbauer, Luka Maric
 | Sektion | Route | Funktionalität
 
 | Fahrschule
-| ///
+| GET /api/schools
 | Ich möchte alle Fahrschulen abfragen können.
 
 | Fahrschule
-| ///
+| GET /api/schools/:schoolId
 | Ich möchte eine bestimmt Fahrschule abfragen können (über den Name der Fahrschule).
 
 | Fahrschule
-| ///
-| Ich möchte einen Kommentar zur einer bestimmten Fahrschule speichern.
+| POST /api/ratings/:schoolId
+| Ich möchte eine Bewertung zur einer bestimmten Fahrschule speichern.
 
 | Fahrschule
-| ///
+| GET /api/ratings/:schoolId
 | Ich möchte alle Kommentare von einer bestimmten Fahrschule abfragen können.
 
 | Benutzer
-| ///
+| POST /api/users/
 | Ich möchte einen Benutzer erstellen können
 
 | Benutzer
-| ///
+| DELETE /api/users/:userId
 | Ich möchte einen Benutzer löschen können.
 
 | Benutzer
-| ///
+| GET /api/users/:userId
 | Ich möchte einen einzelnen Benutzer abfragen können.
 
 | Benutzer
-| ///
+| PATCH /api/users/:userId
 | Im Nachhinein möchte ich Benutzerdaten ändern können.
 
 | Benutzer
@@ -44,29 +44,28 @@ Jan Brunner, Julian Mostbauer, Luka Maric
 | Ich möchte die Anzahl aller Nutzer abfragen können.
 
 | Dokument
-| ///
+| POST /api/docs
 | Ich möchte als Benutzer Dokumentdaten speichern können.
 
 | Dokument
-| ///
-| Ich möchte als Benutzer meine eigenen Dokumentdaten abfragen können, egal ob alle oder ein bestimmtes.
+| GET /api/docs/:userId 
+| Ich möchte als Benutzer meine eigenen Dokumentdaten abfragen können
+
+| Dokument
+| GET /api/docs/:userId/:docId 
+| Ich möchte als Benutzer eines meiner eigenen Dokumentdaten abfragen können
+
 
 | Termin
-| ///
+| PATCH /api/users/:userId/appointment/:appointmentId 
 | Als Benutzer möchte ich Termine verschieben können.
 
 | Bewertungen / Kommentare
-| ///
-| Ich möchte als Benutzer eine Bewertung mit einem zusätzlichen Kommentar an eine Fahrschule schreiben (an unsere Übersicht anfügen).
+| POST /api/ratings/:schoolId/:ratingId
+| Ich möchte als Benutzer auf Kommentare von anderen Benutzern mit einem Kommentar reagieren können.
 
 | Bewertungen / Kommentare
-| ///
-| Ich möchte als Benutzer auf Kommentare von anderen Benutzern mit einem Kommentar reagieren.
-
-| Bewertungen / Kommentare
-| ///
+| DELETE /api/ratings/:schoolId/:ratingId
 | Ich möchte als Benutzer meinen Kommentar auch wieder löschen können.
-
-
 
 |===
