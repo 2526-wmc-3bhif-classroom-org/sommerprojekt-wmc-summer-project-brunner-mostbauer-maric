@@ -1,6 +1,58 @@
 <template>
-  <div class="flex h-screen bg-slate-50 font-sans z-99 relative">
-    <aside class="w-20 flex flex-col items-center py-6 bg-white border-r border-gray-200 shadow-sm">
+  <div class="flex h-screen bg-transparent font-sans relative">
+
+    <!-- Mobile Top Navbar -->
+    <header class="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-4 py-3 m-3">
+      <button @click="sidebarOpen = !sidebarOpen" class="p-2 text-gray-600 hover:text-black transition-colors">
+        <i :class="'pi pi-bars'" class="text-xl"></i>
+      </button>
+    </header>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div
+      v-if="sidebarOpen"
+      class="md:hidden fixed inset-0 z-40 bg-black/30"
+      @click="sidebarOpen = false"
+    />
+
+    <!-- Mobile Sidebar -->
+    <aside
+      :class="['md:hidden fixed top-0 left-0 h-full bg-white z-50 shadow-xl transform transition-transform duration-300',
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full']"
+    >
+      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+        <button @click="sidebarOpen = false" class="p-2 text-gray-400 hover:text-black">
+          <i class="pi pi-times text-xl"></i>
+        </button>
+      </div>
+
+      <nav class="flex flex-col gap-2 p-4">
+        <NavbarLinks
+          v-for="(link, index) in links"
+          :key="index"
+          :link-to="link.to"
+          :title="link.title"
+          :icon="link.icon"
+          @click="sidebarOpen = false"
+        />
+      </nav>
+
+      <div class="absolute bottom-6 left-0 right-0 flex flex-col items-start gap-4 px-4">
+        <button class="p-3 text-gray-400 hover:text-black transition-colors">
+          <i class="pi pi-cog text-lg"></i>
+        </button>
+        <div
+          @click="toggleMenu"
+          class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:border-gray-300 transition-all"
+        >
+          <img src="https://placehold.co/600x400" alt="Profile" class="w-full h-full object-cover" />
+        </div>
+        <Menu ref="menu" id="overlay_menu_mobile" :model="menuItems" :popup="true" />
+      </div>
+    </aside>
+
+    <!-- Desktop Sidebar -->
+    <aside class="hidden md:flex w-20 flex-col items-center py-6 bg-white border-r border-gray-200 shadow-sm">
       <nav class="flex flex-col gap-4 flex-1 w-full items-center">
         <NavbarLinks
           v-for="(link, index) in links"
@@ -12,32 +64,26 @@
       </nav>
 
       <div class="flex flex-col gap-6 mt-auto items-center">
-        <button v-ripple class="p-3 text-gray-400 hover:text-black transition-colors">
+        <button class="p-3 text-gray-400 hover:text-black transition-colors">
           <i class="pi pi-cog text-lg"></i>
         </button>
-
         <div
           @click="toggleMenu"
-          aria-haspopup="true"
-          aria-controls="overlay_menu"
           class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:border-gray-300 transition-all active:scale-95"
         >
-          <img
-            src="https://placehold.co/600x400"
-            alt="Profile"
-            class="w-full h-full object-cover"
-          />
+          <img src="https://placehold.co/600x400" alt="Profile" class="w-full h-full object-cover" />
         </div>
-
         <Menu ref="menu" id="overlay_menu" :model="menuItems" :popup="true" />
       </div>
     </aside>
 
-    <main class="flex-1 overflow-y-auto">
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto md:mt-0 mt-14">
       <div class="max-w-full mx-auto">
         <router-view />
       </div>
     </main>
+
   </div>
 </template>
 
@@ -47,7 +93,8 @@ import NavbarLinks from './NavbarLinks.vue'
 import Menu from 'primevue/menu'
 
 const menu = ref(null)
-const isLoggedIn = ref(false);
+const isLoggedIn = ref(false)
+const sidebarOpen = ref(false)
 
 const links = [
   { to: '/', title: 'Home', icon: 'pi-home' },
@@ -73,12 +120,10 @@ const toggleMenu = (event) => {
 }
 
 const login = () => {
-  console.log("Login clicked")
   isLoggedIn.value = true
 }
 
 const logout = () => {
-  console.log("Logout clicked")
   isLoggedIn.value = false
 }
 </script>

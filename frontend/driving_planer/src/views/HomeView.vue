@@ -1,6 +1,6 @@
 <template>
   <Background>
-  <HeaderMain title="Fahrschulplaner" height="text-7xl" class="py-18" duration="500"/>
+  <HeaderMain title="Fahrschulplaner" desktopHeight="md:text-7xl" mobileHeight="text-3xl" class="py-18" duration="500"/>
 
   <p class="text-center text-xl text-black/50"
      v-motion-fade
@@ -56,7 +56,7 @@
   </div>
 
   <div id="advantages">
-    <HeaderMain title="Unsere Vorteile" height="text-5xl" duration="500"></HeaderMain>
+    <HeaderMain title="Unsere Vorteile" desktopHeight="md:text-5xl" mobileHeight="text-3xl" duration="500"></HeaderMain>
   </div>
   <div class="flex justify-center py-16 gap-4 px-6">
     <CardMain
@@ -72,7 +72,7 @@
   </div>
 
   <div id="start-now">
-    <HeaderMain title="Bereit loszulegen?" height="text-5xl" duration="500"></HeaderMain>
+    <HeaderMain title="Bereit loszulegen?" desktopHeight="md:text-5xl" mobileHeight="text-3xl" duration="500"></HeaderMain>
   </div>
   <div class="flex justify-center"
     v-motion-pop-visible-once
