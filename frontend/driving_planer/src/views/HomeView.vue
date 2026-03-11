@@ -1,4 +1,5 @@
 <template>
+  <Background>
   <HeaderMain title="Fahrschulplaner" height="text-7xl" class="py-18" duration="500"/>
 
   <p class="text-center text-xl text-black/50"
@@ -87,6 +88,7 @@
   <Timeline :entries="timeLineInputQuickStart" />
   </div>
   <FooterCmp />
+  </Background>
 </template>
 
 <script setup>
@@ -97,7 +99,7 @@ import CardMain from "@/components/CardMain.vue";
 import FooterCmp from "@/components/FooterCmp.vue";
 import Timeline from "@/components/Timeline.vue";
 import StatisticCard from "@/components/StatisticCard.vue";
-
+import Background from "@/components/Background.vue";
 
 import CountUp from "vue-countup-v3"
 import {useRouter} from "vue-router";
@@ -114,7 +116,7 @@ const statistics = [
     borderColor: "border-blue-500",
     textColor: "text-white",
     backgroundColor: "bg-blue-500",
-    endValue: 500,
+    endValue: 2,
     suffix: "+",
     duration: 400,
   },
