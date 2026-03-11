@@ -39,6 +39,10 @@ Jan Brunner, Julian Mostbauer, Luka Maric
 | ///
 | Im Nachhinein möchte ich Benutzerdaten ändern können.
 
+| Benutzer
+| ///
+| Ich möchte die Anzahl aller Nutzer abfragen können.
+
 | Dokument
 | ///
 | Ich möchte als Benutzer Dokumentdaten speichern können.
