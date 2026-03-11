@@ -38,10 +38,13 @@
       </nav>
 
       <div class="absolute bottom-6 left-0 right-0 flex flex-col items-start gap-4 px-4">
-        <button class="p-3 text-gray-400 hover:text-black transition-colors">
+        <button class="p-3 text-gray-400 hover:text-black transition-colors"
+                v-tooltip="'Einstellungen'"
+        >
           <i class="pi pi-cog text-lg"></i>
         </button>
         <div
+          v-tooltip="'Profil'"
           @click="toggleMenu"
           class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:border-gray-300 transition-all"
         >
@@ -64,10 +67,13 @@
       </nav>
 
       <div class="flex flex-col gap-6 mt-auto items-center">
-        <button class="p-3 text-gray-400 hover:text-black transition-colors">
+        <button class="p-3 text-gray-400 hover:text-black transition-colors"
+                v-tooltip="'Einstellungen'"
+        >
           <i class="pi pi-cog text-lg"></i>
         </button>
         <div
+          v-tooltip="'Profil'"
           @click="toggleMenu"
           class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:border-gray-300 transition-all active:scale-95"
         >
@@ -97,9 +103,9 @@ const isLoggedIn = ref(false)
 const sidebarOpen = ref(false)
 
 const links = [
-  { to: '/', title: 'Home', icon: 'pi-home' },
-  { to: '/about', title: 'About', icon: 'pi-info-circle' },
-  { to: '/schools', title: 'Schools', icon: 'pi-book' },
+  { to: '/', title: 'Zuhause', icon: 'pi-home' },
+  { to: '/about', title: 'Über uns', icon: 'pi-info-circle' },
+  { to: '/schools', title: 'Fahrschulen', icon: 'pi-book' },
 ]
 
 const menuItems = computed(() => {

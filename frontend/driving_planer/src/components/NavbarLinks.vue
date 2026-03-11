@@ -10,6 +10,7 @@ const props = defineProps({
 <template>
   <router-link :to="linkTo" v-slot="{ isActive }">
     <button
+      v-tooltip="title"
       v-ripple
       :class="[
         'p-4 rounded-xl transition-all duration-200',
