@@ -1,8 +1,8 @@
 <template>
   <Background>
-  <HeaderMain title="Fahrschulplaner" desktopHeight="md:text-7xl" mobileHeight="text-3xl" class="py-18" duration="500"/>
+  <HeaderMain title="Fahrschulplaner" desktopHeight="md:text-7xl" mobileHeight="text-3xl" class="md:py-18 pt-20 pb-10" duration="500"/>
 
-  <p class="text-center text-xl text-black/50"
+  <p class="text-center md:text-xl text-black/50 text-sm"
      v-motion-fade
      :duration="500"
   >
@@ -11,13 +11,13 @@
 
 
 
-  <div class="align-items-center m-5 w-full flex flex-auto justify-center py-12 gap-4">
+  <div class="align-items-center m-5 md:w-full flex flex-auto justify-center py-12 gap-4 px-4 md:px-0">
     <div
       v-motion
       :initial="{ opacity: 0, x: -50 }"
       :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
     >
-    <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer transition-transform duration-300 hover:-rotate-8"
+    <Button class="bg-black text-white text-center text-xl md:p-6 p-4 rounded-3xl md:m-5 cursor-pointer transition-transform duration-300 hover:-rotate-8"
             @click="scrollTo('start-now')"
     >
       Jetzt anfangen
@@ -28,7 +28,7 @@
       :initial="{ opacity: 0, x: 50 }"
       :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
     >
-    <Button class="bg-white text-black text-center text-xl p-6 m-5 rounded-3xl cursor-pointer transition-transform duration-300 hover:-rotate-8"
+    <Button class="bg-white text-black text-center text-xl md:p-6 p-4 m-5 rounded-3xl cursor-pointer transition-transform duration-300 hover:-rotate-8"
 
             @click="scrollTo('advantages')"
     >
@@ -37,7 +37,7 @@
     </div>
   </div>
 
-  <div id="statistics" class="flex justify-center py-12 gap-4">
+  <div id="statistics" class="flex justify-center py-12 gap-4 flex-col md:flex-row">
       <div
         v-for="stat in statistics"
         :key="stat.description"
@@ -58,7 +58,7 @@
   <div id="advantages">
     <HeaderMain title="Unsere Vorteile" desktopHeight="md:text-5xl" mobileHeight="text-3xl" duration="500"></HeaderMain>
   </div>
-  <div class="flex justify-center py-16 gap-4 px-6">
+  <div class="flex justify-center py-16 gap-4 px-6 md:flex-row flex-col">
     <CardMain
       v-for="card in pros"
       :key="card.title"

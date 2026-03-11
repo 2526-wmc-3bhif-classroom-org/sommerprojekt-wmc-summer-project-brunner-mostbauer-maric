@@ -86,7 +86,7 @@
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto md:mt-0 mt-14">
       <div class="max-w-full mx-auto">
-        <router-view />
+        <slot/>
       </div>
     </main>
 
