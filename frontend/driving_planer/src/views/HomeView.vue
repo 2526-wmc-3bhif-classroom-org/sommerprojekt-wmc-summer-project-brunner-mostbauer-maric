@@ -11,23 +11,29 @@
 
 
   <div class="align-items-center m-5 w-full flex flex-auto justify-center py-12 gap-4">
-    <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer hover:bg-white hover:text-black transition-colors duration-400"
-            v-motion
-            :initial="{ opacity: 0, x: -50 }"
-            :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
+    <div
+      v-motion
+      :initial="{ opacity: 0, x: -50 }"
+      :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
+    >
+    <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer transition-transform duration-300 hover:-rotate-8"
             @click="scrollTo('start-now')"
     >
       Jetzt anfangen
     </Button>
+    </div>
+    <div
+      v-motion
+      :initial="{ opacity: 0, x: 50 }"
+      :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
+    >
+    <Button class="bg-white text-black text-center text-xl p-6 m-5 rounded-3xl cursor-pointer transition-transform duration-300 hover:-rotate-8"
 
-    <Button class="bg-white text-black text-center text-xl p-6 m-5 rounded-3xl cursor-pointer hover:bg-black hover:text-white transition-colors duration-400"
-            v-motion
-            :initial="{ opacity: 0, x: 50 }"
-            :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
             @click="scrollTo('advantages')"
     >
       Unsere Vorteile
     </Button>
+    </div>
   </div>
 
   <div id="statistics" class="flex justify-center py-12 gap-4">
@@ -67,10 +73,11 @@
   <div id="start-now">
     <HeaderMain title="Bereit loszulegen?" height="text-5xl" duration="500"></HeaderMain>
   </div>
-  <div class="flex justify-center">
-    <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer hover:bg-white hover:text-black transition-colors duration-400"
-            v-motion-pop-visible-once
-            :duration="400"
+  <div class="flex justify-center"
+    v-motion-pop-visible-once
+    :duration="400"
+  >
+    <Button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer transition-transform duration-300 hover:-rotate-8"
             @click="router.push('/schools')"
     ><!-- only some sample route because we don't have a login route right now-->
       Jetzt direkt Starten
