@@ -120,7 +120,7 @@ onMounted(async () => {
 
       ctx.beginPath()
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(15, 23, 42, ${p.opacity})`
+      ctx.fillStyle = `rgba(0, 0, 0, ${p.opacity})`
       ctx.fill()
     }
 

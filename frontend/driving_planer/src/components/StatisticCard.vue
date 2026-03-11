@@ -40,6 +40,7 @@
 </script>
 
 <template>
+  <div class="hover:scale-105 transition-all duration-300">
   <div :class="['flex flex-col items-center justify-center p-4 gap-1 border-4 rounded-2xl min-h-40 min-w-60', borderColor, backgroundColor]"
     v-motion-pop-visible-once
     :duration="duration"
@@ -51,6 +52,7 @@
 
     <p :class="['text-center text-lg', textColor]">{{description}}</p>
 
+  </div>
   </div>
 </template>
 

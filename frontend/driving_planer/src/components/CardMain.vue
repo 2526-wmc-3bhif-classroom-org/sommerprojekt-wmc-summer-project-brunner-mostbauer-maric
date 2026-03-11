@@ -38,13 +38,15 @@
 </script>
 
 <template>
-  <div :class="['flex flex-col items-center justify-center p-4 gap-1 border-2 rounded-2xl transition-all hover:shadow-xl cursor-pointer duration-300 min-h-48 relative z-10 bg-white', borderColor, maxWith]"
+  <div class="hover:scale-105 transition-all duration-200">
+  <div :class="['flex flex-col items-center justify-center p-4 gap-1 border-2 rounded-2xl cursor-pointer duration-300 min-h-48 relative z-10 bg-white', borderColor, maxWith]"
     v-motion-pop-visible-once
     :duration="duration"
   >
     <i :class="[icon, iconColor]" style="font-size: 2rem" />
     <h3 class="text-center font-bold m-2 text-xl text-black">{{ title }}</h3>
     <p class="text-center text-sm text-black">{{ description }}</p>
+  </div>
   </div>
 </template>
 

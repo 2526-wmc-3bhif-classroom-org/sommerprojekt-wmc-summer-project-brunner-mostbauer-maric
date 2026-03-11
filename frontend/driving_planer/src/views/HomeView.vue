@@ -127,7 +127,7 @@ const statistics = [
     backgroundColor: "bg-lime-500",
     endValue: 95,
     suffix: "%",
-    duration: 575,
+    duration: 400,
   },
   {
     description: "Fahrschulen",
@@ -136,7 +136,7 @@ const statistics = [
     backgroundColor: "bg-violet-700",
     endValue: 70,
     suffix: "+",
-    duration: 700,
+    duration: 400,
   },
 ]
 
