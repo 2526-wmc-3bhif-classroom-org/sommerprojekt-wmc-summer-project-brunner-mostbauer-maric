@@ -74,7 +74,7 @@ onMounted(async () => {
   resizeObserver.observe(container.value)
 
   spawnInterval = setInterval(() => {
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 5; i++) {
       particles.push(spawnParticle(c.width, c.height))
     }
   }, 800)
@@ -88,7 +88,7 @@ onMounted(async () => {
   window.addEventListener('resize', setSize)
   window.addEventListener('scroll', onScroll)
 
-  for (let i = 0; i < 300; i++) {
+  for (let i = 0; i < 150; i++) {
     particles.push(spawnParticle(c.width, c.height))
   }
 
