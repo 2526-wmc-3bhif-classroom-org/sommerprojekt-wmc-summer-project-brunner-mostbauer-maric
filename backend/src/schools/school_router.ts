@@ -5,6 +5,46 @@ import { SchoolService } from "./school_service.js";
 export const schoolRouter = express.Router();
 const schoolService: SchoolService = SchoolService.Instance;
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     DrivingSchool:
+ *       type: object
+ *       properties:
+ *         DrivingSchoolId:
+ *           type: integer
+ *         Name:
+ *           type: string
+ *         Location:
+ *           type: string
+ *           nullable: true
+ *         Owner:
+ *           type: string
+ *           nullable: true
+ *         Email:
+ *           type: string
+ *           nullable: true
+ *         Website:
+ *           type: string
+ *           nullable: true
+ */
+
+/**
+ * @swagger
+ * /api/schools:
+ *   get:
+ *     summary: Retrieve a list of driving schools
+ *     responses:
+ *       200:
+ *         description: A list of driving schools.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/DrivingSchool'
+ */
 schoolRouter.get("/", (req, res) => {
   try {
     const schools = schoolService.getAllSchools();
@@ -16,6 +56,30 @@ schoolRouter.get("/", (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/schools/{schoolId}:
+ *   get:
+ *     summary: Retrieve a single driving school
+ *     parameters:
+ *       - in: path
+ *         name: schoolId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the school to retrieve
+ *     responses:
+ *       200:
+ *         description: A single driving school.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DrivingSchool'
+ *       404:
+ *         description: School not found
+ *       400:
+ *         description: Invalid schoolId
+ */
 schoolRouter.get("/:schoolId", (req, res) => {
   try {
     const id = parseInt(req.params.schoolId);

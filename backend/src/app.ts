@@ -3,11 +3,34 @@ import type { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Unit, ensureSampleDataInserted } from "./unit.js";
 import { schoolRouter } from "./schools/school_router.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Driving School API",
+      version: "1.0.0",
+      description: "API for managing driving schools and enrollments",
+    },
+    servers: [
+      {
+        url: "http://localhost:3000",
+      },
+    ],
+  },
+  apis: ["./src/**/*.ts"],
+};
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 const PORT = 3000;
 const app = express();
 
 app.use(express.json());
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 try {
   const unit = new Unit(false);
@@ -17,10 +40,6 @@ try {
 } catch (err) {
   console.error("Failed to ensure sample data:", err);
 }
-
-app.get("/hello", (req: Request, res: Response) => {
-  res.send("Hello World!");
-});
 
 app.use("/api/schools", schoolRouter);
 
