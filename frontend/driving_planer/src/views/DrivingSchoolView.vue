@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-slate-50 p-8">
+  <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
     
-    <div class="max-w-6xl mx-auto w-full">
+    <div class="max-w-6xl w-full">
 
       <div class="mb-8 flex flex-col items-center text-center">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-xs text-blue-600 font-semibold mb-4">
@@ -14,7 +14,7 @@
         <p class="text-slate-500">Vergleiche Fahrschulen und finde die passende für dich.</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
             <i class="pi pi-car text-blue-500"></i>
@@ -53,24 +53,14 @@
             </span>
           </div>
 
-          <div class="flex items-center gap-3 w-full sm:w-auto">
-            <div class="relative flex-1 sm:w-64">
-              <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-sm"></i>
-              <input
-                v-model="search"
-                type="text"
-                placeholder="Suchen..."
-                class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
-              />
-            </div>
-
-            <button
-              @click="isOpen = !isOpen"
-              class="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/25 active:scale-95 whitespace-nowrap"
-            >
-              <i :class="['pi text-xs', isOpen ? 'pi-chevron-up' : 'pi-chevron-down']"></i>
-              {{ isOpen ? 'Einklappen' : 'Anzeigen' }}
-            </button>
+          <div class="relative w-full sm:w-64">
+            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-sm"></i>
+            <input
+              v-model="search"
+              type="text"
+              placeholder="Suchen..."
+              class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
+            />
           </div>
         </div>
 
@@ -81,24 +71,21 @@
           <p class="font-bold text-slate-700 mb-1">CSV konnte nicht geladen werden</p>
         </div>
 
-        <div v-else-if="!isOpen" class="p-12 text-center">
-          <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <i class="pi pi-list text-blue-400 text-2xl"></i>
-          </div>
-          <p class="font-bold text-slate-700 mb-1">Liste ausgeblendet</p>
-          <p class="text-sm text-slate-400">Klicke auf "Anzeigen" um alle Fahrschulen zu sehen.</p>
-        </div>
-
         <div v-else class="overflow-x-auto">
           <table class="w-full text-left table-fixed border-separate border-spacing-0">
             <thead>
               <tr class="bg-slate-50 border-b border-gray-100">
-                <th class="px-6 py-3 w-15 text-xs font-bold text-slate-400 uppercase tracking-widest">#</th>
-                <th class="px-6 py-3 w-1/6 text-xs font-bold text-slate-400 uppercase tracking-widest">Fahrschule</th>
-                <th class="px-6 py-3 w-1/6 text-xs font-bold text-slate-400 uppercase tracking-widest">Ort</th>
-                <th class="px-6 py-3 text-xs font-bold text-slate-400 uppercase tracking-widest">Inhaber</th>
-                <th class="px-6 py-3 w-1/5 text-xs font-bold text-slate-400 uppercase tracking-widest">Bewertung</th>
-                <th class="px-6 py-3 w-1/4 text-xs font-bold text-slate-400 uppercase tracking-widest">Website</th>
+                <th class="px-6 py-4 w-[6%] text-xs font-bold text-slate-400 uppercase tracking-widest">#</th>
+                
+                <th class="px-0 py-4 w-[13.5%] text-xs font-bold text-slate-400 uppercase tracking-widest">Fahrschule</th>
+                
+                <th class="px-0 py-4 w-[37%] text-xs font-bold text-slate-400 uppercase tracking-widest">Ort</th>
+                
+                <th class="px-6 py-4 w-[25%] text-xs font-bold text-slate-400 uppercase tracking-widest">Inhaber</th>
+                
+                <th class="px-6 py-4 w-[13%] text-xs font-bold text-slate-400 uppercase tracking-widest">Bewertung</th>
+                
+                <th class="px-6 py-4 w-[10%] text-xs font-bold text-slate-400 uppercase tracking-widest">Website</th>
               </tr>
             </thead>
             <tbody>
@@ -110,6 +97,10 @@
               />
             </tbody>
           </table>
+          
+          <div v-if="filteredSchools.length === 0" class="p-16 text-center">
+             <p class="text-slate-400">Keine Fahrschulen gefunden.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -129,7 +120,6 @@ interface Fahrschule {
 }
 
 const schools = ref<Fahrschule[]>([])
-const isOpen = ref(false)
 const loadingError = ref(false)
 const search = ref('')
 

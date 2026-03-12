@@ -4,36 +4,39 @@
       class="hover:bg-slate-50/50 transition-colors cursor-pointer group" 
       @click="isExpanded = !isExpanded"
     >
-      <td class="px-6 py-4 w-4 min-w-[50px] text-sm font-medium text-slate-400">{{ index + 1 }}</td>
+      <td class="px-6 py-4 text-sm font-medium text-slate-400">
+        {{ index + 1 }}
+      </td>
       
-      <td class="px-6 py-4">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition-colors">
+      <td class="px-0 py-4">
+        <div class="flex items-center gap-3 overflow-hidden">
+          <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition-colors">
             <i class="pi pi-car text-xs"></i>
           </div>
-          <span class="font-bold text-slate-700">{{ school.name }}</span>
+          <span class="font-bold text-slate-700 truncate">{{ school.name }}</span>
         </div>
       </td>
 
-      <td class="px-6 py-4 text-sm text-slate-500">
-        <div class="flex items-center gap-1">
-          <i class="pi pi-map-marker text-[10px] text-slate-300"></i>
-          {{ school.ort }}
+      <td class="px-0 py-4 text-sm text-slate-500">
+        <div class="flex items-center gap-1 overflow-hidden">
+          <i class="pi pi-map-marker text-[10px] text-slate-300 flex-shrink-0"></i>
+          <span class="truncate">{{ school.ort }}</span>
         </div>
       </td>
 
-      <td class="px-6 py-4 text-sm text-slate-500">{{ school.inhaber }}</td>
+      <td class="px-6 py-4 text-sm text-slate-500 truncate">
+        {{ school.inhaber }}
+      </td>
 
       <td class="px-6 py-4">
-        <div class="flex gap-1">
+        <div class="flex justify-center gap-1">
           <i 
             v-for="star in 5" 
             :key="star"
             @click.stop="rating = star"
-            class="pi cursor-pointer transition-all hover:scale-125"
+            class="pi cursor-pointer transition-all hover:scale-125 text-sm"
             :class="[
-              star <= rating ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200',
-              'text-sm'
+              star <= rating ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200'
             ]"
           ></i>
         </div>
@@ -58,21 +61,19 @@
 
     <tr v-if="isExpanded" class="bg-slate-50/50">
       <td colspan="6" class="px-6 py-0">
-        <div class="overflow-hidden transition-all duration-300">
-          <div class="py-4 px-10">
-            <div class="bg-white border border-blue-100 rounded-2xl p-4 shadow-sm">
-              <div class="flex items-center gap-2 mb-2">
-                <i class="pi pi-pencil text-blue-400 text-xs"></i>
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Deine Notizen</span>
-              </div>
-              <textarea
-                v-model="comment"
-                @click.stop
-                placeholder="Schreibe hier etwas rein..."
-                class="w-full p-3 bg-slate-50 border-none rounded-xl text-sm text-slate-700 placeholder-slate-300 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
-                rows="2"
-              ></textarea>
+        <div class="py-4 px-10">
+          <div class="bg-white border border-blue-100 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center gap-2 mb-2">
+              <i class="pi pi-pencil text-blue-400 text-xs"></i>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Deine Notizen</span>
             </div>
+            <textarea
+              v-model="comment"
+              @click.stop
+              placeholder="Schreibe hier etwas rein..."
+              class="w-full p-3 bg-slate-50 border-none rounded-xl text-sm text-slate-700 placeholder-slate-300 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
+              rows="2"
+            ></textarea>
           </div>
         </div>
       </td>
