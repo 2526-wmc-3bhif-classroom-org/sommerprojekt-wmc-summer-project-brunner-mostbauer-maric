@@ -1,0 +1,10 @@
+== Docker Setup
+
+Manage the application using the provided scripts:
+
+* `start.sh`: Starts the Docker network in daemon mode.
+** `./start.sh` (Release - Port 8080)
+** `./start.sh --dev` (Development - Port 5173, with Hot Reload)
+* `stop.sh`: Stops the Docker network.
+** `./stop.sh`
+** `./stop.sh --dev`

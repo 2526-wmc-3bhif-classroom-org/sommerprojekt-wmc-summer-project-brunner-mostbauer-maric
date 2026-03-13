@@ -1,0 +1,16 @@
+# Development Dockerfile for Frontend
+FROM node:22.14.0-slim
+
+WORKDIR /app
+
+# Install dependencies first for better caching
+COPY package*.json ./
+RUN npm install
+
+# We need the full source for initial build, but bind mounts will overwrite it
+COPY . .
+
+EXPOSE 5173
+
+# Start Vite's dev server with host flag to allow Docker access
+CMD ["npm", "run", "dev", "--", "--host"]

@@ -1,0 +1,17 @@
+# Development Dockerfile for Backend
+FROM node:22.14.0-slim
+
+WORKDIR /app
+
+# Install dependencies first for better caching
+COPY package*.json ./
+RUN npm install
+
+# In development, we use bind mounts for the rest of the code,
+# but we still need the base structure.
+COPY . .
+
+EXPOSE 3000
+
+# Start with tsx watch/auto-reload if available, or just standard start
+CMD ["npm", "start"]

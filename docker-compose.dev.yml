@@ -1,0 +1,49 @@
+services:
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      # BIND MOUNT: Maps the local backend directory to the container's /app.
+      # This allows changes made on your host machine to reflect instantly inside the container.
+      - ./backend:/app
+      
+      # ANONYMOUS VOLUME: This "hides" the host's node_modules from the container.
+      # It ensures the container uses its own Linux-compiled dependencies (crucial for native 
+      # modules like better-sqlite3) and prevents host/container OS compatibility issues.
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: always
+
+  frontend-dev:
+    build:
+      context: ./frontend/driving_planer
+      dockerfile: Dockerfile.dev
+    volumes:
+      # BIND MOUNT: Syncs your frontend source code for Hot Module Replacement (HMR).
+      - ./frontend/driving_planer:/app
+      
+      # ANONYMOUS VOLUME: Prevents the host's node_modules from being mounted into the container.
+      # This is vital for performance and to avoid binary compatibility issues between different OSs.
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      backend-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:5173/').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: always
