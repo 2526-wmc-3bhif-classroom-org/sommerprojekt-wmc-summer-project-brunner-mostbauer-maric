@@ -27,18 +27,21 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 const PORT = 3000;
 const app = express();
+export { app };
 
 app.use(express.json());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-try {
-  const unit = new Unit(false);
-  const result = ensureSampleDataInserted(unit);
-  unit.complete(true);
-  console.log(`Sample data status: ${result}`);
-} catch (err) {
-  console.error("Failed to ensure sample data:", err);
+if (process.env.NODE_ENV !== "test") {
+  try {
+    const unit = new Unit(false);
+    const result = ensureSampleDataInserted(unit);
+    unit.complete(true);
+    console.log(`Sample data status: ${result}`);
+  } catch (err) {
+    console.error("Failed to ensure sample data:", err);
+  }
 }
 
 app.use("/api/schools", schoolRouter);
@@ -47,6 +50,8 @@ app.get("/", (req: Request, res: Response) => {
   res.sendStatus(StatusCodes.OK);
 });
 
-app.listen(PORT, () => {
-  console.log("http://localhost:" + PORT);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log("http://localhost:" + PORT);
+  });
+}
