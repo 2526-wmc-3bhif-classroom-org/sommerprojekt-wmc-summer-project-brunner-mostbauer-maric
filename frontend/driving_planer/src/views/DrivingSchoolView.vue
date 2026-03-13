@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
+    <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
     
     <div class="max-w-6xl w-full">
 
@@ -14,7 +14,7 @@
         <p class="text-slate-500">Vergleiche Fahrschulen und finde die passende für dich.</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div class="py-6 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
             <i class="pi pi-car text-blue-500"></i>
@@ -68,7 +68,7 @@
           <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <i class="pi pi-exclamation-triangle text-red-400 text-2xl"></i>
           </div>
-          <p class="font-bold text-slate-700 mb-1">CSV konnte nicht geladen werden</p>
+          <p class="font-bold text-slate-700 mb-1">Daten konnten nicht geladen werden</p>
         </div>
 
         <div v-else class="overflow-x-auto">
@@ -110,6 +110,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import DrivingSchoolLine from "@/components/DrivingSchoolLine.vue";
+import Background from '@/components/Background.vue';
 
 interface Fahrschule {
   name: string
