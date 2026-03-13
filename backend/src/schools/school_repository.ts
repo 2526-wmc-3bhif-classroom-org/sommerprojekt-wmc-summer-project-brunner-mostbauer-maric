@@ -23,4 +23,11 @@ export class SchoolRepository {
       )
       .get();
   }
+
+  public getCount(unit: Unit): number {
+    const result = unit
+      .prepare<{ count: number }>("SELECT COUNT(*) AS count FROM DrivingSchool")
+      .get();
+    return result?.count ?? 0;
+  }
 }

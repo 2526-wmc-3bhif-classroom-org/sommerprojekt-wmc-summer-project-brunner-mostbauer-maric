@@ -58,6 +58,33 @@ schoolRouter.get("/", (req, res) => {
 
 /**
  * @swagger
+ * /api/schools/count:
+ *   get:
+ *     summary: Retrieve the total number of driving schools
+ *     responses:
+ *       200:
+ *         description: The total number of driving schools.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: integer
+ */
+schoolRouter.get("/count", (req, res) => {
+  try {
+    const count = schoolService.getSchoolCount();
+    res.status(StatusCodes.OK).json({ count });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: { message: (error as Error).message } });
+  }
+});
+
+/**
+ * @swagger
  * /api/schools/{schoolId}:
  *   get:
  *     summary: Retrieve a single driving school

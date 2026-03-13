@@ -30,4 +30,13 @@ export class SchoolService {
       unit.complete();
     }
   }
+
+  public getSchoolCount(): number {
+    const unit = Unit.createReadonly();
+    try {
+      return this.schoolRepo.getCount(unit);
+    } finally {
+      unit.complete();
+    }
+  }
 }
