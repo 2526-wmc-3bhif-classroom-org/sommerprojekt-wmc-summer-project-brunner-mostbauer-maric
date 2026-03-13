@@ -1,7 +1,7 @@
 <template>
 
     <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
-    
+
     <div class="max-w-6xl w-full">
 
       <div class="mb-8 flex flex-col items-center text-center">
@@ -9,7 +9,7 @@
           <i class="pi pi-map-marker text-blue-400"></i>
           Fahrschul-Verzeichnis
         </div>
-        <HeaderMain title="Fahrschulen in der Nähe" desktopHeight="md:text-5xl" mobileHeight="text-2xl" class="md:pt-6 md:pb-2 pt-8 pb-2" duration="500"/>
+        <HeaderMain title="Fahrschulen in der Nähe" desktopHeight="md:text-5xl" mobileHeight="text-2xl" class="md:pt-6 md:pb-2 pt-8 pb-2" :duration=500 />
         <p class="text-center md:text-lg text-black/50 text-xs" v-motion-fade:duration="500">
           Vergleiche Fahrschulen und finde die passende für dich.
         </p>
@@ -77,15 +77,15 @@
             <thead>
               <tr class="bg-slate-50 border-b border-gray-100">
                 <th class="px-6 py-4 w-[6%] text-xs font-bold text-slate-400 uppercase tracking-widest">#</th>
-                
+
                 <th class="px-0 py-4 w-[13.5%] text-xs font-bold text-slate-400 uppercase tracking-widest">Fahrschule</th>
-                
+
                 <th class="px-0 py-4 w-[37%] text-xs font-bold text-slate-400 uppercase tracking-widest">Ort</th>
-                
+
                 <th class="px-6 py-4 w-[25%] text-xs font-bold text-slate-400 uppercase tracking-widest">Inhaber</th>
-                
+
                 <th class="px-6 py-4 w-[13%] text-xs font-bold text-slate-400 uppercase tracking-widest">Bewertung</th>
-                
+
                 <th class="px-6 py-4 w-[10%] text-xs font-bold text-slate-400 uppercase tracking-widest">Website</th>
               </tr>
             </thead>
@@ -98,7 +98,7 @@
               />
             </tbody>
           </table>
-          
+
           <div v-if="filteredSchools.length === 0" class="p-16 text-center">
              <p class="text-slate-400">Keine Fahrschulen gefunden.</p>
           </div>
