@@ -3,6 +3,7 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import {MotionPlugin} from '@vueuse/motion'
+import {Ripple} from "primevue";
 
 import Tooltip from 'primevue/tooltip'
 import PrimeVue from 'primevue/config'
@@ -17,6 +18,7 @@ import router from './router'
 const app = createApp(App)
 
 app.directive('tooltip', Tooltip)
+app.directive('ripple', Ripple)
 app.use(MotionPlugin)
 app.use(createPinia())
 app.use(PrimeVue, {

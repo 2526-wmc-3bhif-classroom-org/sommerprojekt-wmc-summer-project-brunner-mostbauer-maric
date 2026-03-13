@@ -1,6 +1,7 @@
 <template>
-  <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
-    
+
+    <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
+
     <div class="max-w-6xl w-full">
 
       <div class="mb-8 flex flex-col items-center text-center">
@@ -8,13 +9,13 @@
           <i class="pi pi-map-marker text-blue-400"></i>
           Fahrschul-Verzeichnis
         </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2">
-          Fahrschulen <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-700">in der Nähe</span>
-        </h1>
-        <p class="text-slate-500">Vergleiche Fahrschulen und finde die passende für dich.</p>
+        <HeaderMain title="Fahrschulen in der Nähe" desktopHeight="md:text-5xl" mobileHeight="text-2xl" class="md:pt-6 md:pb-2 pt-8 pb-2" :duration=500 />
+        <p class="text-center md:text-lg text-black/50 text-xs" v-motion-fade:duration="500">
+          Vergleiche Fahrschulen und finde die passende für dich.
+        </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div class="py-6 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
             <i class="pi pi-car text-blue-500"></i>
@@ -68,7 +69,7 @@
           <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <i class="pi pi-exclamation-triangle text-red-400 text-2xl"></i>
           </div>
-          <p class="font-bold text-slate-700 mb-1">CSV konnte nicht geladen werden</p>
+          <p class="font-bold text-slate-700 mb-1">Daten konnten nicht geladen werden</p>
         </div>
 
         <div v-else class="overflow-x-auto">
@@ -76,15 +77,15 @@
             <thead>
               <tr class="bg-slate-50 border-b border-gray-100">
                 <th class="px-6 py-4 w-[6%] text-xs font-bold text-slate-400 uppercase tracking-widest">#</th>
-                
+
                 <th class="px-0 py-4 w-[13.5%] text-xs font-bold text-slate-400 uppercase tracking-widest">Fahrschule</th>
-                
+
                 <th class="px-0 py-4 w-[37%] text-xs font-bold text-slate-400 uppercase tracking-widest">Ort</th>
-                
+
                 <th class="px-6 py-4 w-[25%] text-xs font-bold text-slate-400 uppercase tracking-widest">Inhaber</th>
-                
+
                 <th class="px-6 py-4 w-[13%] text-xs font-bold text-slate-400 uppercase tracking-widest">Bewertung</th>
-                
+
                 <th class="px-6 py-4 w-[10%] text-xs font-bold text-slate-400 uppercase tracking-widest">Website</th>
               </tr>
             </thead>
@@ -97,7 +98,7 @@
               />
             </tbody>
           </table>
-          
+
           <div v-if="filteredSchools.length === 0" class="p-16 text-center">
              <p class="text-slate-400">Keine Fahrschulen gefunden.</p>
           </div>
@@ -105,11 +106,15 @@
       </div>
     </div>
   </div>
+  <FooterCmp></FooterCmp>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import DrivingSchoolLine from "@/components/DrivingSchoolLine.vue";
+import Background from '@/components/Background.vue';
+import FooterCmp from '@/components/FooterCmp.vue';
+import HeaderMain from '@/components/HeaderMain.vue';
 
 interface Fahrschule {
   name: string
