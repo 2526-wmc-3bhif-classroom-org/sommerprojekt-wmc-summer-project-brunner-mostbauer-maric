@@ -25,4 +25,11 @@ describe("School API", () => {
     expect(res.status).toBe(StatusCodes.BAD_REQUEST);
     expect(res.body).toHaveProperty("error");
   });
+
+  it("GET /api/schools/count should return the total number of schools", async () => {
+    const res = await request(app).get("/api/schools/count");
+    expect(res.status).toBe(StatusCodes.OK);
+    expect(res.body).toHaveProperty("count");
+    expect(typeof res.body.count).toBe("number");
+  });
 });
