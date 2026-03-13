@@ -1,4 +1,5 @@
 <template>
+
     <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
     
     <div class="max-w-6xl w-full">
@@ -8,10 +9,10 @@
           <i class="pi pi-map-marker text-blue-400"></i>
           Fahrschul-Verzeichnis
         </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2">
-          Fahrschulen <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-700">in der Nähe</span>
-        </h1>
-        <p class="text-slate-500">Vergleiche Fahrschulen und finde die passende für dich.</p>
+        <HeaderMain title="Fahrschulen in der Nähe" desktopHeight="md:text-5xl" mobileHeight="text-2xl" class="md:pt-6 md:pb-2 pt-8 pb-2" duration="500"/>
+        <p class="text-center md:text-lg text-black/50 text-xs" v-motion-fade:duration="500">
+          Vergleiche Fahrschulen und finde die passende für dich.
+        </p>
       </div>
 
       <div class="py-6 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
@@ -105,12 +106,15 @@
       </div>
     </div>
   </div>
+  <FooterCmp></FooterCmp>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import DrivingSchoolLine from "@/components/DrivingSchoolLine.vue";
 import Background from '@/components/Background.vue';
+import FooterCmp from '@/components/FooterCmp.vue';
+import HeaderMain from '@/components/HeaderMain.vue';
 
 interface Fahrschule {
   name: string
