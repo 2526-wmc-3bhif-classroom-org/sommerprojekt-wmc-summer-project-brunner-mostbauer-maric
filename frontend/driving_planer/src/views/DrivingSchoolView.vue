@@ -9,7 +9,7 @@
           <i class="pi pi-map-marker text-blue-400"></i>
           Fahrschul-Verzeichnis
         </div>
-        <HeaderMain title="Fahrschulen in der Nähe" desktopHeight="md:text-5xl" mobileHeight="text-2xl" class="md:pt-6 md:pb-2 pt-8 pb-2" duration="500"/>
+        <HeaderMain title="Fahrschulen in der Nähe" desktopHeight="md:text-5xl" mobileHeight="text-2xl" class="md:pt-6 md:pb-6 pt-8 pb-2" :duration="500"/>
         <p class="text-center md:text-lg text-black/50 text-xs" v-motion-fade:duration="500">
           Vergleiche Fahrschulen und finde die passende für dich.
         </p>
