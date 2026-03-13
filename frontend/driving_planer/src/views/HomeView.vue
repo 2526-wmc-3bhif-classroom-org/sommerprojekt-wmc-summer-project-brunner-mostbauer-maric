@@ -1,5 +1,11 @@
 <template>
   <Background>
+  <!--
+  <template v-if="schoolStore.isLoading" class="flex justify-center items-center p-10">
+    <i class="pi pi-spinner pi-spin text-4xl text-black" />
+  </template>
+  -->
+
   <HeaderMain title="Fahrschulplaner" desktopHeight="md:text-7xl" mobileHeight="text-3xl" class="md:py-18 pt-20 pb-10" :duration=500 />
 
   <p class="text-center md:text-xl text-black/50 text-sm"
@@ -100,10 +106,17 @@ import FooterCmp from "@/components/FooterCmp.vue";
 import Timeline from "@/components/Timeline.vue";
 import StatisticCard from "@/components/StatisticCard.vue";
 import Background from "@/components/Background.vue";
-
-import CountUp from "vue-countup-v3"
+import {useSchoolStore} from "@/stores/stores.ts";
 import {useRouter} from "vue-router";
+import {onMounted} from "vue";
 const router = useRouter();
+
+/*
+const schoolStore = useSchoolStore();
+
+onMounted(async () => {
+  await schoolStore.fetchSchools();
+})*/
 
 function scrollTo(id) {
   document.getElementById(id).scrollIntoView({ behavior: 'smooth' })
