@@ -17,7 +17,7 @@
 
     <!-- Mobile Sidebar -->
     <aside
-      :class="['md:hidden fixed top-0 left-0 h-full bg-white z-50 shadow-xl transform transition-transform duration-300',
+      :class="['md:hidden fixed top-0 left-0 h-full bg-white z-9999 shadow-xl transform transition-transform duration-300',
         sidebarOpen ? 'translate-x-0' : '-translate-x-full']"
     >
       <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
@@ -27,14 +27,17 @@
       </div>
 
       <nav class="flex flex-col gap-2 p-4">
-        <NavbarLinks
+        <div
           v-for="(link, index) in links"
           :key="index"
-          :link-to="link.to"
-          :title="link.title"
-          :icon="link.icon"
           @click="sidebarOpen = false"
-        />
+        >
+          <NavbarLinks
+            :link-to="link.to"
+            :title="link.title"
+            :icon="link.icon"
+          />
+        </div>
       </nav>
 
       <div class="absolute bottom-6 left-0 right-0 flex flex-col items-start gap-4 px-4">
