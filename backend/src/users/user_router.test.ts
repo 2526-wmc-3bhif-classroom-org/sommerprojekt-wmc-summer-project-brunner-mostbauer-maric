@@ -1,0 +1,12 @@
+import request from "supertest";
+import { app } from "../app.js";
+import { StatusCodes } from "http-status-codes";
+
+describe("User API", () => {
+  it("GET /api/users/count should return the total number of users", async () => {
+    const res = await request(app).get("/api/users/count");
+    expect(res.status).toBe(StatusCodes.OK);
+    expect(res.body).toHaveProperty("count");
+    expect(typeof res.body.count).toBe("number");
+  });
+});

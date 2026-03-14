@@ -1,4 +1,5 @@
 import { UserRepository } from "./user_repository.js";
+import { Unit } from "../unit.js";
 
 export class UserService {
   private static instance: UserService | null = null;
@@ -9,6 +10,14 @@ export class UserService {
     return this.instance;
   }
 
-  private constructor(private UserRepo: UserRepository) {}
+  private constructor(private userRepo: UserRepository) {}
 
+  public getUserCount(): number {
+    const unit = Unit.createReadonly();
+    try {
+      return this.userRepo.getCount(unit);
+    } finally {
+      unit.complete();
+    }
+  }
 }

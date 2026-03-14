@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Unit, ensureSampleDataInserted } from "./unit.js";
 import { schoolRouter } from "./schools/school_router.js";
+import { userRouter } from "./users/user_router.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import cors from "cors";
@@ -47,6 +48,7 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 app.use("/api/schools", schoolRouter);
+app.use("/api/users", userRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.sendStatus(StatusCodes.OK);
