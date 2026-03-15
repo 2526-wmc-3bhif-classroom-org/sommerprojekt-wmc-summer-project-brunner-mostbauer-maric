@@ -101,14 +101,16 @@ import Timeline from "@/components/Timeline.vue";
 import StatisticCard from "@/components/StatisticCard.vue";
 import Background from "@/components/Background.vue";
 import {useSchoolStore} from "@/stores/stores.ts";
+import {useUserStore} from "@/stores/stores.ts";
 import {useRouter} from "vue-router";
 import {computed, onMounted} from "vue";
 const router = useRouter();
 
 const schoolStore = useSchoolStore();
-
+const userStore = useUserStore();
 onMounted(async () => {
   await schoolStore.fetchSchools();
+  await userStore.fetchUsersCount();
 })
 
 function scrollTo(id) {
@@ -122,7 +124,7 @@ const statistics = computed(() => [
     borderColor: "border-blue-500",
     textColor: "text-white",
     backgroundColor: "bg-blue-500",
-    endValue: 2,
+    endValue: userStore.countOfTotalUsers,
     suffix: "+",
     duration: 400,
   },
