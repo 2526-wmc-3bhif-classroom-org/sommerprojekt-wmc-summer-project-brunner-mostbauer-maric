@@ -59,7 +59,7 @@ const aboutCards = [
     </section>
 
     <!-- Cards -->
-    <section class="py-16 px-6">
+    <section class="py-4 px-6">
       <HeaderMain title="Was uns antreibt" desktopHeight="md:text-5xl" mobileHeight="text-2xl" :duration="400" />
       <div class="flex justify-center items-center flex-wrap gap-6 py-10 grid grid-cols-1 md:grid-cols-2">
         <CardMain
@@ -79,7 +79,7 @@ const aboutCards = [
 
 
 
-    <section class="flex flex-col items-center py-24 gap-6 text-center px-6">
+    <section class="flex flex-col items-center py-8 gap-6 text-center px-6">
       <HeaderMain title="Mach mit!" desktopHeight="md:text-5xl" mobileHeight="text-2xl" :duration="400" />
       <p class="text-black/50 md:text-xl text-sm max-w-xl">
         Starte jetzt und erlebe wie einfach der Weg zum Führerschein sein kann.
@@ -91,7 +91,8 @@ const aboutCards = [
         Jetzt starten
       </Button>
     </section>
-
-    <FooterCmp />
+    <div class="mt-auto">
+      <FooterCmp />
+    </div>
   </Background>
 </template>
