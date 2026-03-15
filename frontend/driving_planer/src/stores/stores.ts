@@ -4,7 +4,7 @@ import type {DrivingSchool} from '../types.ts'
 
 export const useSchoolStore = defineStore('schools',() => {
   const schools = ref<DrivingSchool[]>([])
-  const countOfSchools = ref(0);
+  const countOfSchools = ref<number>(0);
 
 
   async function fetchSchools() {
@@ -22,12 +22,13 @@ export const useSchoolStore = defineStore('schools',() => {
 })
 
 export const useUserStore = defineStore('users',()=> {
-  const countOfTotalUsers = ref<{count: number}>()
+  const countOfTotalUsers = ref<number>(0)
 
   async function fetchUsersCount() {
-    const url: string = "http://localhost:3000/api/users"
+    const url: string = "http://localhost:3000/api/users/count"
     const response = await fetch(url);
-    countOfTotalUsers.value = await response.json();
+    const val : {count: number} = await response.json();
+    countOfTotalUsers.value = val.count;
   }
   return {countOfTotalUsers, fetchUsersCount};
 })

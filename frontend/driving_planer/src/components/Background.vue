@@ -29,6 +29,8 @@ const container = ref<HTMLElement | null>(null)
 let animationId: number
 let resizeObserver: ResizeObserver
 let spawnInterval: ReturnType<typeof setInterval>
+let cleanupScroll: (() => void) | null = null
+let cleanupResize: (() => void) | null = null
 const MAX_DISTANCE: number = 120
 const particles: Particle[] = []
 
@@ -66,6 +68,15 @@ onMounted(async () => {
     c.height = container.value?.scrollHeight ?? document.documentElement.scrollHeight
   }
 
+  const onScroll = (): void => {
+    for (let i = 0; i < 8; i++) {
+      particles.push(spawnParticleInView())
+    }
+  }
+
+  cleanupResize = () => window.removeEventListener('resize', setSize)
+  cleanupScroll = () => window.removeEventListener('scroll', onScroll)
+
   setSize()
   setTimeout(() => setSize(), 1000)
   setTimeout(() => setSize(), 2000)
@@ -78,12 +89,6 @@ onMounted(async () => {
       particles.push(spawnParticle(c.width, c.height))
     }
   }, 800)
-
-  const onScroll = (): void => {
-    for (let i = 0; i < 8; i++) {
-      particles.push(spawnParticleInView())
-    }
-  }
 
   window.addEventListener('resize', setSize)
   window.addEventListener('scroll', onScroll)
@@ -150,13 +155,13 @@ onMounted(async () => {
   }
 
   draw()
+})
 
-  onUnmounted(() => {
-    cancelAnimationFrame(animationId)
-    clearInterval(spawnInterval)
-    window.removeEventListener('resize', setSize)
-    window.removeEventListener('scroll', onScroll)
-    resizeObserver.disconnect()
-  })
+onUnmounted(() => {
+  cancelAnimationFrame(animationId)
+  clearInterval(spawnInterval)
+  cleanupResize?.()
+  cleanupScroll?.()
+  resizeObserver?.disconnect()
 })
 </script>

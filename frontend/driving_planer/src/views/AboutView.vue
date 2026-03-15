@@ -84,12 +84,12 @@ const aboutCards = [
       <p class="text-black/50 md:text-xl text-sm max-w-xl">
         Starte jetzt und erlebe wie einfach der Weg zum Führerschein sein kann.
       </p>
-      <Button
+      <button
         class="bg-black text-white text-xl p-6 rounded-3xl cursor-pointer transition-transform duration-300 hover:-rotate-2"
         @click="$router.push('/schools')"
       >
         Jetzt starten
-      </Button>
+      </button>
     </section>
     <div class="mt-auto">
       <FooterCmp />
