@@ -1,14 +1,16 @@
 <template>
+  <!-- Main layout container -->
   <div class="flex h-screen bg-transparent font-sans relative">
 
-    <!-- Mobile Top Navbar -->
+    <!-- Mobile Top Navbar (visible only on small screens) -->
     <header class="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-4 py-3 m-3">
+      <!-- Button to toggle the sidebar -->
       <button @click="sidebarOpen = !sidebarOpen" class="p-2 text-gray-600 hover:text-black transition-colors">
         <i :class="'pi pi-bars'" class="text-xl"></i>
       </button>
     </header>
 
-    <!-- Mobile Sidebar Overlay -->
+    <!-- Dark overlay behind the sidebar (closes sidebar when clicked) -->
     <div
       v-if="sidebarOpen"
       class="md:hidden fixed inset-0 z-40 bg-black/30"
@@ -20,18 +22,21 @@
       :class="['md:hidden fixed top-0 left-0 h-full bg-white z-9999 shadow-xl transform transition-transform duration-300',
         sidebarOpen ? 'translate-x-0' : '-translate-x-full']"
     >
+      <!-- Sidebar header with close button -->
       <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
         <button @click="sidebarOpen = false" class="p-2 text-gray-400 hover:text-black">
           <i class="pi pi-times text-xl"></i>
         </button>
       </div>
 
+      <!-- Navigation links -->
       <nav class="flex flex-col gap-2 p-4">
         <div
           v-for="(link, index) in links"
           :key="index"
           @click="sidebarOpen = false"
         >
+          <!-- Custom component for navbar links -->
           <NavbarLinks
             :link-to="link.to"
             :title="link.title"
@@ -40,12 +45,16 @@
         </div>
       </nav>
 
+      <!-- Bottom section with settings and profile -->
       <div class="absolute bottom-6 left-0 right-0 flex flex-col items-start gap-4 px-4">
+        <!-- Settings button -->
         <button class="p-3 text-gray-400 hover:text-black transition-colors"
                 v-tooltip="'Einstellungen'"
         >
           <i class="pi pi-cog text-lg"></i>
         </button>
+
+        <!-- Profile image which opens the profile menu -->
         <div
           v-tooltip="'Profil'"
           @click="toggleMenu"
@@ -53,12 +62,15 @@
         >
           <img src="https://placehold.co/600x400" alt="Profile" class="w-full h-full object-cover" />
         </div>
+
+        <!-- PrimeVue popup menu -->
         <Menu ref="menu" id="overlay_menu_mobile" :model="menuItems" :popup="true" />
       </div>
     </aside>
 
-    <!-- Desktop Sidebar -->
+    <!-- Desktop Sidebar (visible only on medium screens and larger) -->
     <aside class="hidden md:flex w-20 flex-col items-center py-6 bg-white border-r border-gray-200 shadow-sm">
+      <!-- Navigation links -->
       <nav class="flex flex-col gap-4 flex-1 w-full items-center">
         <NavbarLinks
           v-for="(link, index) in links"
@@ -69,12 +81,16 @@
         />
       </nav>
 
+      <!-- Bottom section with settings and profile -->
       <div class="flex flex-col gap-6 mt-auto items-center">
+        <!-- Settings button -->
         <button class="p-3 text-gray-400 hover:text-black transition-colors"
                 v-tooltip="'Einstellungen'"
         >
           <i class="pi pi-cog text-lg"></i>
         </button>
+
+        <!-- Profile avatar -->
         <div
           v-tooltip="'Profil'"
           @click="toggleMenu"
@@ -82,11 +98,13 @@
         >
           <img src="https://placehold.co/600x400" alt="Profile" class="w-full h-full object-cover" />
         </div>
+
+        <!-- PrimeVue popup menu -->
         <Menu ref="menu" id="overlay_menu" :model="menuItems" :popup="true" />
       </div>
     </aside>
 
-    <!-- Main Content -->
+    <!-- Main Content Area -->
     <main class="flex-1 overflow-y-auto md:mt-0 mt-14">
       <div class="max-w-full mx-auto">
         <slot/>
@@ -101,16 +119,23 @@ import { ref, computed } from 'vue'
 import NavbarLinks from './NavbarLinks.vue'
 import Menu from 'primevue/menu'
 
+// Reference to the PrimeVue menu component
 const menu = ref(null)
+
+// Tracks if the user is logged in
 const isLoggedIn = ref(false)
+
+// Controls mobile sidebar visibility
 const sidebarOpen = ref(false)
 
+// Navigation links used in the sidebar
 const links = [
   { to: '/', title: 'Zuhause', icon: 'pi-home' },
   { to: '/about', title: 'Über uns', icon: 'pi-info-circle' },
   { to: '/schools', title: 'Fahrschulen', icon: 'pi-book' },
 ]
 
+// Dynamic menu items depending on login state
 const menuItems = computed(() => {
   if (isLoggedIn.value) {
     return [
@@ -124,14 +149,17 @@ const menuItems = computed(() => {
   }
 })
 
+// Opens or closes the profile popup menu
 const toggleMenu = (event) => {
   menu.value.toggle(event)
 }
 
+// Simulated login function
 const login = () => {
   isLoggedIn.value = true
 }
 
+// Simulated logout function
 const logout = () => {
   isLoggedIn.value = false
 }
