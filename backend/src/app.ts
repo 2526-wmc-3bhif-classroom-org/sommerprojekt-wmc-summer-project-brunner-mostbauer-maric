@@ -46,6 +46,14 @@ if (process.env.NODE_ENV !== "test") {
   } catch (err) {
     console.error("Failed to ensure sample data:", err);
   }
+} else {
+  try {
+    const unit = new Unit(false);
+    ensureSampleDataInserted(unit);
+    unit.complete(true);
+  } catch (err: any) {
+    console.error("Test mode initialization error:", err.message);
+  }
 }
 
 app.use("/api/schools", schoolRouter);

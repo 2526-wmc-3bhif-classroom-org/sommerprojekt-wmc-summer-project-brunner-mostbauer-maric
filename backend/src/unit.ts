@@ -13,7 +13,11 @@ export class Unit {
     this.completed = false;
     this.db = DB.createDBConnection();
     if (!this.readOnly) {
-      DB.beginTransaction(this.db);
+      try {
+        DB.beginTransaction(this.db);
+      } catch (e) {
+        // transaction already active or other error
+      }
     }
   }
 
@@ -62,11 +66,15 @@ export class Unit {
 
 export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
   function alreadyPresent(): boolean {
-    const checkStmt = unit.prepare<{ cnt: number }>(
-      'select count(*) as "cnt" from DrivingSchool',
-    );
-    const result = checkStmt.get()?.cnt ?? 0;
-    return result > 0;
+    try {
+      const checkStmt = unit.prepare<{ cnt: number }>(
+        "select count(*) as 'cnt' from User where Email = 'admin@admin.com'",
+      );
+      const result = checkStmt.get()?.cnt ?? 0;
+      return result > 0;
+    } catch (e: any) {
+      return false;
+    }
   }
 
   function insert(): void {
