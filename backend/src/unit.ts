@@ -1,6 +1,7 @@
 import BetterSqlite3 from "better-sqlite3";
 import type { Database, Statement } from "better-sqlite3";
 import { buildTables } from "./db-structure.js";
+import bcrypt from "bcrypt";
 
 const dbFileName = "driving.db";
 
@@ -69,6 +70,26 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
   }
 
   function insert(): void {
+    const adminPasswordHash = bcrypt.hashSync("admin", 10);
+    const adminUser = {
+      UserName: "admin",
+      Email: "admin@admin.com",
+      PasswordHash: adminPasswordHash,
+      Role: "admin",
+    };
+
+    const userInsertStmt = unit.prepare(
+      `INSERT OR IGNORE INTO User (UserName, Email, PasswordHash, Role)
+       VALUES (?, ?, ?, ?)`
+    );
+
+    userInsertStmt.run(
+      adminUser.UserName,
+      adminUser.Email,
+      adminUser.PasswordHash,
+      adminUser.Role
+    );
+
     const records = [
       { Name: "Fahrschule SAFARI", Ort: "Ringstraße 48, 5280 Braunau am Inn", Inhaber: "DI (FH) Manuel Schwaiger", Email: "office@fs-safari.eu", Link: "http://www.fs-safari.at/" },
       { Name: "Fahrschule Euroline", Ort: "Ehrenreiterweg 4, 4150 Rohrbach-Berg", Inhaber: "DI Thomas Leitner, MLBT", Email: "office@fahrschule-euroline.at", Link: "https://www.fahrschule-euroline.at" },
