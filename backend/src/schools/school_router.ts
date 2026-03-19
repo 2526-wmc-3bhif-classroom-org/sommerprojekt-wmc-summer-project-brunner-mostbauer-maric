@@ -1,6 +1,7 @@
 import express from "express";
 import { StatusCodes } from "http-status-codes";
 import { SchoolService } from "./school_service.js";
+import { isAuthenticated, isAdmin } from "../middleware/auth_handlers.js";
 
 export const schoolRouter = express.Router();
 const schoolService: SchoolService = SchoolService.Instance;
@@ -8,6 +9,11 @@ const schoolService: SchoolService = SchoolService.Instance;
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  *   schemas:
  *     DrivingSchool:
  *       type: object
@@ -45,7 +51,7 @@ const schoolService: SchoolService = SchoolService.Instance;
  *               items:
  *                 $ref: '#/components/schemas/DrivingSchool'
  */
-schoolRouter.get("/", (req, res) => {
+schoolRouter.get("/", isAuthenticated, (req, res) => {
   try {
     const schools = schoolService.getAllSchools();
     res.status(StatusCodes.OK).json(schools);
