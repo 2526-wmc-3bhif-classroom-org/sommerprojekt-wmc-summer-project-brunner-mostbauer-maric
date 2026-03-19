@@ -1,10 +1,10 @@
-import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import type { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 export const SECRET_KEY = process.env.JWT_SECRET || 'your-very-secret-key';
 
-export interface AuthPayload extends JwtPayload {
+export interface AuthPayload extends jwt.JwtPayload {
     user: {
         UserId: number;
         Email: string;

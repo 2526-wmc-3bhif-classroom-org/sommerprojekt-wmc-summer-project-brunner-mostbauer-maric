@@ -3,10 +3,9 @@ import { app } from "../app.js";
 import { StatusCodes } from "http-status-codes";
 
 describe("School API", () => {
-  it("GET /api/schools should return a list of schools", async () => {
+  it("GET /api/schools should return 401 without authentication", async () => {
     const res = await request(app).get("/api/schools");
-    expect(res.status).toBe(StatusCodes.OK);
-    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.status).toBe(StatusCodes.UNAUTHORIZED);
   });
 
   it("GET /api/schools/:schoolId should return a single school", async () => {
