@@ -1,0 +1,53 @@
+
+//@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGZydWl0cy5hdCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY2ODc4ODMwNCwiZXhwIjoxNjY4Nzg4MzY0fQ.GjkkZsxBWdot4JDBCA4NfQsv68DVZdOU0IPnl61MmJE
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoiam9obkBkb2UuYXQiLCJyb2xlIjoidXNlciJ9LCJpYXQiOjE3NzM3MTg5OTMsImV4cCI6MTc3MzcyMDc5M30.fyOAyUYNMYZ3CIVObJM6ubWQI1rghm6aJnRzyi_4VNc
+
+
+@apiUrl = http://localhost:8080/api
+### get all users
+GET {{apiUrl}}/auth/users HTTP/1.1
+Authorization: Bearer {{token}}
+
+### login as admin
+POST {{apiUrl}}/auth/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "admin@fruits.at",
+    "password": "pw4admin"
+}
+
+### login as user
+POST {{apiUrl}}/auth/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "john@doe.at",
+    "password": "pw4user"
+}
+
+### get all fruits (user)
+GET {{apiUrl}}/fruits HTTP/1.1
+Authorization: Bearer {{token}}
+
+### get a specific fruit (user)
+GET {{apiUrl}}/fruits/1
+Authorization: Bearer {{token}}
+
+### post a new fruit (admin)
+POST {{apiUrl}}/fruits HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGZydWl0cy5hdCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY2ODc3NDI5MSwiZXhwIjoxNjY4Nzc3ODkxfQ.acrkUlLu_9bhgv6uHAN6WtvsgvXflv03mPN5D8fhu5s
+
+{
+    "fruit": "strawberry"
+}
+
+### delete a specific fruit (admin)
+DELETE {{apiUrl}}/fruits/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGZydWl0cy5hdCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY2ODc3NDI5MSwiZXhwIjoxNjY4Nzc3ODkxfQ.acrkUlLu_9bhgv6uHAN6WtvsgvXflv03mPN5D8fhu5s
+
+
+### delete all fruits (admin)
+DELETE {{apiUrl}}/fruits/ HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGZydWl0cy5hdCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY2ODc3NDI5MSwiZXhwIjoxNjY4Nzc3ODkxfQ.acrkUlLu_9bhgv6uHAN6WtvsgvXflv03mPN5D8fhu5s

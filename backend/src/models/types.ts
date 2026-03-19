@@ -4,6 +4,8 @@ export interface User {
   UserId: number;
   UserName: string;
   Email: string;
+  PasswordHash: string;
+  Role: string;
 }
 
 export interface DrivingSchool {

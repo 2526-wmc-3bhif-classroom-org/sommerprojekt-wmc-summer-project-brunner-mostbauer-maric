@@ -9,7 +9,9 @@ export const buildTables = (connection: Database) => {
         `CREATE TABLE IF NOT EXISTS User (
         UserId INTEGER PRIMARY KEY AUTOINCREMENT,
         UserName TEXT NOT NULL,
-        Email TEXT NOT NULL UNIQUE
+        Email TEXT NOT NULL UNIQUE,
+        PasswordHash TEXT NOT NULL,
+        Role TEXT NOT NULL DEFAULT 'user'
       );`,
       );
 

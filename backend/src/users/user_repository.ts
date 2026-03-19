@@ -1,4 +1,5 @@
 import { Unit } from "../unit.js";
+import { User } from "../models/types.js";
 
 export class UserRepository {
   private static instance: UserRepository | null = null;
@@ -15,5 +16,18 @@ export class UserRepository {
       .prepare<{ count: number }>("SELECT COUNT(*) AS count FROM User")
       .get();
     return result?.count ?? 0;
+  }
+
+  public getByEmail(unit: Unit, email: string): User | undefined {
+    return unit
+      .prepare<User>("SELECT * FROM User WHERE Email = ?")
+      .get(email);
+  }
+
+  public create(unit: Unit, userName: string, email: string, passwordHash: string, role: string): number {
+    const result = unit
+      .prepare("INSERT INTO User (UserName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?)")
+      .run(userName, email, passwordHash, role);
+    return result.lastInsertRowid as number;
   }
 }
