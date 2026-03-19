@@ -41,6 +41,8 @@ const schoolService: SchoolService = SchoolService.Instance;
  * /api/schools:
  *   get:
  *     summary: Retrieve a list of driving schools
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of driving schools.
