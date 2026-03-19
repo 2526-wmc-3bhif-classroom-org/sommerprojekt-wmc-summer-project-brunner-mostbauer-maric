@@ -116,14 +116,16 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/stores.js'
 import NavbarLinks from './NavbarLinks.vue'
 import Menu from 'primevue/menu'
 
+const router = useRouter()
+const authStore = useAuthStore()
+
 // Reference to the PrimeVue menu component
 const menu = ref(null)
-
-// Tracks if the user is logged in
-const isLoggedIn = ref(false)
 
 // Controls mobile sidebar visibility
 const sidebarOpen = ref(false)
@@ -137,14 +139,15 @@ const links = [
 
 // Dynamic menu items depending on login state
 const menuItems = computed(() => {
-  if (isLoggedIn.value) {
+  if (authStore.isAuthenticated) {
     return [
-      { label: 'Profil', icon: 'pi pi-user' },
-      { label: 'Logout', icon: 'pi pi-sign-out', command: () => { logout() } }
+      { label: `Profil (${authStore.user?.UserName})`, icon: 'pi pi-user' },
+      { label: 'Logout', icon: 'pi pi-sign-out', command: () => { handleLogout() } }
     ]
   } else {
     return [
-      { label: 'Login', icon: 'pi pi-sign-in', command: () => { login() } }
+      { label: 'Login', icon: 'pi pi-sign-in', command: () => { router.push('/login') } },
+      { label: 'Register', icon: 'pi pi-user-plus', command: () => { router.push('/register') } }
     ]
   }
 })
@@ -154,13 +157,8 @@ const toggleMenu = (event) => {
   menu.value.toggle(event)
 }
 
-// Simulated login function
-const login = () => {
-  isLoggedIn.value = true
-}
-
-// Simulated logout function
-const logout = () => {
-  isLoggedIn.value = false
+const handleLogout = () => {
+  authStore.logout()
+  router.push('/login')
 }
 </script>

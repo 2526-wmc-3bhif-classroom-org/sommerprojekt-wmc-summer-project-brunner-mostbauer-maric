@@ -4,6 +4,12 @@ export interface User {
   UserId: number;
   UserName: string;
   Email: string;
+  Role: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: User;
 }
 
 export interface DrivingSchool {
