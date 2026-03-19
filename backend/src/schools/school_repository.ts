@@ -1,5 +1,5 @@
 import { Unit } from "../unit.js";
-import { DrivingSchool } from "../models/types.js";
+import type { DrivingSchool } from "../models/types.js";
 
 export class SchoolRepository {
   private static instance: SchoolRepository | null = null;

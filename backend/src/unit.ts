@@ -222,9 +222,9 @@ export interface ITypedStatement<TResult = unknown, TParams = unknown> {
   // phantom type, just carries the params type for tooling
   readonly _params?: TParams;
 
-  get(): TResult | undefined;
+  get(...params: unknown[]): TResult | undefined;
 
-  all(): TResult[];
+  all(...params: unknown[]): TResult[];
 
-  run(): RunResult;
+  run(...params: unknown[]): RunResult;
 }

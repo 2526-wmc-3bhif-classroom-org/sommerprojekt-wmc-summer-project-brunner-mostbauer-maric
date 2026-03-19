@@ -1,5 +1,5 @@
 import { Unit } from "../unit.js";
-import { User } from "../models/types.js";
+import type { User } from "../models/types.js";
 
 export class UserRepository {
   private static instance: UserRepository | null = null;
