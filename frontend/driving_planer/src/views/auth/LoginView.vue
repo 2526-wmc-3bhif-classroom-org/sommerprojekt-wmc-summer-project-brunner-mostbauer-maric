@@ -7,6 +7,7 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
+import Background from "@/components/Background.vue";
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -23,7 +24,7 @@ async function handleLogin() {
     await authStore.login({ email: email.value, password: password.value })
     router.push('/')
   } catch (e: any) {
-    error.value = e.message || 'Login failed'
+    error.value = 'Login hat nicht funktioniert. Bitte überprüfe deine Anmeldedaten.'
   } finally {
     loading.value = false
   }
@@ -31,29 +32,55 @@ async function handleLogin() {
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-screen">
-    <Card class="w-full max-w-md p-4">
-      <template #title>
-        <h2 class="text-center">Login</h2>
-      </template>
-      <template #content>
-        <form @submit.prevent="handleLogin" class="flex flex-col gap-4">
-          <div class="flex flex-col gap-2">
-            <label for="email">Email</label>
-            <InputText id="email" v-model="email" type="email" required />
+  <Background>
+    <div class="min-h-screen flex items-center justify-center p-4">
+
+      <div
+        class="h-auto w-full max-w-md border border-white/20 p-8 bg-black shadow-2xl  rounded-2xl"
+        v-motion-pop-visible
+      >
+        <div>
+          <div class="flex items-center justify-center p-5">
+            <h1 class="text-4xl font-bold mb-8 text-center text-white">Login</h1>
           </div>
-          <div class="flex flex-col gap-2">
-            <label for="password">Password</label>
-            <Password id="password" v-model="password" :feedback="false" toggle-mask required />
+
+          <form @submit.prevent="handleLogin" class="flex flex-col gap-4">
+            <div class="w-full">
+              <input
+                v-model="email"
+                type="email"
+                placeholder="Email"
+                oninput="this.setCustomValidity('')"
+                oninvalid="this.setCustomValidity('Bitte gib eine gültige E-Mail-Adresse ein.')"
+                class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all duration-300 focus:scale-105"
+              />
+            </div>
+            <div class="w-full">
+              <input
+                v-model="password"
+                type="password"
+                placeholder="Password"
+                class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all focus:scale-105 duration-300"
+              />
+            </div>
+
+            <p v-if="error" class="text-red-500 text-sm mt-2">{{ error }}</p>
+
+            <button
+              type="submit"
+              :disabled="loading"
+              class="w-full bg-white text-xl text-black font-black py-4 mt-4 hover:bg-gray-200 transition-colors disabled:opacity-50"
+            >
+              Anmelden
+            </button>
+          </form>
+          <div class="w-full justify-start pt-4">
+            <p>
+              Sie haben noch kein Konto? <span><router-link to="register" class="hover:text-white hover:underline transition-all duration-300">Registrieren Sie sich jetzt.</router-link></span>
+            </p>
           </div>
-          <Message v-if="error" severity="error">{{ error }}</Message>
-          <Button type="submit" label="Login" :loading="loading" icon="pi pi-sign-in" />
-          <div class="text-center mt-2">
-            <span>Don't have an account? </span>
-            <router-link to="/register" class="text-primary hover:underline font-bold">Register</router-link>
-          </div>
-        </form>
-      </template>
-    </Card>
-  </div>
+        </div>
+      </div>
+    </div>
+  </Background>
 </template>
