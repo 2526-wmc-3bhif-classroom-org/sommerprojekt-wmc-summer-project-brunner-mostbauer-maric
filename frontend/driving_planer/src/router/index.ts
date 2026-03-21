@@ -21,7 +21,7 @@ const router = createRouter({
       path: '/schools',
       name: 'schools',
       component: () => import('../views/DrivingSchoolView.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: false } // only develop after release this needs to be true
     },
     {
       path: '/login',
