@@ -8,21 +8,15 @@ describe("School API", () => {
     expect(res.status).toBe(StatusCodes.UNAUTHORIZED);
   });
 
-  it("GET /api/schools/:schoolId should return a single school", async () => {
+  it("GET /api/schools/:schoolId should return 401 without authentication", async () => {
     // We assume ID 1 exists because sample data is inserted on startup
     const res = await request(app).get("/api/schools/1");
-    if (res.status === StatusCodes.OK) {
-      expect(res.body).toHaveProperty("DrivingSchoolId", 1);
-      expect(res.body).toHaveProperty("Name");
-    } else {
-      expect(res.status).toBe(StatusCodes.NOT_FOUND);
-    }
+    expect(res.status).toBe(StatusCodes.UNAUTHORIZED);
   });
 
-  it("GET /api/schools/:schoolId should return 400 for invalid ID", async () => {
+  it("GET /api/schools/:schoolId should return 401 for invalid ID without authentication", async () => {
     const res = await request(app).get("/api/schools/invalid");
-    expect(res.status).toBe(StatusCodes.BAD_REQUEST);
-    expect(res.body).toHaveProperty("error");
+    expect(res.status).toBe(StatusCodes.UNAUTHORIZED);
   });
 
   it("GET /api/schools/count should return the total number of schools", async () => {
