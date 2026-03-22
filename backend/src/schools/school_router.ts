@@ -69,6 +69,7 @@ schoolRouter.get("/", isAuthenticated, (req, res) => {
  * /api/schools/count:
  *   get:
  *     summary: Retrieve the total number of driving schools
+ *     security: []
  *     responses:
  *       200:
  *         description: The total number of driving schools.
@@ -96,6 +97,8 @@ schoolRouter.get("/count", (req, res) => {
  * /api/schools/{schoolId}:
  *   get:
  *     summary: Retrieve a single driving school
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: schoolId
@@ -115,7 +118,7 @@ schoolRouter.get("/count", (req, res) => {
  *       400:
  *         description: Invalid schoolId
  */
-schoolRouter.get("/:schoolId", (req, res) => {
+schoolRouter.get("/:schoolId", isAuthenticated, (req, res) => {
   try {
     const id = parseInt(req.params.schoolId);
     if (isNaN(id)) {
