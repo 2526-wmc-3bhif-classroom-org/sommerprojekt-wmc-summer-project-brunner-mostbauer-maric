@@ -1,31 +1,24 @@
 <template>
 
-  <!-- Main page container -->
   <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
 
     <div class="max-w-6xl w-full">
 
-      <!-- Page header section -->
-      <div class="mb-8 flex flex-col items-center text-center">
-        <!-- Small badge above the title -->
+      <div class="mb-8 flex flex-col items-center text-center relative z-0">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-xs text-blue-600 font-semibold mb-4">
           <i class="pi pi-map-marker text-blue-400"></i>
           Fahrschul-Verzeichnis
         </div>
 
-        <!-- Main page title component -->
         <HeaderMain title="Fahrschulen in der Nähe" desktopHeight="md:text-5xl" mobileHeight="text-2xl" class="md:pt-6 md:pb-2 pt-8 pb-2" :duration=500 />
 
-        <!-- Page subtitle -->
         <p class="text-center md:text-lg text-black/50 text-xs" v-motion-fade:duration="500">
           Vergleiche Fahrschulen und finde die passende für dich.
         </p>
       </div>
 
-      <!-- Statistics cards -->
       <div class="py-6 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
 
-        <!-- Total number of driving schools -->
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
             <i class="pi pi-car text-blue-500"></i>
@@ -36,7 +29,6 @@
           </div>
         </div>
 
-        <!-- Number of schools with a website -->
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
             <i class="pi pi-check-circle text-emerald-500"></i>
@@ -47,7 +39,6 @@
           </div>
         </div>
 
-        <!-- Number of unique locations -->
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center">
             <i class="pi pi-map text-violet-500"></i>
@@ -59,37 +50,17 @@
         </div>
       </div>
 
-      <!--
-      Optional cards section (currently disabled)
-      <div class="flex justify-center py-16 gap-4 px-6 md:flex-row flex-col">
-      <CardMain
-        v-for="card in pros"
-        :key="card.title"
-        :title="card.title"
-        :description="card.description"
-        :icon="card.icon"
-        :duration="card.duration"
-        :iconColor="card.iconColor"
-        :borderColor="card.borderColor"
-        />
-      </div>
-      -->
-
-      <!-- Table container -->
       <div class="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
 
-        <!-- Table header with title and search field -->
         <div class="px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100">
           <div class="flex items-center gap-3">
             <h2 class="text-lg font-bold text-slate-900">Übersicht</h2>
 
-            <!-- Badge showing number of filtered entries -->
             <span class="px-2.5 py-0.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-full">
               {{ filteredSchools.length }} Einträge
             </span>
           </div>
 
-          <!-- Search input -->
           <div class="relative w-full sm:w-64">
             <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-sm"></i>
             <input
@@ -101,7 +72,6 @@
           </div>
         </div>
 
-        <!-- Error message if data loading fails -->
         <div v-if="loadingError" class="p-16 text-center">
           <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <i class="pi pi-exclamation-triangle text-red-400 text-2xl"></i>
@@ -109,11 +79,10 @@
           <p class="font-bold text-slate-700 mb-1">Daten konnten nicht geladen werden</p>
         </div>
 
-        <!-- Table section -->
         <div v-else class="overflow-x-auto">
-          <table class="w-full text-left table-fixed border-separate border-spacing-0">
+          
+          <table class="hidden md:table w-full text-left table-fixed border-separate border-spacing-0">
 
-            <!-- Table header -->
             <thead>
               <tr class="bg-slate-50 border-b border-gray-100">
                 <th class="px-6 py-4 w-[6%] text-xs font-bold text-slate-400 uppercase tracking-widest">#</th>
@@ -125,9 +94,7 @@
               </tr>
             </thead>
 
-            <!-- Table body -->
             <tbody>
-              <!-- Each row is rendered using a component -->
               <DrivingSchoolLine
                 v-for="(school, i) in filteredSchools"
                 :key="i"
@@ -137,16 +104,64 @@
             </tbody>
           </table>
 
-          <!-- Message when no schools match the search -->
+          <div class="md:hidden divide-y divide-gray-100">
+            <div 
+              v-for="(school, i) in filteredSchools" 
+              :key="'mob-' + i"
+              class="p-4 active:bg-slate-50 transition-colors"
+              @click="school.isExpanded = !school.isExpanded"
+            >
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-bold text-blue-500 uppercase tracking-tight">#{{ i + 1 }}</span>
+                <a v-if="school.link" :href="school.link" target="_blank" @click.stop class="text-blue-500 text-sm p-1">
+                  <i class="pi pi-external-link"></i>
+                </a>
+              </div>
+              <h3 class="font-bold text-slate-900">{{ school.name }}</h3>
+              <p class="text-sm text-slate-500 flex items-center gap-1 mt-1">
+                <i class="pi pi-map-marker text-[10px]"></i> {{ school.ort }}
+              </p>
+              
+              <div class="flex items-center justify-between mt-4">
+                <span class="text-xs text-slate-400 italic">{{ school.inhaber }}</span>
+                <div class="flex gap-1">
+                  <i 
+                    v-for="star in 5" 
+                    :key="star" 
+                    @click.stop="school.rating = star"
+                    class="pi text-sm"
+                    :class="[
+                      star <= (school.rating || 0) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200'
+                    ]"
+                  ></i>
+                </div>
+              </div>
+
+              <div v-if="school.isExpanded" class="mt-4 pt-4 border-t border-slate-50">
+                <div class="bg-slate-50 rounded-xl p-3 border border-blue-50" @click.stop>
+                  <div class="flex items-center gap-2 mb-2">
+                    <i class="pi pi-pencil text-blue-400 text-[10px]"></i>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Notizen</span>
+                  </div>
+                  <textarea
+                    v-model="school.comment"
+                    placeholder="Deine Notiz..."
+                    class="w-full p-2 bg-white border border-slate-100 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-100 resize-none"
+                    rows="2"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div v-if="filteredSchools.length === 0" class="p-16 text-center">
-             <p class="text-slate-400">Keine Fahrschulen gefunden.</p>
+              <p class="text-slate-400">Keine Fahrschulen gefunden.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Footer component -->
   <FooterCmp></FooterCmp>
 </template>
 
@@ -166,6 +181,9 @@ interface Fahrschule {
   inhaber: string
   email: string
   link: string
+  rating?: number
+  comment?: string
+  isExpanded?: boolean
 }
 
 // Reactive array containing all driving schools
@@ -219,7 +237,10 @@ async function loadCSV() {
         ort: col[1]?.replace(/"/g, '') || '',
         inhaber: col[2]?.replace(/"/g, '') || '',
         email: col[3]?.replace(/"/g, '') || '',
-        link: col[4]?.replace(/"/g, '') || ''
+        link: col[4]?.replace(/"/g, '') || '',
+        rating: 0,
+        comment: '',
+        isExpanded: false
       }
 
     }).filter(s => s.name)
@@ -235,36 +256,5 @@ async function loadCSV() {
 
 // Load data when the component is mounted
 onMounted(() => loadCSV())
-
-
-
-/* Optional feature cards (currently disabled)
-const pros = [
-  {
-    title: `Fahrschulen: ${schools.value.length}`,
-    description: "",
-    icon: "pi pi-car",
-    duration: 500,
-    iconColor: "text-blue-500",
-    borderColor: "border-blue-500",
-  },
-  {
-    title: "Effizient",
-    description: "Optimieren Sie Ihren Lernprozess mit unserem intelligenten Planungsalgorithmus.",
-    icon: "pi pi-cog",
-    duration: 700,
-    iconColor: "text-violet-500",
-    borderColor: "border-violet-500",
-  },
-  {
-    title: "Motivierend",
-    description: "Verfolgen Sie Ihren Fortschritt und bleiben Sie motiviert auf dem Weg zum Führerschein.",
-    icon: "pi pi-chart-line",
-    duration: 900,
-    iconColor: "text-emerald-500",
-    borderColor: "border-emerald-500",
-  }
-]
-*/
 
 </script>
