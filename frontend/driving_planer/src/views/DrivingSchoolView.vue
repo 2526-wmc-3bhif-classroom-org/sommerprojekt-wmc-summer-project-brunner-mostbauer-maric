@@ -1,24 +1,29 @@
 <template>
-
+  <!-- Main page wrapper -->
   <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
-
     <div class="max-w-6xl w-full">
 
+      <!-- Header section -->
       <div class="mb-8 flex flex-col items-center text-center relative z-0">
+        <!-- Badge -->
         <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-xs text-blue-600 font-semibold mb-4">
           <i class="pi pi-map-marker text-blue-400"></i>
           Fahrschul-Verzeichnis
         </div>
 
+        <!-- Title component -->
         <HeaderMain title="Fahrschulen in der Nähe" desktopHeight="md:text-5xl" mobileHeight="text-2xl" class="md:pt-6 md:pb-2 pt-8 pb-2" :duration=500 />
 
+        <!-- Subtitle -->
         <p class="text-center md:text-lg text-black/50 text-xs" v-motion-fade:duration="500">
           Vergleiche Fahrschulen und finde die passende für dich.
         </p>
       </div>
 
+      <!-- Stats cards -->
       <div class="py-6 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
 
+        <!-- Total schools -->
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
             <i class="pi pi-car text-blue-500"></i>
@@ -29,6 +34,7 @@
           </div>
         </div>
 
+        <!-- Schools with website -->
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
             <i class="pi pi-check-circle text-emerald-500"></i>
@@ -39,6 +45,7 @@
           </div>
         </div>
 
+        <!-- Unique locations -->
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center">
             <i class="pi pi-map text-violet-500"></i>
@@ -50,17 +57,21 @@
         </div>
       </div>
 
+      <!-- Table / List container -->
       <div class="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
 
+        <!-- Top bar: title + search -->
         <div class="px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100">
           <div class="flex items-center gap-3">
             <h2 class="text-lg font-bold text-slate-900">Übersicht</h2>
 
+            <!-- Result count -->
             <span class="px-2.5 py-0.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-full">
               {{ filteredSchools.length }} Einträge
             </span>
           </div>
 
+          <!-- Search input -->
           <div class="relative w-full sm:w-64">
             <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-sm"></i>
             <input
@@ -72,6 +83,7 @@
           </div>
         </div>
 
+        <!-- Error state -->
         <div v-if="loadingError" class="p-16 text-center">
           <div class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <i class="pi pi-exclamation-triangle text-red-400 text-2xl"></i>
@@ -80,9 +92,9 @@
         </div>
 
         <div v-else class="overflow-x-auto">
-          
-          <table class="hidden md:table w-full text-left table-fixed border-separate border-spacing-0">
 
+          <!-- Desktop table -->
+          <table class="hidden md:table w-full text-left table-fixed border-separate border-spacing-0">
             <thead>
               <tr class="bg-slate-50 border-b border-gray-100">
                 <th class="px-6 py-4 w-[6%] text-xs font-bold text-slate-400 uppercase tracking-widest">#</th>
@@ -94,6 +106,7 @@
               </tr>
             </thead>
 
+            <!-- Rows rendered via component -->
             <tbody>
               <DrivingSchoolLine
                 v-for="(school, i) in filteredSchools"
@@ -104,30 +117,39 @@
             </tbody>
           </table>
 
+          <!-- Mobile list view -->
           <div class="md:hidden divide-y divide-gray-100">
-            <div 
-              v-for="(school, i) in filteredSchools" 
+            <div
+              v-for="(school, i) in filteredSchools"
               :key="'mob-' + i"
               class="p-4 active:bg-slate-50 transition-colors"
-              @click="school.isExpanded = !school.isExpanded"
-            >
+              @click="school.isExpanded = !school.isExpanded" >
+
+              <!-- Header row -->
               <div class="flex items-center justify-between mb-2">
                 <span class="text-[10px] font-bold text-blue-500 uppercase tracking-tight">#{{ i + 1 }}</span>
+
+                <!-- External link (if available) -->
                 <a v-if="school.link" :href="school.link" target="_blank" @click.stop class="text-blue-500 text-sm p-1">
                   <i class="pi pi-external-link"></i>
                 </a>
               </div>
+
+              <!-- Basic info -->
               <h3 class="font-bold text-slate-900">{{ school.name }}</h3>
               <p class="text-sm text-slate-500 flex items-center gap-1 mt-1">
                 <i class="pi pi-map-marker text-[10px]"></i> {{ school.ort }}
               </p>
-              
+
+              <!-- Owner + rating -->
               <div class="flex items-center justify-between mt-4">
                 <span class="text-xs text-slate-400 italic">{{ school.inhaber }}</span>
+
+                <!-- Interactive star rating -->
                 <div class="flex gap-1">
-                  <i 
-                    v-for="star in 5" 
-                    :key="star" 
+                  <i
+                    v-for="star in 5"
+                    :key="star"
                     @click.stop="school.rating = star"
                     class="pi text-sm"
                     :class="[
@@ -137,12 +159,15 @@
                 </div>
               </div>
 
+              <!-- Expandable notes section -->
               <div v-if="school.isExpanded" class="mt-4 pt-4 border-t border-slate-50">
                 <div class="bg-slate-50 rounded-xl p-3 border border-blue-50" @click.stop>
                   <div class="flex items-center gap-2 mb-2">
                     <i class="pi pi-pencil text-blue-400 text-[10px]"></i>
                     <span class="text-[10px] font-bold text-slate-400 uppercase">Notizen</span>
                   </div>
+
+                  <!-- User note input -->
                   <textarea
                     v-model="school.comment"
                     placeholder="Deine Notiz..."
@@ -154,6 +179,7 @@
             </div>
           </div>
 
+          <!-- Empty state -->
           <div v-if="filteredSchools.length === 0" class="p-16 text-center">
               <p class="text-slate-400">Keine Fahrschulen gefunden.</p>
           </div>
@@ -162,6 +188,7 @@
     </div>
   </div>
 
+  <!-- Footer -->
   <FooterCmp></FooterCmp>
 </template>
 
@@ -173,32 +200,29 @@ import CardMain from "@/components/CardMain.vue";
 import FooterCmp from '@/components/FooterCmp.vue';
 import HeaderMain from '@/components/HeaderMain.vue';
 
-
-// TypeScript interface describing a driving school object
+/* Data model for a driving school */
 interface Fahrschule {
   name: string
   ort: string
   inhaber: string
   email: string
   link: string
+
+  /* UI state fields */
   rating?: number
   comment?: string
   isExpanded?: boolean
 }
 
-// Reactive array containing all driving schools
+/* Reactive state */
 const schools = ref<Fahrschule[]>([])
-
-// Indicates if loading the CSV failed
 const loadingError = ref(false)
-
-// Search input value
 const search = ref('')
 
-
-// Computed list of schools filtered by search query
+/* Filtered list based on search input */
 const filteredSchools = computed(() => {
   if (!search.value.trim()) return schools.value
+
   const q = search.value.toLowerCase()
 
   return schools.value.filter(s =>
@@ -208,28 +232,22 @@ const filteredSchools = computed(() => {
   )
 })
 
-
-// Number of unique locations (Orte)
+/* Count unique locations */
 const uniqueOrte = computed(() =>
   new Set(schools.value.map(s => s.ort).filter(Boolean)).size
 )
 
-
-// Loads the CSV file containing the driving school data
+/* Load and parse CSV data */
 async function loadCSV() {
   try {
     const response = await fetch('/driving_schools.csv')
-    if (!response.ok) throw new Error('CSV nicht gefunden')
+    if (!response.ok) throw new Error('Daten nicht gefunden')
 
     const text = await response.text()
-
-    // Split CSV into lines
     const lines = text.trim().split('\n')
 
-    // Convert CSV rows into objects
+    /* Convert CSV rows into objects */
     schools.value = lines.slice(1).map(line => {
-
-      // Regex splits the CSV columns correctly
       const col = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || []
 
       return {
@@ -238,23 +256,22 @@ async function loadCSV() {
         inhaber: col[2]?.replace(/"/g, '') || '',
         email: col[3]?.replace(/"/g, '') || '',
         link: col[4]?.replace(/"/g, '') || '',
+
+        /* Initialize UI-related fields */
         rating: 0,
         comment: '',
         isExpanded: false
       }
-
     }).filter(s => s.name)
 
   } catch (e) {
     console.error(e)
 
-    // Show error state in the UI
+    /* Trigger error UI */
     loadingError.value = true
   }
 }
 
-
-// Load data when the component is mounted
+/* Load data on component mount */
 onMounted(() => loadCSV())
-
 </script>
