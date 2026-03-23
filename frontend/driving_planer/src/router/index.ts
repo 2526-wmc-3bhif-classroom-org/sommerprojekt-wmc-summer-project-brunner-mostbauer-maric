@@ -36,6 +36,14 @@ const router = createRouter({
       meta: { guestOnly: true }
     },
   ],
+  // This function is to handle that you always are on the highest point when you change the page
+  scrollBehavior(to, from, savedPosition) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ top: 0 })
+      }, 100)
+    })
+  }
 })
 router.beforeEach((to, from, next) => {
   NProgress.start()
