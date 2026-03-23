@@ -86,7 +86,7 @@ const aboutCards = [
       </p>
       <button
         class="bg-black text-white text-xl p-6 rounded-3xl cursor-pointer transition-transform duration-300 hover:-rotate-2"
-        @click="$router.push('/schools')"
+        @click="$router.push('/register')"
       >
         Jetzt starten
       </button>
