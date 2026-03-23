@@ -109,7 +109,7 @@ const router = useRouter();
 const schoolStore = useSchoolStore();
 const userStore = useUserStore();
 onMounted(async () => {
-  await schoolStore.fetchSchools();
+  await schoolStore.fetchSchoolCount();
   await userStore.fetchUsersCount();
 })
 

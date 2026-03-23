@@ -1,6 +1,6 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
-import type { DrivingSchool, User, AuthResponse } from '../types.js'
+import {computed, ref} from 'vue'
+import {defineStore} from 'pinia'
+import type {AuthResponse, DrivingSchool, User} from '../types.js'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
@@ -78,14 +78,23 @@ export const useSchoolStore = defineStore('schools', () => {
         authStore.logout()
         return
       }
-      const fetchedSchools: DrivingSchool[] = await response.json()
-      schools.value = fetchedSchools
-      countOfSchools.value = fetchedSchools.length
+      schools.value = await response.json()
     } catch (e) {
       console.error('Failed to fetch schools:', e)
     }
   }
-  return { schools, countOfSchools, fetchSchools }
+
+  async function fetchSchoolCount() {
+    const headers: HeadersInit = { 'Content-Type': 'application/json' }
+    try {
+      const response: Response = await fetch(`${API_URL}/schools/count`, {headers});
+      const count : {count: number} = await response.json();
+      countOfSchools.value = count.count;
+    }catch (e) {
+      console.error('Failed to fetch schools count:', e)
+    }
+  }
+  return { schools, countOfSchools, fetchSchools, fetchSchoolCount }
 })
 
 export const useUserStore = defineStore('users', () => {
