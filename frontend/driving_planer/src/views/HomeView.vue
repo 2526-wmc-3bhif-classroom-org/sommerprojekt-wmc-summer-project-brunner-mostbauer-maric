@@ -79,7 +79,7 @@
     :duration="400"
   >
     <button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer transition-transform duration-300 hover:-rotate-8"
-            @click="router.push('/schools')"
+            @click="router.push('/register')"
     ><!-- only some sample route because we don't have a login route right now-->
       Jetzt direkt Starten
     </button>
@@ -91,7 +91,7 @@
   </Background>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
 
 import HeaderMain from "@/components/HeaderMain.vue";
@@ -109,7 +109,7 @@ const router = useRouter();
 const schoolStore = useSchoolStore();
 const userStore = useUserStore();
 onMounted(async () => {
-  await schoolStore.fetchSchools();
+  await schoolStore.fetchSchoolCount();
   await userStore.fetchUsersCount();
 })
 

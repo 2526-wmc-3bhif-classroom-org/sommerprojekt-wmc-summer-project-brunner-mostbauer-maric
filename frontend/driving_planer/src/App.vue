@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar.vue";
 import { onMounted } from 'vue';
 
 onMounted(async () => {
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  const apiUrl = import.meta.env.VITE_API_URL_CONNECTION_TEST || 'http://localhost:3000';
   try {
     const response = await fetch(`${apiUrl}/`);
     if (!response.ok) {
