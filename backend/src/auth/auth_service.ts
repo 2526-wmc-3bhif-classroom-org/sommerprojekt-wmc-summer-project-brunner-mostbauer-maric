@@ -61,9 +61,11 @@ export class AuthService {
 
   public async register(userName: string, email: string, password: string, role: UserRole = UserRole.USER) {
     const unit = new Unit(false);
+    let success = false;
     try {
       const existingUser = this.repo.getByEmail(unit, email);
       if (existingUser) {
+        success = false;
         return { 
           status: StatusCodes.CONFLICT, 
           error: { message: "User already exists" } 
@@ -73,6 +75,7 @@ export class AuthService {
       const passwordHash = bcrypt.hashSync(password, 10);
       const userId = this.repo.create(unit, userName, email, passwordHash, role);
 
+      success = true;
       return {
         status: StatusCodes.CREATED,
         data: {
@@ -82,8 +85,14 @@ export class AuthService {
           Role: role
         }
       };
+    } catch (e: any) {
+      success = false;
+      return {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        error: { message: e.message }
+      };
     } finally {
-      unit.complete();
+      unit.complete(success);
     }
   }
 }

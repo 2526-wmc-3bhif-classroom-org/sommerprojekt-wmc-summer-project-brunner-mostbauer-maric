@@ -1,9 +1,30 @@
 import request from "supertest";
 import { app } from "../app.js";
 import { StatusCodes } from "http-status-codes";
+import { Unit } from "../unit.js";
 
 describe("Authentication & Protected Routes", () => {
   let accessToken: string;
+
+  beforeEach(() => {
+    const unit = new Unit(false);
+    try {
+      unit.prepare("DELETE FROM User WHERE Email = ?").run("test@example.com");
+      unit.complete(true);
+    } catch (e) {
+      unit.complete(false);
+    }
+  });
+
+  afterAll(() => {
+    const unit = new Unit(false);
+    try {
+      unit.prepare("DELETE FROM User WHERE Email = ?").run("test@example.com");
+      unit.complete(true);
+    } catch (e) {
+      unit.complete(false);
+    }
+  });
 
   it("POST /api/auth/login should log in the admin user and return a token", async () => {
     const res = await request(app).post("/api/auth/login").send({
@@ -45,5 +66,33 @@ describe("Authentication & Protected Routes", () => {
 
     expect(res.status).toBe(StatusCodes.UNAUTHORIZED);
     expect(res.body.error).toHaveProperty("message", "Wrong password");
+  });
+
+  it("POST /api/auth/register should create a new user", async () => {
+    const testUser = {
+      userName: "testuser",
+      email: "test@example.com",
+      password: "password123"
+    };
+
+    const res = await request(app)
+      .post("/api/auth/register")
+      .send(testUser);
+
+    expect(res.status).toBe(StatusCodes.CREATED);
+    expect(res.body.data).toHaveProperty("Email", testUser.email);
+    expect(res.body.data).toHaveProperty("UserName", testUser.userName);
+  });
+
+  it("POST /api/auth/register should return 409 if user already exists", async () => {
+    const res = await request(app)
+      .post("/api/auth/register")
+      .send({
+        userName: "admin",
+        email: "admin@admin.com",
+        password: "admin"
+      });
+
+    expect(res.status).toBe(StatusCodes.CONFLICT);
   });
 });

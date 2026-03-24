@@ -44,6 +44,14 @@ export { app };
 app.use(cors());
 app.use(express.json());
 
+app.use((err: any, req: Request, res: Response, next: any) => {
+  if (err instanceof SyntaxError && 'status' in err && err.status === 400 && 'body' in err) {
+    res.status(StatusCodes.BAD_REQUEST).json({ error: { message: "Invalid JSON provided" } });
+    return;
+  }
+  next();
+});
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 if (process.env.NODE_ENV !== "test") {

@@ -82,6 +82,6 @@ authRouter.post("/register", async (req, res) => {
   if (result.error) {
     res.status(result.status).json({ error: result.error });
   } else {
-    res.status(result.status).json(result.data);
+    res.status(result.status).json({ data: result.data });
   }
 });
