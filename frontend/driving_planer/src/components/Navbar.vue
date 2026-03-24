@@ -107,7 +107,7 @@
     <!-- Main Content Area -->
     <main class="flex-1 overflow-y-auto md:mt-0 mt-14">
       <div class="max-w-full mx-auto">
-        <slot/>
+        <router-view />
       </div>
     </main>
 
@@ -135,6 +135,7 @@ const links = [
   { to: '/', title: 'Zuhause', icon: 'pi-home' },
   { to: '/about', title: 'Über uns', icon: 'pi-info-circle' },
   { to: '/schools', title: 'Fahrschulen', icon: 'pi-book' },
+  { to: '/dashboard', title: 'Dashboard', icon: 'pi-chart-bar' }
 ]
 
 // Dynamic menu items depending on login state
