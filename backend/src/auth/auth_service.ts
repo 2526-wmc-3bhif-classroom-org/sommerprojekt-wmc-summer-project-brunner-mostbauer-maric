@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import { Unit } from "../unit.js";
+import { UserRole } from "../models/types.js";
 import { UserRepository } from "../users/user_repository.js";
 import { SECRET_KEY } from "../middleware/auth_handlers.js";
 
@@ -58,7 +59,7 @@ export class AuthService {
     }
   }
 
-  public async register(userName: string, email: string, password: string, role: string = 'user') {
+  public async register(userName: string, email: string, password: string, role: UserRole = UserRole.USER) {
     const unit = new Unit(false);
     try {
       const existingUser = this.repo.getByEmail(unit, email);

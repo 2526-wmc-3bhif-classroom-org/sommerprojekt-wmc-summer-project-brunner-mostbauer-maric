@@ -1,5 +1,13 @@
 import { Unit } from "../unit.js";
-import type { User } from "../models/types.js";
+import { UserRole } from "../models/types.js";
+
+export interface User {
+  UserId: number;
+  UserName: string;
+  Email: string;
+  PasswordHash: string;
+  Role: UserRole;
+}
 
 export class UserRepository {
   private static instance: UserRepository | null = null;
@@ -24,7 +32,7 @@ export class UserRepository {
       .get(email);
   }
 
-  public create(unit: Unit, userName: string, email: string, passwordHash: string, role: string): number {
+  public create(unit: Unit, userName: string, email: string, passwordHash: string, role: UserRole): number {
     const result = unit
       .prepare("INSERT INTO User (UserName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?)")
       .run(userName, email, passwordHash, role);

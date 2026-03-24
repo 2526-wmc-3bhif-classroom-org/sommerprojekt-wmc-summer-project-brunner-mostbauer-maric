@@ -2,6 +2,7 @@ import BetterSqlite3 from "better-sqlite3";
 import type { Database, Statement } from "better-sqlite3";
 import { buildTables } from "./db-structure.js";
 import bcrypt from "bcrypt";
+import { UserRole } from "./models/types.js";
 
 const dbFileName = "driving.db";
 
@@ -65,7 +66,7 @@ export class Unit {
 }
 
 export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
-  function alreadyPresent(): boolean {
+  function adminAlreadyPresent(): boolean {
     try {
       const checkStmt = unit.prepare<{ cnt: number }>(
         "select count(*) as 'cnt' from User where Email = 'admin@admin.com'",
@@ -77,13 +78,25 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
     }
   }
 
-  function insert(): void {
+  function schoolsAlreadyPresent(): boolean {
+    try {
+      const checkStmt = unit.prepare<{ cnt: number }>(
+        "select count(*) as 'cnt' from DrivingSchool",
+      );
+      const result = checkStmt.get()?.cnt ?? 0;
+      return result > 0;
+    } catch (e: any) {
+      return false;
+    }
+  }
+
+  function insertAdmin(): void {
     const adminPasswordHash = bcrypt.hashSync("admin", 10);
     const adminUser = {
       UserName: "admin",
       Email: "admin@admin.com",
       PasswordHash: adminPasswordHash,
-      Role: "admin",
+      Role: UserRole.ADMIN,
     };
 
     const userInsertStmt = unit.prepare(
@@ -97,7 +110,9 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
       adminUser.PasswordHash,
       adminUser.Role
     );
+  }
 
+  function insertSchools(): void {
     const records = [
       { Name: "Fahrschule SAFARI", Ort: "Ringstraße 48, 5280 Braunau am Inn", Inhaber: "DI (FH) Manuel Schwaiger", Email: "office@fs-safari.eu", Link: "http://www.fs-safari.at/" },
       { Name: "Fahrschule Euroline", Ort: "Ehrenreiterweg 4, 4150 Rohrbach-Berg", Inhaber: "DI Thomas Leitner, MLBT", Email: "office@fahrschule-euroline.at", Link: "https://www.fahrschule-euroline.at" },
@@ -151,7 +166,7 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
       { Name: "Fahrschule Grubhofer-Linz", Ort: "Ramsauerstraße 78, 4030 Linz", Inhaber: "Rothbauer", Email: "fahrschule-grubhofer@aon.at", Link: "https://www.fahrschule-grubhofer.at/" },
       { Name: "Fahrschule Grubhofer-Enns", Ort: "Stadlgasse 4, 4470 Enns", Inhaber: "Rothbauer", Email: "fahrschule-grubhofer@aon.at", Link: "https://www.fahrschule-grubhofer.at/" },
       { Name: "Fahrschule Hausherr", Ort: "Kuferzeile 49, 4810 Gmunden", Inhaber: "Norbert Hausherr", Email: "fahrschule@hausherr.at", Link: "http://www.hausherr.at" },
-      { Name: "Fahrschule Easy Drivers Sankt Georgen an der Gusen", Ort: "Gewerbestraße 5, 4222 St. Georgen/Gusen", Inhaber: "", Email: "st-georgen@easydrivers.at", Link: "https://www.easydrivers.at/st-georgen-an-der-gusen/" },
+      { Name: "Fahrschule Easy Drivers Sankt Georgen an der Gusen", Ort: "Gewerbestraße 5, 4222 St. Georgen/Gusen", Inhaber: "", Email: "st-georgen@easydrivers.at", Link: "https://www.easydrivers.at/st-georgen-an-der-gus/" },
       { Name: "Fahrschule Pichler", Ort: "Veldner Straße 57, 4120 Neufelden", Inhaber: "Pichler", Email: "neufelden@einfacherzumschein.at", Link: "https://www.einfacherzumschein.at/" },
       { Name: "Fahrschule Perfekt", Ort: "Siegfried-Marcus Strasse 5, 4070 Eferding", Inhaber: "", Email: "fahrschule.perfekt@aon.at", Link: "http://www.fahrschule-perfekt.net/" },
       { Name: "Fahrschule Lenkwerk", Ort: "Salzburger Str. 20, 4820 Bad Ischl", Inhaber: "", Email: "", Link: "https://www.fahrschule-lenkwerk.at/" },
@@ -194,12 +209,18 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
     }
   }
 
-  if (!alreadyPresent()) {
-    insert();
-    return "inserted";
+  let inserted = false;
+  if (!adminAlreadyPresent()) {
+    insertAdmin();
+    inserted = true;
   }
 
-  return "skipped";
+  if (!schoolsAlreadyPresent()) {
+    insertSchools();
+    inserted = true;
+  }
+
+  return inserted ? "inserted" : "skipped";
 }
 
 class DB {

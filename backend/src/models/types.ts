@@ -1,11 +1,8 @@
 // types to match the db tables
 
-export interface User {
-  UserId: number;
-  UserName: string;
-  Email: string;
-  PasswordHash: string;
-  Role: string;
+export enum UserRole {
+  ADMIN = "admin",
+  USER = "user",
 }
 
 export interface DrivingSchool {
