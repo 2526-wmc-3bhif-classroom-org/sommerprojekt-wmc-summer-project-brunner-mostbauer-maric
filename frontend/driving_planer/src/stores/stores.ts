@@ -24,10 +24,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     const data: AuthResponse = await response.json()
-    token.value = data.token
+    token.value = data.accessToken;
     user.value = data.user
 
-    localStorage.setItem('token', data.token)
+    localStorage.setItem('token', data.accessToken)
     localStorage.setItem('user', JSON.stringify(data.user))
   }
 
@@ -44,10 +44,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     const data: AuthResponse = await response.json()
-    token.value = data.token
+    token.value = data.accessToken
     user.value = data.user
 
-    localStorage.setItem('token', data.token)
+    localStorage.setItem('token', data.accessToken)
     localStorage.setItem('user', JSON.stringify(data.user))
   }
 
