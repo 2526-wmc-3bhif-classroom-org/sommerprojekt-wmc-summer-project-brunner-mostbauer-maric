@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full h-28 rounded-2xl border flex items-center gap-4 px-4 transition-all duration-300 hover:scale-[1.02]"
+    class="w-full h-28 rounded-2xl border flex items-center gap-4 px-4 transition-all duration-300 hover:-translate-y-1"
     :class="borderColor"
   >
     <!-- Icon -->
