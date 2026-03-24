@@ -25,6 +25,9 @@
           <div class="py-6 grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
 
             <InfoStatsCard
+              v-for="(card, i) in 1"
+              :key="i"
+              :index="i"
               title="Individuell"
               :description="`${schools.length} Fahrschulen verfügbar`"
               icon="pi pi-car"
@@ -33,6 +36,9 @@
             />
 
             <InfoStatsCard
+              v-for="(card, i) in 1"
+              :key="i"
+              :index="i"
               title="Effizient"
               :description="`${schools.filter(s => s.link).length} mit Website`"
               icon="pi pi-link"
@@ -41,6 +47,9 @@
             />
 
             <InfoStatsCard
+              v-for="(card, i) in 1"
+              :key="i"
+              :index="i"
               title="Motivierend"
               :description="`${uniqueOrte} Orte verfügbar`"
               icon="pi pi-map-marker"
