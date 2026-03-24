@@ -39,19 +39,19 @@ async function handleRegister() {
 <template>
   <Background>
     <div class="min-h-screen flex items-center justify-center p-4">
-      <div 
-        class="h-auto w-full max-w-md border border-white/20 p-8 bg-black shadow-2xl rounded-2xl" 
+      <div
+        class="h-auto w-full max-w-md border border-white/20 p-8 bg-black shadow-2xl rounded-2xl"
         v-motion-pop-visible
       >
-        
-        <div 
+
+        <div
           class="pt-4 pb-12 text-center"
           v-motion
           :initial="{ opacity: 0, y: -60 }"
           :enter="{ opacity: 1, y: 0, transition: { delay: 200, duration: 800, type: 'spring' } }"
         >
           <h1 class="text-5xl font-black text-white tracking-tight">
-            Register
+            Registrieren
           </h1>
         </div>
 
@@ -80,7 +80,7 @@ async function handleRegister() {
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl pr-12 hover:bg-white/10"
               required
             />
-            <button 
+            <button
               type="button"
               @click="showPassword = !showPassword"
               class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
@@ -97,7 +97,7 @@ async function handleRegister() {
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl pr-12 hover:bg-white/10"
               required
             />
-            <button 
+            <button
               type="button"
               @click="showConfirmPassword = !showConfirmPassword"
               class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
@@ -119,9 +119,9 @@ async function handleRegister() {
             <i v-else class="pi pi-spin pi-spinner"></i>
           </button>
         </form>
-        
+
         <div class="pt-8 text-gray-500 text-sm text-center">
-          Bereits ein Konto vorhanden? 
+          Bereits ein Konto vorhanden?
           <router-link to="/login" class="text-white font-bold hover:text-lime-500 transition-colors underline decoration-lime-500/30 underline-offset-4">
             Hier anmelden.
           </router-link>
