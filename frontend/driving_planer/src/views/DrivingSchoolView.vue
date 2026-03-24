@@ -22,36 +22,32 @@
           </div>
 
           <!-- Stats cards -->
-          <div class="py-6 grid grid-cols-1 md:grid-cols-3 gap-4 px-6 mb-8">
-            <CardMain
-              class="w-full"
+          <div class="py-6 grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+            <InfoStatsCard
               title="Individuell"
               :description="`${schools.length} Fahrschulen verfügbar`"
-              icon="pi pi-user"
-              :duration="500"
+              icon="pi pi-car"
               iconColor="text-blue-500"
               borderColor="border-blue-500"
             />
 
-            <CardMain
-              class="w-full"
+            <InfoStatsCard
               title="Effizient"
               :description="`${schools.filter(s => s.link).length} mit Website`"
-              icon="pi pi-cog"
-              :duration="700"
+              icon="pi pi-link"
               iconColor="text-violet-500"
               borderColor="border-violet-500"
             />
 
-            <CardMain
-              class="w-full"
+            <InfoStatsCard
               title="Motivierend"
               :description="`${uniqueOrte} Orte verfügbar`"
-              icon="pi pi-chart-line"
-              :duration="900"
+              icon="pi pi-map-marker"
               iconColor="text-emerald-500"
               borderColor="border-emerald-500"
             />
+
           </div>
 
           <!-- Table / List container -->
@@ -200,6 +196,7 @@ import Background from '@/components/Background.vue';
 import CardMain from "@/components/CardMain.vue";
 import FooterCmp from '@/components/FooterCmp.vue';
 import HeaderMain from '@/components/HeaderMain.vue';
+import InfoStatsCard from "@/components/InfoStatsCard.vue";
 
 /* Data model for a driving school */
 interface Fahrschule {
