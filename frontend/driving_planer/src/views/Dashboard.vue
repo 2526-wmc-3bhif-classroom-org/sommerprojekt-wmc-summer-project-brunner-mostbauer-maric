@@ -106,33 +106,39 @@
             <h2 class="font-black text-2xl mb-6 text-black uppercase tracking-tight">Prüfungstermine</h2>
 
             <div class="space-y-4">
-              <input
+                <input
                 v-model="dateInput"
                 type="date"
                 class="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl text-black font-bold focus:bg-white focus:border-black transition-all outline-none"
-              />
+                />
 
-              <button
+                <button
                 @click="addDate"
                 class="w-full bg-black text-white p-4 rounded-2xl font-black text-lg hover:bg-gray-800 active:scale-[0.98] transition-all shadow-lg uppercase tracking-widest"
-              >
+                >
                 Hinzufügen
-              </button>
+                </button>
             </div>
 
             <ul class="mt-6 space-y-3">
-              <li
+                <li
                 v-for="(date, i) in dates"
                 :key="i"
-                class="text-md text-black font-bold bg-slate-100 p-3 rounded-xl border-l-4 border-black animate-in fade-in"
-              >
-                {{ new Date(date).toLocaleDateString('de-DE') }}
-              </li>
+                class="group/item text-md text-black font-bold bg-slate-100 p-3 rounded-xl border-l-4 border-black flex justify-between items-center animate-in fade-in"
+                >
+                <span>{{ new Date(date).toLocaleDateString('de-DE') }}</span>
+                
+                <button 
+                    @click="removeDate(i)" 
+                    class="text-black/30 hover:text-red-500 transition-colors p-1"
+                    title="Termin entfernen"
+                >
+                    <i class="pi pi-trash"></i>
+                </button>
+                </li>
             </ul>
-          </div>
-
+            </div>
         </div>
-
       </div>
     </div>
 
@@ -174,5 +180,10 @@ const addDate = () => {
   if (!dateInput.value) return
   dates.value.push(dateInput.value)
   dateInput.value = ''
+}
+
+/* function to remove dates */
+const removeDate = (index: number) => {
+  dates.value.splice(index, 1)
 }
 </script>
