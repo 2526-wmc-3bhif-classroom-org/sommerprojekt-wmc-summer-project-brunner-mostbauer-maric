@@ -22,40 +22,36 @@
           </div>
 
           <!-- Stats cards -->
-          <div class="py-6 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div class="py-6 grid grid-cols-1 md:grid-cols-3 gap-4 px-6 mb-8">
+            <CardMain
+              class="w-full"
+              title="Individuell"
+              :description="`${schools.length} Fahrschulen verfügbar`"
+              icon="pi pi-user"
+              :duration="500"
+              iconColor="text-blue-500"
+              borderColor="border-blue-500"
+            />
 
-            <!-- Total schools -->
-            <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                <i class="pi pi-car text-blue-500"></i>
-              </div>
-              <div>
-                <p class="text-2xl font-black text-slate-900">{{ schools.length }}</p>
-                <p class="text-xs text-slate-400 font-medium">Fahrschulen</p>
-              </div>
-            </div>
+            <CardMain
+              class="w-full"
+              title="Effizient"
+              :description="`${schools.filter(s => s.link).length} mit Website`"
+              icon="pi pi-cog"
+              :duration="700"
+              iconColor="text-violet-500"
+              borderColor="border-violet-500"
+            />
 
-            <!-- Schools with website -->
-            <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
-                <i class="pi pi-check-circle text-emerald-500"></i>
-              </div>
-              <div>
-                <p class="text-2xl font-black text-slate-900">{{ schools.filter(s => s.link).length }}</p>
-                <p class="text-xs text-slate-400 font-medium">Mit Website</p>
-              </div>
-            </div>
-
-            <!-- Unique locations -->
-            <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center">
-                <i class="pi pi-map text-violet-500"></i>
-              </div>
-              <div>
-                <p class="text-2xl font-black text-slate-900">{{ uniqueOrte }}</p>
-                <p class="text-xs text-slate-400 font-medium">Orte</p>
-              </div>
-            </div>
+            <CardMain
+              class="w-full"
+              title="Motivierend"
+              :description="`${uniqueOrte} Orte verfügbar`"
+              icon="pi pi-chart-line"
+              :duration="900"
+              iconColor="text-emerald-500"
+              borderColor="border-emerald-500"
+            />
           </div>
 
           <!-- Table / List container -->
