@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { UserRole } from '../models/types.js';
 
 export const SECRET_KEY = process.env.JWT_SECRET || 'your-very-secret-key';
 
@@ -8,7 +9,7 @@ export interface AuthPayload extends jwt.JwtPayload {
     user: {
         UserId: number;
         Email: string;
-        Role: string;
+        Role: UserRole;
     }
 }
 
@@ -42,7 +43,7 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
 export const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const payload = (req as AuthRequest).payload;
-        if (payload?.user.Role === 'admin') {
+        if (payload?.user.Role === UserRole.ADMIN) {
             next();
         } else {
             res.status(StatusCodes.FORBIDDEN).json({ error: { message: 'Admin role required' } });
