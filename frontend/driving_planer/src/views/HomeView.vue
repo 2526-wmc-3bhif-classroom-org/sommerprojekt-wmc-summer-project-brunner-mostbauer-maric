@@ -79,7 +79,7 @@
     :duration="400"
   >
     <button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer transition-transform duration-300 hover:-rotate-8"
-            @click="router.push('/register')"
+            @click="router.push(authStore.isAuthenticated ? '/schools' : 'register')"
     ><!-- only some sample route because we don't have a login route right now-->
       Jetzt direkt Starten
     </button>
@@ -100,7 +100,7 @@ import FooterCmp from "@/components/FooterCmp.vue";
 import Timeline from "@/components/Timeline.vue";
 import StatisticCard from "@/components/StatisticCard.vue";
 import Background from "@/components/Background.vue";
-import {useSchoolStore} from "@/stores/stores.ts";
+import {useAuthStore, useSchoolStore} from "@/stores/stores.ts";
 import {useUserStore} from "@/stores/stores.ts";
 import {useRouter} from "vue-router";
 import {computed, onMounted} from "vue";
@@ -108,6 +108,7 @@ const router = useRouter();
 
 const schoolStore = useSchoolStore();
 const userStore = useUserStore();
+const authStore = useAuthStore();
 onMounted(async () => {
   await schoolStore.fetchSchoolCount();
   await userStore.fetchUsersCount();
