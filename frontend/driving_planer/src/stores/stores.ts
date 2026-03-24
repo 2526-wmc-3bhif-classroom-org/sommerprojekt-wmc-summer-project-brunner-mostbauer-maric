@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function register(userData: { userName: string; email: string; password: string }) {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(userData)
     })
 
@@ -43,14 +43,8 @@ export const useAuthStore = defineStore('auth', () => {
       throw new Error(error.error?.message || 'Registration failed')
     }
 
-    const data: AuthResponse = await response.json()
-    token.value = data.accessToken
-    user.value = data.user
-
-    localStorage.setItem('token', data.accessToken)
-    localStorage.setItem('user', JSON.stringify(data.user))
+    await login({email: userData.email, password: userData.password})
   }
-
   function logout() {
     token.value = null
     user.value = null
