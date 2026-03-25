@@ -130,7 +130,9 @@
                 :key="i"
                 class="group/item text-md text-black font-bold bg-slate-100 p-3 rounded-xl border-l-4 border-black flex justify-between items-center animate-in fade-in"
                 >
-                <span>{{ new Date(date).toLocaleDateString('de-DE') }}</span>
+                <span>
+                  {{ date.type }} - {{ new Date(date.date).toLocaleDateString('de-DE') }}
+                </span>
                 
                   <div class="flex gap-2">
                     <!-- EDIT -->
@@ -187,12 +189,18 @@ const addCheck = () => {
 /* Dates */
 const typeInput = ref('Test')
 const dateInput = ref('')
-const dates = ref<string[]>([])
+const dates = ref<{ type: string, date: string }[]>([])
 
 const addDate = () => {
   if (!dateInput.value) return
-  dates.value.push(dateInput.value)
+
+  dates.value.push({
+    type: typeInput.value,
+    date: dateInput.value
+  })
+
   dateInput.value = ''
+  typeInput.value = ''
 }
 
 /* function to remove dates */
@@ -200,11 +208,13 @@ const removeDate = (index: number) => {
   dates.value.splice(index, 1)
 }
 
-const editDate = (i:number) => {
+const editDate = (i: number) => {
   const item = dates.value[i]
+
   typeInput.value = item.type
   dateInput.value = item.date
-  dates.value.splice(i,1)
+
+  dates.value.splice(i, 1)
 }
 
 </script>
