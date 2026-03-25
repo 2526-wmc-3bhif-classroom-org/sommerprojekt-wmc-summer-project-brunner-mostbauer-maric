@@ -127,6 +127,10 @@
                 Hinzufügen
                 </button>
             </div>
+            <span
+              v-if="!dateValid"
+              class="text-red-700 text-sm tracking-tight uppercase"
+            >Das Datumsformat ist nicht korrekt. (Datum muss in der Zukunft sein).</span>
 
             <ul class="mt-6 space-y-3">
                 <li
@@ -200,10 +204,13 @@ const addCheck = () => {
 const typeInput = ref('Test')
 const dateInput = ref('')
 const dates = ref<{ type: string, date: string }[]>([])
-
+const dateValid = ref<boolean>(true)
 const addDate = () => {
-  if (!dateInput.value) return
-
+  if (!dateInput.value || Number.isNaN(new Date(dateInput.value).getTime()) || new Date(dateInput.value).getTime() < new Date(Date.now()).getTime()){
+    dateValid.value = false;
+    return;
+  }
+  dateValid.value = true
   dates.value.push({
     type: typeInput.value,
     date: dateInput.value
