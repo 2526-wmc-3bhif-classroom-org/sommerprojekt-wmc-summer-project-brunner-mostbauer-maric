@@ -56,7 +56,7 @@
   </div>
 
   <div id="advantages">
-    <HeaderMain title="Unsere Vorteile" desktopHeight="md:text-5xl" mobileHeight="text-3xl" :duration=500 />
+    <HeaderMain title="Unsere Vorteile" desktopHeight="md:text-5xl" mobileHeight="text-3xl" :duration=500 headingType="h2" />
   </div>
   <div class="flex justify-center py-16 gap-4 px-6 md:flex-row flex-col">
     <CardMain
@@ -68,11 +68,12 @@
       :duration="card.duration"
       :iconColor="card.iconColor"
       :borderColor="card.borderColor"
+      headingType="h3"
     />
   </div>
 
   <div id="start-now">
-    <HeaderMain title="Bereit loszulegen?" desktopHeight="md:text-5xl" mobileHeight="text-3xl" :duration=500 />
+    <HeaderMain title="Bereit loszulegen?" desktopHeight="md:text-5xl" mobileHeight="text-3xl" :duration=500 headingType="h2" />
   </div>
   <div class="flex justify-center"
     v-motion-pop-visible-once
@@ -122,18 +123,18 @@ function scrollTo(id) {
 const statistics = computed(() => [
   {
     description: "Fahrschüler",
-    borderColor: "border-blue-500",
+    borderColor: "border-blue-700",
     textColor: "text-white",
-    backgroundColor: "bg-blue-500",
+    backgroundColor: "bg-blue-700",
     endValue: userStore.countOfTotalUsers,
     suffix: "+",
     duration: 400,
   },
   {
     description: "Erfolgsquote",
-    borderColor: "border-lime-500",
+    borderColor: "border-lime-700",
     textColor: "text-white",
-    backgroundColor: "bg-lime-500",
+    backgroundColor: "bg-lime-700",
     endValue: 95,
     suffix: "%",
     duration: 400,

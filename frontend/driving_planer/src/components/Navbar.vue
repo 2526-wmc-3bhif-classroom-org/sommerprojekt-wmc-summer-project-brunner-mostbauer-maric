@@ -5,7 +5,7 @@
     <!-- Mobile Top Navbar (visible only on small screens) -->
     <header class="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-4 py-3 m-3">
       <!-- Button to toggle the sidebar -->
-      <button @click="sidebarOpen = !sidebarOpen" class="p-2 text-gray-600 hover:text-black transition-colors">
+      <button @click="sidebarOpen = !sidebarOpen" class="p-2 text-gray-600 hover:text-black transition-colors" aria-label="Menü öffnen">
         <i :class="'pi pi-bars'" class="text-xl"></i>
       </button>
     </header>
@@ -24,7 +24,7 @@
     >
       <!-- Sidebar header with close button -->
       <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-        <button @click="sidebarOpen = false" class="p-2 text-gray-400 hover:text-black">
+        <button @click="sidebarOpen = false" class="p-2 text-gray-400 hover:text-black" aria-label="Menü schließen">
           <i class="pi pi-times text-xl"></i>
         </button>
       </div>
@@ -50,6 +50,7 @@
         <!-- Settings button -->
         <button class="p-3 text-gray-400 hover:text-black transition-colors"
                 v-tooltip="'Einstellungen'"
+                aria-label="Einstellungen"
         >
           <i class="pi pi-cog text-lg"></i>
         </button>
@@ -59,8 +60,10 @@
           v-tooltip="'Profil'"
           @click="toggleMenu"
           class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:border-gray-300 transition-all"
+          role="button"
+          aria-label="Profilmenü öffnen"
         >
-          <img src="https://placehold.co/600x400" alt="Profile" class="w-full h-full object-cover" />
+          <img src="https://placehold.co/600x400" alt="Benutzerprofil" class="w-full h-full object-cover" />
         </div>
 
         <!-- PrimeVue popup menu -->
@@ -86,6 +89,7 @@
         <!-- Settings button -->
         <button class="p-3 text-gray-400 hover:text-black transition-colors"
                 v-tooltip="'Einstellungen'"
+                aria-label="Einstellungen"
         >
           <i class="pi pi-cog text-lg"></i>
         </button>
@@ -95,8 +99,10 @@
           v-tooltip="'Profil'"
           @click="toggleMenu"
           class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm cursor-pointer hover:border-gray-300 transition-all active:scale-95"
+          role="button"
+          aria-label="Profilmenü öffnen"
         >
-          <img src="https://placehold.co/600x400" alt="Profile" class="w-full h-full object-cover" />
+          <img src="https://placehold.co/600x400" alt="Benutzerprofil" class="w-full h-full object-cover" />
         </div>
 
         <!-- PrimeVue popup menu -->

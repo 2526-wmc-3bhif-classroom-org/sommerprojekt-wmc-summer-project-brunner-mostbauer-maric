@@ -3,3 +3,4 @@
 dist
 .vscode
 *.md
+lighthouse_report.json

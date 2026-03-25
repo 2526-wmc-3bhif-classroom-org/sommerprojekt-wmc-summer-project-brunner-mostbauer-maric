@@ -33,6 +33,11 @@
       type: String,
       required: false,
       default: 'w-full'
+    },
+    headingType: {
+      type: String,
+      required: false,
+      default: 'h3'
     }
   })
 </script>
@@ -44,7 +49,7 @@
     :duration="duration"
   >
     <i :class="[icon, iconColor]" style="font-size: 2rem" />
-    <h3 class="text-center font-bold m-2 text-xl text-black">{{ title }}</h3>
+    <component :is="headingType" class="text-center font-bold m-2 text-xl text-black">{{ title }}</component>
     <p class="text-center text-sm text-black">{{ description }}</p>
   </div>
   </div>

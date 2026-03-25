@@ -18,6 +18,11 @@
       type: String,
       required: false,
       default: 'text-lg'
+    },
+    headingType: {
+      type: String,
+      required: false,
+      default: 'h1'
     }
   })
 </script>
@@ -25,7 +30,7 @@
 <template>
   <div class="header align-items-center p-10 z-99 relative">
     <Motion
-      is="h1"
+      :is="headingType"
       :class="['font-black text-black text-center', desktopHeight, mobileHeight]"
       :initial="{opacity: 0, scale: 0.8}"
       :visible-once="{opacity: 1, scale: 1, transition: {duration: duration}}"
