@@ -35,6 +35,12 @@ const router = createRouter({
       component: () => import('../views/auth/RegisterView.vue'),
       meta: { guestOnly: true }
     },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('../views/Dashboard.vue'),
+      meta: { requiresAuth: true }
+    }
   ],
   // This function is to handle that you always are on the highest point when you change the page
   scrollBehavior(to, from, savedPosition) {

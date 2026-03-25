@@ -1,7 +1,11 @@
 <template>
-  <tbody class="border-b border-gray-50 last:border-0">
+  
+    <!-- Main row -->
     <tr 
-      class="hover:bg-slate-50/50 transition-colors cursor-pointer group" 
+      v-motion
+      :initial="{ opacity: 0, y: -20 }"
+      :visible-once="{ opacity: 1, y: 0, transition: { duration: 500 } }"
+      class="hover:bg-slate-50/50 transition-colors cursor-pointer group"
       @click="isExpanded = !isExpanded"
     >
       <td class="px-6 py-4 text-sm font-medium text-slate-400">
@@ -34,7 +38,7 @@
             v-for="star in 5" 
             :key="star"
             @click.stop="rating = star"
-            class="pi cursor-pointer transition-all hover:scale-125 text-sm"
+            class="pi cursor-pointer text-sm"
             :class="[
               star <= rating ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200'
             ]"
@@ -50,41 +54,46 @@
             target="_blank" 
             @click.stop
             class="p-2 bg-white border border-gray-200 rounded-lg text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm"
-            title="Website öffnen"
           >
             <i class="pi pi-external-link text-xs"></i>
           </a>
-          <i :class="['pi text-[10px] text-slate-300 transition-transform duration-300', isExpanded ? 'rotate-180' : '']" class="pi-chevron-down"></i>
+          <i 
+            class="pi pi-chevron-down text-[10px] text-slate-300 transition-transform duration-300"
+            :class="isExpanded ? 'rotate-180' : ''"
+          ></i>
         </div>
       </td>
     </tr>
 
+    <!-- Expand row -->
     <tr v-if="isExpanded" class="bg-slate-50/50">
       <td colspan="6" class="px-6 py-0">
         <div class="py-4 px-10">
           <div class="bg-white border border-blue-100 rounded-2xl p-4 shadow-sm">
             <div class="flex items-center gap-2 mb-2">
               <i class="pi pi-pencil text-blue-400 text-xs"></i>
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Deine Notizen</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                Deine Notizen
+              </span>
             </div>
             <textarea
               v-model="comment"
               @click.stop
               placeholder="Schreibe hier etwas rein..."
-              class="w-full p-3 bg-slate-50 border-none rounded-xl text-sm text-slate-700 placeholder-slate-300 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
+              class="w-full p-3 bg-slate-50 border-none rounded-xl text-sm text-slate-700 placeholder-slate-300 focus:ring-2 focus:ring-blue-100 resize-none"
               rows="2"
             ></textarea>
           </div>
         </div>
       </td>
     </tr>
-  </tbody>
+  
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const props = defineProps<{
+defineProps<{
   school: {
     name: string
     ort: string
