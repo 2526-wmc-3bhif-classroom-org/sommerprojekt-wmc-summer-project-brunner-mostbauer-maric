@@ -44,7 +44,11 @@
                 class="text-md text-black font-bold bg-slate-100 p-3 rounded-xl flex justify-between items-center animate-in fade-in slide-in-from-left-4"
               >
                 <span>{{ km }} km</span>
-                <i class="pi pi-car text-black/20"></i>
+
+                <!-- DELETE -->
+                <button @click="removeKm(i)" class="text-black/30 hover:text-red-500">
+                  <i class="pi pi-trash"></i>
+                </button>
               </li>
             </ul>
           </div>
@@ -128,15 +132,19 @@
                 >
                 <span>{{ new Date(date).toLocaleDateString('de-DE') }}</span>
                 
-                <button 
-                    @click="removeDate(i)" 
-                    class="text-black/30 hover:text-red-500 transition-colors p-1"
-                    title="Termin entfernen"
-                >
-                    <i class="pi pi-trash"></i>
-                </button>
+                  <div class="flex gap-2">
+                    <!-- EDIT -->
+                    <button @click="editDate(i)" class="text-blue-500">
+                      <i class="pi pi-pencil"></i>
+                    </button>
+
+                    <!-- DELETE -->
+                    <button @click="removeDate(i)" class="text-red-500">
+                      <i class="pi pi-trash"></i>
+                    </button>
+                  </div>
                 </li>
-            </ul>
+              </ul>
             </div>
         </div>
       </div>
@@ -162,6 +170,10 @@ const addKm = () => {
   kmInput.value = ''
 }
 
+const removeKm = (i:number) => {
+  kmList.value.splice(i,1)
+}
+
 /* Checklist */
 const checkInput = ref('')
 const checklist = ref<{ text: string, done: boolean }[]>([])
@@ -173,6 +185,7 @@ const addCheck = () => {
 }
 
 /* Dates */
+const typeInput = ref('Test')
 const dateInput = ref('')
 const dates = ref<string[]>([])
 
@@ -186,4 +199,12 @@ const addDate = () => {
 const removeDate = (index: number) => {
   dates.value.splice(index, 1)
 }
+
+const editDate = (i:number) => {
+  const item = dates.value[i]
+  typeInput.value = item.type
+  dateInput.value = item.date
+  dates.value.splice(i,1)
+}
+
 </script>
