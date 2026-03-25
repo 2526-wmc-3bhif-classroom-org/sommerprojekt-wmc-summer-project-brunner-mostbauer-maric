@@ -4,22 +4,22 @@
 
       <div class="max-w-6xl w-full" v-motion-fade-visible>
 
-        <div class="text-center mb-10 md:mb-16">
+        <div class="text-center mb-10 md:mb-16 p-4">
           <HeaderMain
             title="Dashboard"
             desktopHeight="md:text-6xl"
-            mobileHeight="text-4xl" 
-            class="pb-2 text-black" 
+            mobileHeight="text-4xl"
+            class="pb-2 text-black"
             :duration="500"
           />
-          <p class="text-black font-bold text-base md:text-xl opacity-60 mt-4 px-4">
+          <p class="text-black font-bold text-base md:text-xl opacity-60 mt-4 p-4">
             Verwalte deinen Fortschritt zum Führerschein
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
-          <div class="group bg-white border-2 border-gray-100 rounded-[2rem] p-8 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div class="group bg-white border-2 border-gray-100 rounded-[2rem] p-8 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 break-inside-avoid flex flex-col gap-4">
             <h2 class="font-black text-2xl mb-6 text-black uppercase tracking-tight">Gefahrene Kilometer</h2>
 
             <div class="flex gap-3">
@@ -36,6 +36,10 @@
                 +
               </button>
             </div>
+            <span
+              v-if="!validKm"
+              class=" text-sm text-red-700 uppercase tracking-tight"
+            >Die Eingabe entspricht nicht dem Format. (Positive Zahlen)</span>
 
             <ul class="mt-6 space-y-3 max-h-48 overflow-y-auto pr-2">
               <li
@@ -53,7 +57,7 @@
             </ul>
           </div>
 
-          <div class="group bg-white border-2 border-gray-100 rounded-[2rem] p-8 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div class="group bg-white border-2 border-gray-100 rounded-[2rem] p-8 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 break-inside-avoid">
             <h2 class="font-black text-2xl mb-6 text-black uppercase tracking-tight">Checkliste</h2>
 
             <div class="flex gap-3">
@@ -77,9 +81,9 @@
                 :key="i"
                 class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
               >
-                <input 
-                  type="checkbox" 
-                  v-model="item.done" 
+                <input
+                  type="checkbox"
+                  v-model="item.done"
                   class="w-5 h-5 accent-black rounded cursor-pointer"
                 />
                 <span :class="item.done ? 'line-through text-gray-400 font-medium' : 'text-black font-bold text-lg'">
@@ -89,7 +93,7 @@
             </div>
           </div>
 
-          <div class="group bg-white border-2 border-gray-100 rounded-[2rem] p-8 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div class="group bg-white border-2 border-gray-100 rounded-[2rem] p-8 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 break-inside-avoid">
             <h2 class="font-black text-2xl mb-6 text-black uppercase tracking-tight">Dokumente</h2>
 
             <div class="relative group-hover:scale-[1.01] transition-transform">
@@ -106,10 +110,10 @@
             </div>
           </div>
 
-          <div class="group bg-white border-2 border-gray-100 rounded-[2rem] p-8 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div class="group bg-white border-2 border-gray-100 rounded-[2rem] p-8 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4 break-inside-avoid">
             <h2 class="font-black text-2xl mb-6 text-black uppercase tracking-tight">Prüfungstermine</h2>
 
-            <div class="space-y-4">
+            <div class="flex flex-col gap-4">
                 <input
                 v-model="dateInput"
                 type="date"
@@ -133,7 +137,7 @@
                 <span>
                   {{ date.type }} - {{ new Date(date.date).toLocaleDateString('de-DE') }}
                 </span>
-                
+
                   <div class="flex gap-2">
                     <!-- EDIT -->
                     <button @click="editDate(i)" class="text-blue-500">
@@ -165,9 +169,15 @@ import FooterCmp from '@/components/FooterCmp.vue'
 /* KM */
 const kmInput = ref('')
 const kmList = ref<number[]>([])
+const validKm = ref<boolean>(true);
+
 
 const addKm = () => {
-  if (!kmInput.value) return
+  if (!kmInput.value || Number.isNaN(Number(kmInput.value)) || Number(kmInput.value) <= 0) {
+    validKm.value = false
+    return
+  }
+  validKm.value = true;
   kmList.value.push(Number(kmInput.value))
   kmInput.value = ''
 }
