@@ -36,6 +36,12 @@ const router = createRouter({
       meta: { guestOnly: true }
     },
     {
+      path: '/start',
+      name: 'start',
+      component: () => import('../views/StartForm.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('../views/Dashboard.vue'),

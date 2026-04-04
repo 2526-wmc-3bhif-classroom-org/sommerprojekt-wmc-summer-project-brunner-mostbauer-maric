@@ -111,7 +111,7 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 overflow-y-auto md:mt-0 mt-14">
+    <main ref="scrollContainer" class="flex-1 overflow-y-auto md:mt-0 mt-14">
       <div class="max-w-full mx-auto">
         <router-view />
       </div>
@@ -121,14 +121,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/stores.js'
 import NavbarLinks from './NavbarLinks.vue'
 import Menu from 'primevue/menu'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
+
+// Reference to the scroll container for resetting scroll position
+const scrollContainer = ref<HTMLElement | null>(null)
+
+// Reset scroll position when route changes
+watch(() => route.path, () => {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollTop = 0
+  }
+})
 
 // Reference to the PrimeVue menu component
 const menu = ref(null)

@@ -80,8 +80,8 @@
     :duration="400"
   >
     <button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer transition-transform duration-300 hover:-rotate-8"
-            @click="router.push(authStore.isAuthenticated ? '/schools' : 'register')"
-    ><!-- only some sample route because we don't have a login route right now-->
+            @click="router.push(authStore.isAuthenticated ? '/start' : '/register')"
+    >
       Jetzt direkt Starten
     </button>
   </div>
