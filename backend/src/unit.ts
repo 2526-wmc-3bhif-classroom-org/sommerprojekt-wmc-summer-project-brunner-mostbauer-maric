@@ -188,7 +188,7 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
 
     const insertStmt = unit.prepare(
       `INSERT INTO DrivingSchool (Name, Location, Owner, Email, Website, Phone)
-       VALUES (?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?)`,
     );
 
     for (const record of records) {
