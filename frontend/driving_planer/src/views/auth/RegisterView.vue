@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../stores/stores.js'
+import { useAuthStore } from '@/stores/authStore.ts'
 import Background from "@/components/Background.vue";
 
-const router = useRouter()
 const authStore = useAuthStore()
 
 const userName = ref('')
@@ -27,7 +25,6 @@ async function handleRegister() {
   loading.value = true
   try {
     await authStore.register({ userName: userName.value, email: email.value, password: password.value })
-    router.push('/')
   } catch (e: any) {
     error.value = e.message || 'Registrierung fehlgeschlagen.'
   } finally {

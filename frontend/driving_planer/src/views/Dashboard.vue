@@ -76,20 +76,30 @@
             </div>
 
             <div class="mt-6 space-y-3">
-              <label
+              <div
                 v-for="(item, i) in checklist"
                 :key="i"
-                class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+                class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors"
               >
-                <input
-                  type="checkbox"
-                  v-model="item.done"
-                  class="w-5 h-5 accent-black rounded cursor-pointer"
-                />
-                <span :class="item.done ? 'line-through text-gray-400 font-medium' : 'text-black font-bold text-lg'">
-                  {{ item.text }}
-                </span>
-              </label>
+                <label class="flex items-center gap-4 cursor-pointer flex-1">
+                  <input
+                    type="checkbox"
+                    v-model="item.done"
+                    class="w-5 h-5 accent-black rounded cursor-pointer"
+                  />
+                  <span :class="item.done ? 'line-through text-gray-400 font-medium' : 'text-black font-bold text-lg'">
+                    {{ item.text }}
+                  </span>
+                </label>
+                
+                <button 
+                  v-if="item.done"
+                  @click="removeCheck(i)"
+                  class="text-red-500 hover:scale-110 transition-transform px-2"
+                >
+                  <i class="pi pi-trash"></i>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -198,6 +208,10 @@ const addCheck = () => {
   if (!checkInput.value.trim()) return
   checklist.value.push({ text: checkInput.value, done: false })
   checkInput.value = ''
+}
+
+const removeCheck = (i: number) => {
+  checklist.value.splice(i, 1)
 }
 
 /* Dates */

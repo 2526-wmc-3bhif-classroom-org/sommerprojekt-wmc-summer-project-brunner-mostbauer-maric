@@ -123,7 +123,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useAuthStore } from '../stores/stores.js'
+import { useAuthStore } from '@/stores/authStore.ts'
 import NavbarLinks from './NavbarLinks.vue'
 import Menu from 'primevue/menu'
 

@@ -63,24 +63,27 @@
           <div class="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
 
             <!-- Top bar: title + search -->
-            <div class="px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100">
-              <div class="flex items-center gap-3">
-                <h2 class="text-lg font-bold text-slate-900">Übersicht</h2>
+            <div class="px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 bg-white">
+              <div class="flex items-center gap-3 group/title cursor-default">
+                <h2 class="text-lg font-bold text-slate-900 group-hover/title:text-blue-600 transition-colors relative">
+                  Übersicht
+                  <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 group-hover/title:w-full transition-all duration-300"></span>
+                </h2>
 
                 <!-- Result count -->
-                <span class="px-2.5 py-0.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-full">
+                <span class="px-2.5 py-0.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-full hover:bg-blue-100 hover:scale-105 transition-all cursor-help border border-transparent hover:border-blue-200">
                   {{ filteredSchools.length }} Einträge
                 </span>
               </div>
 
               <!-- Search input -->
-              <div class="relative w-full sm:w-64">
-                <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-sm"></i>
+              <div class="relative w-full sm:w-64 group/search">
+                <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-sm group-focus-within/search:text-blue-500 group-hover/search:text-slate-400 transition-colors"></i>
                 <input
                   v-model="search"
                   type="text"
                   placeholder="Suchen..."
-                  class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
+                  class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 focus:bg-white hover:bg-slate-100/50 transition-all shadow-sm hover:shadow"
                 />
               </div>
             </div>
@@ -99,12 +102,12 @@
               <table class="hidden md:table w-full text-left table-fixed border-separate border-spacing-0">
                 <thead>
                   <tr class="bg-slate-50 border-b border-gray-100">
-                    <th class="px-6 py-4 w-[6%] text-xs font-bold text-slate-400 uppercase tracking-widest">#</th>
-                    <th class="px-0 py-4 w-[13.5%] text-xs font-bold text-slate-400 uppercase tracking-widest">Fahrschule</th>
-                    <th class="px-0 py-4 w-[37%] text-xs font-bold text-slate-400 uppercase tracking-widest">Ort</th>
-                    <th class="px-6 py-4 w-[25%] text-xs font-bold text-slate-400 uppercase tracking-widest">Inhaber</th>
-                    <th class="px-6 py-4 w-[13%] text-xs font-bold text-slate-400 uppercase tracking-widest">Bewertung</th>
-                    <th class="px-6 py-4 w-[10%] text-xs font-bold text-slate-400 uppercase tracking-widest">Website</th>
+                    <th class="px-6 py-4 w-[6%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default">#</th>
+                    <th class="px-0 py-4 w-[13.5%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default">Fahrschule</th>
+                    <th class="px-0 py-4 w-[37%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default">Ort</th>
+                    <th class="px-6 py-4 w-[25%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default">Inhaber</th>
+                    <th class="px-6 py-4 w-[13%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default text-center">Bewertung</th>
+                    <th class="px-6 py-4 w-[10%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default text-right">Website</th>
                   </tr>
                 </thead>
 
@@ -192,7 +195,7 @@
     </div>
   </Background>
   <!-- Main page wrapper -->
-  
+
 
   <!-- Footer -->
   <FooterCmp></FooterCmp>
@@ -202,7 +205,6 @@
 import { ref, computed, onMounted } from 'vue'
 import DrivingSchoolLine from "@/components/DrivingSchoolLine.vue";
 import Background from '@/components/Background.vue';
-import CardMain from "@/components/CardMain.vue";
 import FooterCmp from '@/components/FooterCmp.vue';
 import HeaderMain from '@/components/HeaderMain.vue';
 import InfoStatsCard from "@/components/InfoStatsCard.vue";
