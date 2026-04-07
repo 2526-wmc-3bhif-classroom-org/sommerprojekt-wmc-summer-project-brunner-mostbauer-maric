@@ -27,8 +27,8 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = data.accessToken;
     user.value = data.user
 
-    localStorage.setItem('token', data.accessToken)
-    localStorage.setItem('user', JSON.stringify(data.user))
+    sessionStorage.setItem('token', data.accessToken)
+    sessionStorage.setItem('user', JSON.stringify(data.user))
   }
 
   async function register(userData: { userName: string; email: string; password: string }) {
@@ -48,8 +48,8 @@ export const useAuthStore = defineStore('auth', () => {
   function logout() {
     token.value = null
     user.value = null
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('user')
   }
 
   return { user, token, isAuthenticated, isAdmin, login, register, logout }
