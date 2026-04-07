@@ -36,6 +36,10 @@
                 required
                 class="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl text-black font-bold focus:bg-white focus:border-black transition-all outline-none shadow-sm"
               />
+              <span
+                v-if="!dateValid"
+                class="text-red-700 text-sm tracking-tight uppercase"
+              >Das Datumsformat ist nicht korrekt. (Datum muss in der Zukunft sein).</span>
             </div>
             <div>
               <label class="font-black text-lg mb-3 block text-black uppercase tracking-tight">Dein Lerntempo</label>
@@ -81,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Background from '@/components/Background.vue'
 import HeaderMain from '@/components/HeaderMain.vue'
@@ -98,9 +102,16 @@ const formData = reactive({
   schoolSearch: ''
 })
 
+const dateValid = ref(true)
+
 const submitForm = () => {
+  if (!formData.startDate || Number.isNaN(new Date(formData.startDate).getTime()) || new Date(formData.startDate).getTime() < new Date(Date.now()).getTime()) {
+    dateValid.value = false
+    return
+  }
+  dateValid.value = true
+
   console.log('Startformular gesendet:', formData)
-  // Hier könnte später die Logik zum Speichern in den Store folgen
   router.push('/dashboard')
 }
 </script>
