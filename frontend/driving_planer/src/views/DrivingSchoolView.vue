@@ -192,7 +192,7 @@
     </div>
   </Background>
   <!-- Main page wrapper -->
-  
+
 
   <!-- Footer -->
   <FooterCmp></FooterCmp>
@@ -202,7 +202,6 @@
 import { ref, computed, onMounted } from 'vue'
 import DrivingSchoolLine from "@/components/DrivingSchoolLine.vue";
 import Background from '@/components/Background.vue';
-import CardMain from "@/components/CardMain.vue";
 import FooterCmp from '@/components/FooterCmp.vue';
 import HeaderMain from '@/components/HeaderMain.vue';
 import InfoStatsCard from "@/components/InfoStatsCard.vue";

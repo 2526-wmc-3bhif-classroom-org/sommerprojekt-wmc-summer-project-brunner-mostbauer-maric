@@ -1,15 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../stores/stores.js'
-import Card from 'primevue/card'
-import InputText from 'primevue/inputtext'
-import Password from 'primevue/password'
-import Button from 'primevue/button'
-import Message from 'primevue/message'
+import { useAuthStore } from '@/stores/authStore.ts'
 import Background from "@/components/Background.vue";
 
-const router = useRouter()
 const authStore = useAuthStore()
 
 const email = ref('')
