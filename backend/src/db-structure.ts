@@ -22,7 +22,8 @@ export const buildTables = (connection: Database) => {
         Location TEXT,
         Owner TEXT,
         Email TEXT,
-        Website TEXT
+        Website TEXT,
+        Phone TEXT,
       );`,
       );
 

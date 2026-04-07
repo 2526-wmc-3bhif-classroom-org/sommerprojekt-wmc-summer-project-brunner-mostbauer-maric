@@ -114,11 +114,11 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
 
   function insertSchools(): void {
     const records = [
-      { Name: "Fahrschule SAFARI", Ort: "Ringstraße 48, 5280 Braunau am Inn", Inhaber: "DI (FH) Manuel Schwaiger", Email: "office@fs-safari.eu", Link: "http://www.fs-safari.at/" },
-      { Name: "Fahrschule Euroline", Ort: "Ehrenreiterweg 4, 4150 Rohrbach-Berg", Inhaber: "DI Thomas Leitner, MLBT", Email: "office@fahrschule-euroline.at", Link: "https://www.fahrschule-euroline.at" },
-      { Name: "ABS Fahrschule Mayr", Ort: "Am Brauteich 2, 4560 Kirchdorf", Inhaber: "Daniel Mayr", Email: "fahrschule@abs-club.at", Link: "https://absfahrschule.at" },
-      { Name: "startup®-fahrschule doppler", Ort: "Hauptstraße 77, 4040 Linz-Urfahr", Inhaber: "Christian Doppler", Email: "office@startup-doppler.at", Link: "https://www.startup-doppler.at/" },
-      { Name: "Fahrschule Easy Rieder", Ort: "Friedrich Thurnerstraße 7, 4910 Ried Im Innkreis", Inhaber: "Harald Rieder", Email: "office@easy-rieder.at", Link: "https://easy-rieder.at/" },
+      { Name: "Fahrschule SAFARI", Ort: "Ringstraße 48, 5280 Braunau am Inn", Inhaber: "DI (FH) Manuel Schwaiger", Email: "office@fs-safari.eu", Link: "http://www.fs-safari.at/", Phone: "+43 7742 318330" },
+      { Name: "Fahrschule Euroline", Ort: "Ehrenreiterweg 4, 4150 Rohrbach-Berg", Inhaber: "DI Thomas Leitner, MLBT", Email: "office@fahrschule-euroline.at", Link: "https://www.fahrschule-euroline.at", Phone:"+43 7289 4090" },
+      { Name: "ABS Fahrschule Mayr", Ort: "Am Brauteich 2, 4560 Kirchdorf", Inhaber: "Daniel Mayr", Email: "fahrschule@abs-club.at", Link: "https://absfahrschule.at", Phone:"+43 7582 60222" },
+      { Name: "startup®-fahrschule doppler", Ort: "Hauptstraße 77, 4040 Linz-Urfahr", Inhaber: "Christian Doppler", Email: "office@startup-doppler.at", Link: "https://www.startup-doppler.at/", Phone:"0664 60737 7000" },
+      { Name: "Fahrschule Easy Rieder", Ort: "Friedrich Thurnerstraße 7, 4910 Ried Im Innkreis", Inhaber: "Harald Rieder", Email: "office@easy-rieder.at", Link: "https://easy-rieder.at/", Phone:"+43 7752 71300" },
       { Name: "Fahrschule Donauland Neuhofen an der Krems", Ort: "Kirchengasse 8, 4501 Neuhofen an der Krems", Inhaber: "Ing. Mag. Werner Hackl", Email: "neuhofen@donauland.com", Link: "https://www.donauland.com/" },
       { Name: "Fahrschule Burgstaller Ried", Ort: "Friedrich-Thurner-Straße 10, 4910 Ried im Innkreis", Inhaber: "Ingrid & Johannes Burgstaller", Email: "ried@fahrschule-burgstaller.at", Link: "https://www.fahrschule-burgstaller.at/" },
       { Name: "Fahrschule YO-YO", Ort: "Rainerstraße 8, 4910 Ried Im Innkreis", Inhaber: "Joachim Maung", Email: "office@yo-yo.at", Link: "https://www.yo-yo.at/" },
@@ -194,7 +194,7 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
     ];
 
     const insertStmt = unit.prepare(
-      `INSERT INTO DrivingSchool (Name, Location, Owner, Email, Website)
+      `INSERT INTO DrivingSchool (Name, Location, Owner, Email, Website, Phone)
        VALUES (?, ?, ?, ?, ?)`,
     );
 
@@ -204,7 +204,8 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
         record.Ort,
         record.Inhaber,
         record.Email,
-        record.Link
+        record.Link,
+        record.Phone
       );
     }
   }
