@@ -1,7 +1,7 @@
 import {computed, ref} from 'vue'
 import {defineStore} from 'pinia'
 import type {AuthResponse, DrivingSchool, User} from '../types.js'
-
+import router from '../router'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!token.value)
   const isAdmin = computed(() => user.value?.Role === 'admin')
 
-  async function login(credentials: { email: string; password: string }) {
+  async function login(credentials: { email: string; password: string }, fromRegister: boolean = false) {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -29,6 +29,9 @@ export const useAuthStore = defineStore('auth', () => {
 
     sessionStorage.setItem('token', data.accessToken)
     sessionStorage.setItem('user', JSON.stringify(data.user))
+    if(!fromRegister) {
+      await router.push('/dashboard');
+    }
   }
 
   async function register(userData: { userName: string; email: string; password: string }) {
@@ -43,7 +46,8 @@ export const useAuthStore = defineStore('auth', () => {
       throw new Error(error.error?.message || 'Registration failed')
     }
 
-    await login({email: userData.email, password: userData.password})
+    await login({email: userData.email, password: userData.password}, true)
+    await router.push('/start')
   }
   function logout() {
     token.value = null
