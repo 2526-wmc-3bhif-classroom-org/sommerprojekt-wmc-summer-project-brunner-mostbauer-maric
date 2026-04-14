@@ -152,7 +152,8 @@ const links = [
   { to: '/', title: 'Zuhause', icon: 'pi-home' },
   { to: '/about', title: 'Über uns', icon: 'pi-info-circle' },
   { to: '/schools', title: 'Fahrschulen', icon: 'pi-book' },
-  { to: '/dashboard', title: 'Dashboard', icon: 'pi-chart-bar' }
+  { to: '/dashboard', title: 'Dashboard', icon: 'pi-chart-bar' },
+  { to: '/manage', title: 'Kursverwaltung', icon: 'pi-building' }
 ]
 
 // Dynamic menu items depending on login state

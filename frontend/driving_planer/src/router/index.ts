@@ -21,7 +21,7 @@ const router = createRouter({
       path: '/schools',
       name: 'schools',
       component: () => import('../views/DrivingSchoolView.vue'),
-      meta: { requiresAuth: true }, // only develop after release this needs to be true
+      meta: { requiresAuth: true },
     },
     {
       path: '/login',
@@ -45,6 +45,12 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('../views/Dashboard.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/manage',
+      name: 'manage',
+      component: () => import('../views/DrivingSchoolManageView.vue'),
       meta: { requiresAuth: true },
     },
   ],
