@@ -74,7 +74,13 @@
                   </span>
                   <p class="text-xs text-slate-400 mt-2 flex items-center gap-1.5">
                     <i class="pi pi-calendar text-[10px]"></i>
-                    {{ formatDate(course.date) }}
+                    {{ formatDate(course.dateFrom) }} – {{ formatDate(course.dateTo) }}
+                  </p>
+                  <p class="text-xs text-slate-400 mt-1 flex items-center flex-wrap gap-1">
+                    <span v-for="day in course.weekdays" :key="day" class="inline-flex items-center gap-1 bg-indigo-50 text-indigo-500 px-1.5 py-0.5 rounded-md font-semibold">{{ day }}</span>
+                    <span v-if="course.isSchnellkurs" class="inline-flex items-center gap-1 bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-md font-semibold">
+                      <i class="pi pi-bolt text-[9px]"></i> Schnellkurs
+                    </span>
                   </p>
                 </div>
 
@@ -214,16 +220,74 @@
               <p v-if="errors.licenseType" class="text-xs text-red-500 mt-1.5">{{ errors.licenseType }}</p>
             </div>
 
-            <!-- Date -->
+            <!-- Date range -->
             <div>
-              <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Kursdatum *</label>
-              <input
-                v-model="form.date"
-                type="date"
-                :min="todayISO"
-                class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
-              />
-              <p v-if="errors.date" class="text-xs text-red-500 mt-1.5">{{ errors.date }}</p>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Kurszeitraum *</label>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-semibold mb-1">Von</label>
+                  <input
+                    v-model="form.dateFrom"
+                    type="date"
+                    :min="todayISO"
+                    class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
+                  />
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-semibold mb-1">Bis</label>
+                  <input
+                    v-model="form.dateTo"
+                    type="date"
+                    :min="form.dateFrom || todayISO"
+                    class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
+                  />
+                </div>
+              </div>
+              <p v-if="errors.dateFrom" class="text-xs text-red-500 mt-1.5">{{ errors.dateFrom }}</p>
+              <p v-if="errors.dateTo" class="text-xs text-red-500 mt-1">{{ errors.dateTo }}</p>
+            </div>
+
+            <!-- Wochentage -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Wochentage</label>
+              <div class="grid grid-cols-3 gap-2">
+                <label
+                  v-for="day in allWeekdays"
+                  :key="day"
+                  class="flex items-center gap-2 cursor-pointer select-none"
+                >
+                  <div
+                    @click="toggleWeekday(day)"
+                    class="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0"
+                    :class="form.weekdays.includes(day) ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-gray-300 hover:border-indigo-400'"
+                  >
+                    <i v-if="form.weekdays.includes(day)" class="pi pi-check text-white text-[10px]"></i>
+                  </div>
+                  <span class="text-sm text-slate-700 font-semibold">{{ day }}</span>
+                </label>
+              </div>
+              <p v-if="errors.weekdays" class="text-xs text-red-500 mt-1.5">{{ errors.weekdays }}</p>
+            </div>
+
+            <!-- Schnellkurs -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Kursart</label>
+              <label class="flex items-center gap-3 cursor-pointer select-none group w-fit">
+                <div
+                  @click="form.isSchnellkurs = !form.isSchnellkurs"
+                  class="relative w-11 h-6 rounded-full border-2 transition-all duration-200 flex items-center"
+                  :class="form.isSchnellkurs ? 'bg-amber-500 border-amber-500' : 'bg-slate-100 border-gray-300 group-hover:border-amber-300'"
+                >
+                  <div
+                    class="absolute w-4 h-4 rounded-full bg-white shadow transition-all duration-200"
+                    :class="form.isSchnellkurs ? 'translate-x-5' : 'translate-x-0.5'"
+                  ></div>
+                </div>
+                <span class="text-sm font-semibold" :class="form.isSchnellkurs ? 'text-amber-600' : 'text-slate-500'">
+                  <i class="pi pi-bolt text-xs mr-1"></i>
+                  Schnellkurs
+                </span>
+              </label>
             </div>
 
             <!-- Price + Max participants -->
@@ -311,7 +375,10 @@ import InfoStatsCard from '@/components/InfoStatsCard.vue'
 interface Course {
   id: number
   licenseType: string
-  date: string
+  dateFrom: string
+  dateTo: string
+  weekdays: string[]
+  isSchnellkurs: boolean
   price: number
   maxParticipants: number
   currentParticipants: number
@@ -320,9 +387,9 @@ interface Course {
 /* ── Mock data — swap with API calls later ── */
 let nextId = 4
 const courses = ref<Course[]>([
-  { id: 1, licenseType: 'B',  date: '2027-06-15', price: 2500, maxParticipants: 20, currentParticipants: 14 },
-  { id: 2, licenseType: 'A',  date: '2027-07-01', price: 3200, maxParticipants: 10, currentParticipants: 10 },
-  { id: 3, licenseType: 'BE', date: '2027-08-20', price: 1800, maxParticipants: 15, currentParticipants: 3  },
+  { id: 1, licenseType: 'B',  dateFrom: '2027-06-15', dateTo: '2027-06-28', weekdays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'], isSchnellkurs: false, price: 2500, maxParticipants: 20, currentParticipants: 14 },
+  { id: 2, licenseType: 'A',  dateFrom: '2027-07-01', dateTo: '2027-07-14', weekdays: ['Mo', 'Mi', 'Fr', 'Sa'],              isSchnellkurs: true,  price: 3200, maxParticipants: 10, currentParticipants: 10 },
+  { id: 3, licenseType: 'BE', dateFrom: '2027-08-20', dateTo: '2027-09-05', weekdays: ['Di', 'Do'],                          isSchnellkurs: false, price: 1800, maxParticipants: 15, currentParticipants: 3  },
 ])
 
 /* ── Filter ── */
@@ -340,6 +407,7 @@ const uniqueLicenses    = computed(() => new Set(courses.value.map(c => c.licens
 
 /* ── Static data ── */
 const licenseClasses = ['A', 'A1', 'A2', 'AM', 'B', 'BE', 'C', 'C1', 'CE', 'D', 'D1', 'DE']
+const allWeekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
 
 /* ── Helpers ── */
 function formatDate(d: string) {
@@ -380,7 +448,13 @@ function statusPill(c: Course) {
 /* ── Modal ── */
 const showModal = ref(false)
 const editingId = ref<number | null>(null)
-const emptyForm = () => ({ licenseType: '', date: '', price: 0, maxParticipants: 20, currentParticipants: 0 })
+const emptyForm = () => ({ licenseType: '', dateFrom: '', dateTo: '', weekdays: [] as string[], isSchnellkurs: false, price: 0, maxParticipants: 20, currentParticipants: 0 })
+
+function toggleWeekday(day: string) {
+  const idx = form.value.weekdays.indexOf(day)
+  if (idx === -1) form.value.weekdays.push(day)
+  else form.value.weekdays.splice(idx, 1)
+}
 const form = ref(emptyForm())
 const errors = ref<Record<string, string>>({})
 
@@ -392,10 +466,18 @@ function validate() {
   if (!form.value.licenseType) {
     e.licenseType = 'Bitte eine Klasse auswählen.'
   }
-  if (!form.value.date) {
-    e.date = 'Bitte ein Datum angeben.'
-  } else if (form.value.date < todayISO) {
-    e.date = 'Das Datum darf nicht in der Vergangenheit liegen.'
+  if (form.value.weekdays.length === 0) {
+    e.weekdays = 'Bitte mindestens einen Wochentag auswählen.'
+  }
+  if (!form.value.dateFrom) {
+    e.dateFrom = 'Bitte ein Startdatum angeben.'
+  } else if (form.value.dateFrom < todayISO) {
+    e.dateFrom = 'Startdatum darf nicht in der Vergangenheit liegen.'
+  }
+  if (!form.value.dateTo) {
+    e.dateTo = 'Bitte ein Enddatum angeben.'
+  } else if (form.value.dateTo < (form.value.dateFrom || todayISO)) {
+    e.dateTo = 'Enddatum muss nach dem Startdatum liegen.'
   }
   if (form.value.price <= 0) {
     e.price = 'Preis muss größer als 0 sein.'
@@ -405,6 +487,8 @@ function validate() {
   }
   if (form.value.currentParticipants < 0) {
     e.currentParticipants = 'Aktuelle Teilnehmeranzahl darf nicht negativ sein.'
+  } else if (form.value.currentParticipants > form.value.maxParticipants) {
+    e.currentParticipants = `Aktuelle Teilnehmeranzahl darf nicht größer als die maximale Teilnehmeranzahl (${form.value.maxParticipants}) sein.`
   }
   errors.value = e
   return Object.keys(e).length === 0
