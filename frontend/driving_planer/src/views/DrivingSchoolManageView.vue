@@ -220,6 +220,7 @@
               <input
                 v-model="form.date"
                 type="date"
+                :min="todayISO"
                 class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
               />
               <p v-if="errors.date" class="text-xs text-red-500 mt-1.5">{{ errors.date }}</p>
@@ -261,11 +262,12 @@
                 :max="form.maxParticipants"
                 class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
               />
+              <p v-if="errors.currentParticipants" class="text-xs text-red-500 mt-1.5">{{ errors.currentParticipants }}</p>
             </div>
           </div>
 
           <!-- Actions -->
-          <div class="flex gap-3 mt-8">
+          <div class="flex gap-3 mt-10">
             <button @click="closeModal" class="flex-1 py-3.5 rounded-xl border border-gray-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all">
               Abbrechen
             </button>
@@ -318,9 +320,9 @@ interface Course {
 /* ── Mock data — swap with API calls later ── */
 let nextId = 4
 const courses = ref<Course[]>([
-  { id: 1, licenseType: 'B',  date: '2025-06-15', price: 2500, maxParticipants: 20, currentParticipants: 14 },
-  { id: 2, licenseType: 'A',  date: '2025-07-01', price: 3200, maxParticipants: 10, currentParticipants: 10 },
-  { id: 3, licenseType: 'BE', date: '2025-08-20', price: 1800, maxParticipants: 15, currentParticipants: 3  },
+  { id: 1, licenseType: 'B',  date: '2027-06-15', price: 2500, maxParticipants: 20, currentParticipants: 14 },
+  { id: 2, licenseType: 'A',  date: '2027-07-01', price: 3200, maxParticipants: 10, currentParticipants: 10 },
+  { id: 3, licenseType: 'BE', date: '2027-08-20', price: 1800, maxParticipants: 15, currentParticipants: 3  },
 ])
 
 /* ── Filter ── */
@@ -382,12 +384,28 @@ const emptyForm = () => ({ licenseType: '', date: '', price: 0, maxParticipants:
 const form = ref(emptyForm())
 const errors = ref<Record<string, string>>({})
 
+/* ── Computed today string for min-date ── */
+const todayISO = new Date().toISOString().split('T')[0]
+
 function validate() {
   const e: Record<string, string> = {}
-  if (!form.value.licenseType)      e.licenseType     = 'Bitte eine Klasse auswählen.'
-  if (!form.value.date)             e.date            = 'Bitte ein Datum angeben.'
-  if (form.value.price < 0)         e.price           = 'Preis muss ≥ 0 sein.'
-  if (form.value.maxParticipants < 1) e.maxParticipants = 'Mindestens 1 Teilnehmer.'
+  if (!form.value.licenseType) {
+    e.licenseType = 'Bitte eine Klasse auswählen.'
+  }
+  if (!form.value.date) {
+    e.date = 'Bitte ein Datum angeben.'
+  } else if (form.value.date < todayISO) {
+    e.date = 'Das Datum darf nicht in der Vergangenheit liegen.'
+  }
+  if (form.value.price <= 0) {
+    e.price = 'Preis muss größer als 0 sein.'
+  }
+  if (form.value.maxParticipants < 1) {
+    e.maxParticipants = 'Mindestens 1 Teilnehmer erforderlich.'
+  }
+  if (form.value.currentParticipants < 0) {
+    e.currentParticipants = 'Aktuelle Teilnehmeranzahl darf nicht negativ sein.'
+  }
   errors.value = e
   return Object.keys(e).length === 0
 }
