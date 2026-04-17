@@ -9,6 +9,7 @@ const userName = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const isDrivingSchool = ref(false)
 const error = ref('')
 const loading = ref(false)
 
@@ -24,7 +25,7 @@ async function handleRegister() {
   error.value = ''
   loading.value = true
   try {
-    await authStore.register({ userName: userName.value, email: email.value, password: password.value })
+    await authStore.register({ userName: userName.value, email: email.value, password: password.value, isDrivingSchool: isDrivingSchool.value })
   } catch (e: any) {
     error.value = e.message || 'Registrierung fehlgeschlagen.'
   } finally {
@@ -102,6 +103,22 @@ async function handleRegister() {
               <i :class="['pi', showConfirmPassword ? 'pi-eye-slash' : 'pi-eye']"></i>
             </button>
           </div>
+
+          <label class="flex items-center gap-3 text-white/70 cursor-pointer">
+            <div
+              v-motion
+              :tap="{ scale: 0.9 }"
+              :initial="{ scale: 1 }"
+              class="relative"
+            >
+              <input
+                v-model="isDrivingSchool"
+                type="checkbox"
+                class="w-5 h-5 rounded border-2 border-white/20 bg-white/5 text-lime-500 focus:ring-lime-500 focus:ring-offset-0 cursor-pointer accent-lime-500"
+              />
+            </div>
+            <span class="text-sm">Ich bin eine Fahrschule</span>
+          </label>
 
           <p v-if="error" class="text-red-500 text-xs font-bold uppercase tracking-widest mt-2">
             {{ error }}
