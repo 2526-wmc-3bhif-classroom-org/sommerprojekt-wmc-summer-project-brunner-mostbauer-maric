@@ -12,12 +12,27 @@ const loading = ref(false)
 const showPassword = ref(false)
 
 async function handleLogin() {
+  if (!email.value || !password.value) {
+    error.value = 'Bitte fülle alle Felder aus.'
+    return
+  }
+  if (!email.value.includes('@')) {
+    error.value = 'Bitte gib eine gültige Email-Adresse ein.'
+    return
+  }
   error.value = ''
   loading.value = true
   try {
     await authStore.login({ email: email.value, password: password.value })
   } catch (e: any) {
-    error.value = 'Login hat nicht funktioniert. Bitte überprüfe deine Anmeldedaten.'
+    console.error('Login error:', e)
+    if (e.message.includes('User does not exist')) {
+      error.value = 'Dieses Konto existiert nicht. Bitte registriere dich zuerst.'
+    } else if (e.message.includes('Wrong password') || e.message.toLowerCase().includes('unauthorized')) {
+      error.value = 'Das Passwort ist falsch. Bitte versuche es erneut.'
+    } else {
+      error.value = 'Anmeldung fehlgeschlagen: ' + e.message
+    }
   } finally {
     loading.value = false
   }
@@ -47,7 +62,7 @@ async function handleLogin() {
           <div class="w-full relative">
             <input
               v-model="email"
-              type="email"
+              type="text"
               placeholder="Email"
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl hover:bg-white/10"
             />

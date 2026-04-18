@@ -18,6 +18,14 @@ const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
 async function handleRegister() {
+  if (!userName.value || !email.value || !password.value || !confirmPassword.value) {
+    error.value = 'Bitte fülle alle Felder aus.'
+    return
+  }
+  if (!email.value.includes('@')) {
+    error.value = 'Bitte gib eine gültige Email-Adresse ein.'
+    return
+  }
   if (password.value !== confirmPassword.value) {
     error.value = 'Die Passwörter stimmen nicht überein.'
     return
@@ -27,7 +35,12 @@ async function handleRegister() {
   try {
     await authStore.register({ userName: userName.value, email: email.value, password: password.value, isDrivingSchool: isDrivingSchool.value })
   } catch (e: any) {
-    error.value = e.message || 'Registrierung fehlgeschlagen.'
+    console.error('Registration error:', e)
+    if (e.message.includes('User already exists')) {
+      error.value = 'Ein Konto mit dieser Email existiert bereits.'
+    } else {
+      error.value = 'Registrierung fehlgeschlagen: ' + e.message
+    }
   } finally {
     loading.value = false
   }
@@ -64,7 +77,7 @@ async function handleRegister() {
 
           <input
             v-model="email"
-            type="email"
+            type="text"
             placeholder="Email"
             class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl hover:bg-white/10"
             required

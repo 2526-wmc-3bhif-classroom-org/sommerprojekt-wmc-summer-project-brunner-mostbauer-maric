@@ -24,8 +24,14 @@ export const useAuthStore = defineStore('auth', () => {
     })
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.error?.message || 'Login failed')
+      let errorMessage = 'Login failed';
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error?.message || errorMessage;
+      } catch (e) {
+        // Fallback if JSON parsing fails
+      }
+      throw new Error(errorMessage)
     }
 
     const data: AuthResponse = await response.json()
@@ -34,6 +40,11 @@ export const useAuthStore = defineStore('auth', () => {
 
     sessionStorage.setItem('token', data.accessToken)
     sessionStorage.setItem('user', JSON.stringify(data.user))
+    
+    // Also update localStorage to match the ref initialization logic
+    localStorage.setItem('token', data.accessToken)
+    localStorage.setItem('user', JSON.stringify(data.user))
+    
     if(!fromRegister) {
       if(data.user.Role === UserRole.ADMIN || data.user.Role === UserRole.USER) {
         await router.push('/dashboard');
@@ -48,12 +59,23 @@ export const useAuthStore = defineStore('auth', () => {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(userData)
+      body: JSON.stringify({
+        userName: userData.userName,
+        email: userData.email,
+        password: userData.password,
+        isSchool: userData.isDrivingSchool
+      })
     })
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.error?.message || 'Registration failed')
+      let errorMessage = 'Registration failed';
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error?.message || errorMessage;
+      } catch (e) {
+        // Fallback if JSON parsing fails
+      }
+      throw new Error(errorMessage)
     }
 
     const role: UserRole = await login({email: userData.email, password: userData.password}, true)
@@ -69,6 +91,9 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
     sessionStorage.removeItem('token')
     sessionStorage.removeItem('user')
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    router.push('/login')
   }
 
   return { user, token, isAuthenticated, isAdmin, login, register, logout }
