@@ -40,7 +40,7 @@
               :key="i"
               :index="i"
               title="Effizient"
-              :description="`${schools.filter(s => s.link).length} mit Website`"
+              :description="`${schools.filter(s => s.Website).length} mit Website`"
               icon="pi pi-link"
               iconColor="text-violet-500"
               borderColor="border-violet-500"
@@ -135,20 +135,20 @@
                     <span class="text-[10px] font-bold text-blue-500 uppercase tracking-tight">#{{ i + 1 }}</span>
 
                     <!-- External link (if available) -->
-                    <a v-if="school.link" :href="school.link" target="_blank" @click.stop class="text-blue-500 text-sm p-1">
+                    <a v-if="school.Website" :href="school.Website" target="_blank" @click.stop class="text-blue-500 text-sm p-1">
                       <i class="pi pi-external-link"></i>
                     </a>
                   </div>
 
                   <!-- Basic info -->
-                  <h3 class="font-bold text-slate-900">{{ school.name }}</h3>
+                  <h3 class="font-bold text-slate-900">{{ school.Name }}</h3>
                   <p class="text-sm text-slate-500 flex items-center gap-1 mt-1">
-                    <i class="pi pi-map-marker text-[10px]"></i> {{ school.ort }}
+                    <i class="pi pi-map-marker text-[10px]"></i> {{ school.Location }}
                   </p>
 
                   <!-- Owner + rating -->
                   <div class="flex items-center justify-between mt-4">
-                    <span class="text-xs text-slate-400 italic">{{ school.inhaber }}</span>
+                    <span class="text-xs text-slate-400 italic">{{ school.Owner }}</span>
 
                     <!-- Interactive star rating -->
                     <div class="flex gap-1">
@@ -208,15 +208,14 @@ import Background from '@/components/Background.vue';
 import FooterCmp from '@/components/FooterCmp.vue';
 import HeaderMain from '@/components/HeaderMain.vue';
 import InfoStatsCard from "@/components/InfoStatsCard.vue";
+import {useSchoolStore} from "@/stores/schoolStore.ts";
+import type {DrivingSchool} from "@/types.ts";
+
+const schoolStore = useSchoolStore();
+
 
 /* Data model for a driving school */
-interface Fahrschule {
-  name: string
-  ort: string
-  inhaber: string
-  email: string
-  link: string
-
+interface WebsiteDrivingSchool extends DrivingSchool{
   /* UI state fields */
   rating?: number
   comment?: string
@@ -224,9 +223,14 @@ interface Fahrschule {
 }
 
 /* Reactive state */
-const schools = ref<Fahrschule[]>([])
+const schools = ref<WebsiteDrivingSchool[]>([]);
 const loadingError = ref(false)
 const search = ref('')
+
+/* Sync with store after fetch */
+const syncSchools = () => {
+  schools.value = schoolStore.schools as WebsiteDrivingSchool[]
+}
 
 /* Filtered list based on search input */
 const filteredSchools = computed(() => {
@@ -235,52 +239,22 @@ const filteredSchools = computed(() => {
   const q = search.value.toLowerCase()
 
   return schools.value.filter(s =>
-    s.name.toLowerCase().includes(q) ||
-    s.ort.toLowerCase().includes(q) ||
-    s.inhaber.toLowerCase().includes(q)
+    s.Name.toLowerCase().includes(q) ||
+    s.Location?.toLowerCase().includes(q) ||
+    s.Owner?.toLowerCase().includes(q)
   )
 })
 
 /* Count unique locations */
 const uniqueOrte = computed(() =>
-  new Set(schools.value.map(s => s.ort).filter(Boolean)).size
+  new Set(schools.value.map(s => s.Location).filter(Boolean)).size
 )
 
-/* Load and parse CSV data */
-async function loadCSV() {
-  try {
-    const response = await fetch('/driving_schools.csv')
-    if (!response.ok) throw new Error('Daten nicht gefunden')
-
-    const text = await response.text()
-    const lines = text.trim().split('\n')
-
-    /* Convert CSV rows into objects */
-    schools.value = lines.slice(1).map(line => {
-      const col = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || []
-
-      return {
-        name: col[0]?.replace(/"/g, '') || '',
-        ort: col[1]?.replace(/"/g, '') || '',
-        inhaber: col[2]?.replace(/"/g, '') || '',
-        email: col[3]?.replace(/"/g, '') || '',
-        link: col[4]?.replace(/"/g, '') || '',
-
-        /* Initialize UI-related fields */
-        rating: 0,
-        comment: '',
-        isExpanded: false
-      }
-    }).filter(s => s.name)
-
-  } catch (e) {
-    console.error(e)
-
-    /* Trigger error UI */
+onMounted(async () => {
+  await schoolStore.fetchSchools()
+  syncSchools()
+  if (schoolStore.error) {
     loadingError.value = true
   }
-}
-
-/* Load data on component mount */
-onMounted(() => loadCSV())
+})
 </script>

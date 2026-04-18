@@ -1,12 +1,13 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
+import {type Ref, ref} from "vue";
 import type {DrivingSchool} from "@/types.ts";
 import {useAuthStore} from "@/stores/authStore.ts";
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 export const useSchoolStore = defineStore('schools', () => {
-  const schools = ref<DrivingSchool[]>([])
+  const schools: Ref<DrivingSchool[]> = ref<DrivingSchool[]>([])
   const countOfSchools = ref<number>(0)
+  const error = ref<string | null>(null)
 
   async function fetchSchools() {
     const authStore = useAuthStore()
@@ -23,6 +24,7 @@ export const useSchoolStore = defineStore('schools', () => {
       }
       schools.value = await response.json()
     } catch (e) {
+      error.value = 'Fehler beim Laden der Fahrschulen'
       console.error('Failed to fetch schools:', e)
     }
   }
@@ -37,5 +39,5 @@ export const useSchoolStore = defineStore('schools', () => {
       console.error('Failed to fetch schools count:', e)
     }
   }
-  return { schools, countOfSchools, fetchSchools, fetchSchoolCount }
+  return { schools, countOfSchools, error, fetchSchools, fetchSchoolCount }
 })
