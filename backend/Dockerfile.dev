@@ -13,5 +13,5 @@ COPY . .
 
 EXPOSE 3000
 
-# Start with tsx watch/auto-reload if available, or just standard start
-CMD ["npm", "start"]
+# Start with tsx watch/auto-reload
+CMD ["npm", "run", "dev"]

@@ -83,6 +83,6 @@ app.get("/", (req: Request, res: Response) => {
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
-    console.log("http://localhost:" + PORT);
+    console.log("Backend running on: http://localhost:" + PORT);
   });
 }

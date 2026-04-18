@@ -39,4 +39,15 @@ export class UserRepository {
       .run(userName, email, passwordHash, role, isSchool ? 1 : 0);
     return result.lastInsertRowid as number;
   }
+
+  public getAll(unit: Unit): User[] {
+    return unit.prepare<User>("SELECT * FROM User").all();
+  }
+
+  public delete(unit: Unit, userId: number): boolean {
+    const result = unit
+      .prepare("DELETE FROM User WHERE UserId = ?")
+      .run(userId);
+    return result.changes > 0;
+  }
 }
