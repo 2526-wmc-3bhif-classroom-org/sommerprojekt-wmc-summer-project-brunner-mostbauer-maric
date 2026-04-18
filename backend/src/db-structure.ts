@@ -11,8 +11,7 @@ export const buildTables = (connection: Database) => {
         UserName TEXT NOT NULL,
         Email TEXT NOT NULL UNIQUE,
         PasswordHash TEXT NOT NULL,
-        Role TEXT NOT NULL DEFAULT 'user',
-        IsSchool INTEGER NOT NULL DEFAULT 0
+        Role TEXT NOT NULL DEFAULT 'user'
       );`,
       );
 

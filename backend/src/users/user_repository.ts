@@ -7,7 +7,6 @@ export interface User {
   Email: string;
   PasswordHash: string;
   Role: UserRole;
-  IsSchool: number; // 0 for false, 1 for true
 }
 
 export class UserRepository {
@@ -33,10 +32,10 @@ export class UserRepository {
       .get(email);
   }
 
-  public create(unit: Unit, userName: string, email: string, passwordHash: string, role: UserRole, isSchool: boolean = false): number {
+  public create(unit: Unit, userName: string, email: string, passwordHash: string, role: UserRole): number {
     const result = unit
-      .prepare("INSERT INTO User (UserName, Email, PasswordHash, Role, IsSchool) VALUES (?, ?, ?, ?, ?)")
-      .run(userName, email, passwordHash, role, isSchool ? 1 : 0);
+      .prepare("INSERT INTO User (UserName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?)")
+      .run(userName, email, passwordHash, role);
     return result.lastInsertRowid as number;
   }
 

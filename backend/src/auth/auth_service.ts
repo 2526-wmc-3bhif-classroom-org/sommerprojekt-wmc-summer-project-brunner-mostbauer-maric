@@ -40,7 +40,7 @@ export class AuthService {
         UserName: user.UserName,
         Email: user.Email,
         Role: user.Role,
-        IsSchool: user.IsSchool === 1
+        IsSchool: user.Role === UserRole.SCHOOL
       };
 
       const token = jwt.sign({ user: userClaims }, SECRET_KEY, { expiresIn: "30m" });
@@ -76,7 +76,7 @@ export class AuthService {
 
       const passwordHash = bcrypt.hashSync(password, 10);
       const finalRole = isSchool ? UserRole.SCHOOL : role;
-      const userId = this.repo.create(unit, userName, email, passwordHash, finalRole, isSchool);
+      const userId = this.repo.create(unit, userName, email, passwordHash, finalRole);
 
       success = true;
       return {
@@ -86,7 +86,7 @@ export class AuthService {
           UserName: userName,
           Email: email,
           Role: finalRole,
-          IsSchool: isSchool
+          IsSchool: finalRole === UserRole.SCHOOL
         }
       };
     } catch (e: any) {

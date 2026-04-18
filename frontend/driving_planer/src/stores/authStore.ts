@@ -14,7 +14,9 @@ export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem('token'))
 
   const isAuthenticated = computed(() => !!token.value)
-  const isAdmin = computed(() => user.value?.Role === 'admin')
+  const isAdmin = computed(() => user.value?.Role === UserRole.ADMIN)
+  const isSchool = computed(() => user.value?.Role === UserRole.SCHOOL)
+  const isStudent = computed(() => user.value?.Role === UserRole.USER)
 
   async function login(credentials: { email: string; password: string }, fromRegister: boolean = false) : Promise<UserRole>{
     const response = await fetch(`${API_URL}/auth/login`, {
@@ -96,5 +98,5 @@ export const useAuthStore = defineStore('auth', () => {
     router.push('/login')
   }
 
-  return { user, token, isAuthenticated, isAdmin, login, register, logout }
+  return { user, token, isAuthenticated, isAdmin, isSchool, isStudent, login, register, logout }
 })
