@@ -35,11 +35,15 @@ authRouter.post("/login", async (req, res) => {
     return;
   }
 
-  const result = await authService.login(email, password);
-  if (result.error) {
-    res.status(result.status).json({ error: result.error });
-  } else {
-    res.status(result.status).json(result.data);
+  try {
+    const result = await authService.login(email, password);
+    if (result.error) {
+      res.status(result.status).json({ error: result.error });
+    } else {
+      res.status(result.status).json(result.data);
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: { message: error.message || "Internal Server Error" } });
   }
 });
 
@@ -65,6 +69,8 @@ authRouter.post("/login", async (req, res) => {
  *                 type: string
  *               role:
  *                 type: string
+ *               isSchool:
+ *                 type: boolean
  *     responses:
  *       201:
  *         description: User created
@@ -74,16 +80,20 @@ authRouter.post("/login", async (req, res) => {
  *         description: Conflict
  */
 authRouter.post("/register", async (req, res) => {
-  const { userName, email, password, role } = req.body;
+  const { userName, email, password, role, isSchool } = req.body;
   if (!userName || !email || !password) {
     res.status(400).json({ error: { message: "Username, email and password are required" } });
     return;
   }
 
-  const result = await authService.register(userName, email, password, role);
-  if (result.error) {
-    res.status(result.status).json({ error: result.error });
-  } else {
-    res.status(result.status).json({ data: result.data });
+  try {
+    const result = await authService.register(userName, email, password, role, isSchool);
+    if (result.error) {
+      res.status(result.status).json({ error: result.error });
+    } else {
+      res.status(result.status).json({ data: result.data });
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: { message: error.message || "Internal Server Error" } });
   }
 });

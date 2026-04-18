@@ -3,6 +3,7 @@
 export enum UserRole {
   ADMIN = "admin",
   USER = "user",
+  SCHOOL = "school",
 }
 
 export interface DrivingSchool {

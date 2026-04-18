@@ -37,8 +37,10 @@ export class AuthService {
 
       const userClaims = {
         UserId: user.UserId,
+        UserName: user.UserName,
         Email: user.Email,
-        Role: user.Role
+        Role: user.Role,
+        IsSchool: user.IsSchool === 1
       };
 
       const token = jwt.sign({ user: userClaims }, SECRET_KEY, { expiresIn: "30m" });
@@ -59,7 +61,7 @@ export class AuthService {
     }
   }
 
-  public async register(userName: string, email: string, password: string, role: UserRole = UserRole.USER) {
+  public async register(userName: string, email: string, password: string, role: UserRole = UserRole.USER, isSchool: boolean = false) {
     const unit = new Unit(false);
     let success = false;
     try {
@@ -73,7 +75,8 @@ export class AuthService {
       }
 
       const passwordHash = bcrypt.hashSync(password, 10);
-      const userId = this.repo.create(unit, userName, email, passwordHash, role);
+      const finalRole = isSchool ? UserRole.SCHOOL : role;
+      const userId = this.repo.create(unit, userName, email, passwordHash, finalRole, isSchool);
 
       success = true;
       return {
@@ -82,7 +85,8 @@ export class AuthService {
           UserId: userId,
           UserName: userName,
           Email: email,
-          Role: role
+          Role: finalRole,
+          IsSchool: isSchool
         }
       };
     } catch (e: any) {
