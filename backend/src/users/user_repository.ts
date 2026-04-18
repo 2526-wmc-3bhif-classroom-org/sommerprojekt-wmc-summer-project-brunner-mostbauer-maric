@@ -49,4 +49,11 @@ export class UserRepository {
       .run(userId);
     return result.changes > 0;
   }
+
+  public update(unit: Unit, userId: number, userName: string, email: string): boolean {
+    const result = unit
+      .prepare("UPDATE User SET UserName = ?, Email = ? WHERE UserId = ?")
+      .run(userName, email, userId);
+    return result.changes > 0;
+  }
 }

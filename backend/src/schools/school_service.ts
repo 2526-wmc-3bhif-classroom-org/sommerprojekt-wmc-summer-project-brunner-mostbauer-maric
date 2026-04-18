@@ -1,6 +1,8 @@
 import { SchoolRepository } from "./school_repository.js";
 import { Unit } from "../unit.js";
 import type { DrivingSchool } from "../models/types.js";
+import { StatusCodes } from "http-status-codes";
+import type { ServiceResult } from "../users/user_service.js";
 
 export class SchoolService {
   private static instance: SchoolService | null = null;
@@ -22,10 +24,33 @@ export class SchoolService {
     }
   }
 
-  public getSchoolById(id: number): DrivingSchool | undefined {
+  public getSchoolById(id: number): ServiceResult<DrivingSchool> {
+    if (isNaN(id)) {
+      return {
+        status: StatusCodes.BAD_REQUEST,
+        error: { message: "Invalid schoolId" },
+      };
+    }
+
     const unit = Unit.createReadonly();
     try {
-      return this.schoolRepo.getById(unit, id);
+      const school = this.schoolRepo.getById(unit, id);
+      if (school) {
+        return {
+          status: StatusCodes.OK,
+          data: school,
+        };
+      } else {
+        return {
+          status: StatusCodes.NOT_FOUND,
+          error: { message: "School not found" },
+        };
+      }
+    } catch (e: any) {
+      return {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        error: { message: e.message },
+      };
     } finally {
       unit.complete();
     }

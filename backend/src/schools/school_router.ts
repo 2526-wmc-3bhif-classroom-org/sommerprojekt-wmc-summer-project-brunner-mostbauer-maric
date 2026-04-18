@@ -125,19 +125,11 @@ schoolRouter.get("/count", (req, res) => {
 schoolRouter.get("/:schoolId", isAuthenticated, (req, res) => {
   try {
     const id = parseInt(req.params.schoolId);
-    if (isNaN(id)) {
-      res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: { message: "Invalid schoolId" } });
-      return;
-    }
-    const school = schoolService.getSchoolById(id);
-    if (school) {
-      res.status(StatusCodes.OK).json(school);
+    const result = schoolService.getSchoolById(id);
+    if (result.error) {
+      res.status(result.status).json({ error: result.error });
     } else {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: { message: "School not found" } });
+      res.status(result.status).json(result.data);
     }
   } catch (error) {
     res
