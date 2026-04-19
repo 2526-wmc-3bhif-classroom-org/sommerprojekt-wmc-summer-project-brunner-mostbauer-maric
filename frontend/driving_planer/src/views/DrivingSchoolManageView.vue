@@ -183,7 +183,7 @@
 
     <!-- ── Create / Edit Modal ── -->
     <Transition name="modal">
-      <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div v-if="showModal" class="fixed inset-0 z-9999 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="closeModal"></div>
 
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 z-10">
