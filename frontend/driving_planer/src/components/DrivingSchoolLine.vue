@@ -17,7 +17,7 @@
           <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-100 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
             <i class="pi pi-car text-sm"></i>
           </div>
-          <span class="font-bold text-slate-700 truncate group-hover:text-blue-600 transition-colors">{{ school.Name }}</span>
+          <span class="font-bold text-slate-700 group-hover:text-blue-600 transition-colors">{{ school.Name }}</span>
         </div>
       </td>
 

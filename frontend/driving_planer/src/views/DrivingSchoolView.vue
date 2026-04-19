@@ -103,8 +103,8 @@
                 <thead>
                   <tr class="bg-slate-50 border-b border-gray-100">
                     <th class="px-6 py-4 w-[6%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default">#</th>
-                    <th class="px-0 py-4 w-[13.5%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default">Fahrschule</th>
-                    <th class="px-0 py-4 w-[37%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default">Ort</th>
+                    <th class="px-0 py-4 w-[22%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default">Fahrschule</th>
+                    <th class="px-0 py-4 w-[28.5%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default">Ort</th>
                     <th class="px-6 py-4 w-[25%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default">Inhaber</th>
                     <th class="px-6 py-4 w-[13%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default text-center">Bewertung</th>
                     <th class="px-6 py-4 w-[10%] text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-blue-500 transition-colors cursor-default text-right">Website</th>
