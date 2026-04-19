@@ -22,6 +22,8 @@ if [ $? -eq 0 ]; then
         echo "Frontend: http://localhost:8080"
     fi
     echo "Backend: http://localhost:3000"
+
+    echo "You can see the logs using: docker compose -f $COMPOSE_FILE logs -f"
 else
     echo "Failed to start network."
     exit 1
