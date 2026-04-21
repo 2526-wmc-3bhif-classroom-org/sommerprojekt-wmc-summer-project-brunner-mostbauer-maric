@@ -210,6 +210,44 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
     }
   }
 
+  function programsAlreadyPresent(): boolean {
+    try {
+      const checkStmt = unit.prepare<{ cnt: number }>("select count(*) as 'cnt' from LicenseProgram");
+      return (checkStmt.get()?.cnt ?? 0) > 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function insertPrograms(): void {
+    const insertStmt = unit.prepare(`
+      INSERT INTO LicenseProgram (
+        DrivingSchoolId, LicenseTypeId, DateFrom, DateTo, Weekdays, 
+        IsSchnellkurs, Price, MaxParticipants, CurrentParticipants
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    // Sample course: Class B for "Fahrschule SAFARI" (Id 1), Class B Id (likely 5)
+    // Date: next month
+    const today = new Date();
+    const nextMonth = new Date(today);
+    nextMonth.setMonth(today.getMonth() + 1);
+    const endDate = new Date(nextMonth);
+    endDate.setDate(nextMonth.getDate() + 14);
+
+    insertStmt.run(
+      1, // DrivingSchoolId (SAFARI)
+      5, // LicenseTypeId (B)
+      nextMonth.toISOString().split("T")[0],
+      endDate.toISOString().split("T")[0],
+      "Mo,Di,Mi,Do,Fr",
+      0, // IsSchnellkurs
+      2500, // Price
+      20, // MaxParticipants
+      5 // CurrentParticipants
+    );
+  }
+
   let inserted = false;
   if (!adminAlreadyPresent()) {
     insertAdmin();
@@ -223,6 +261,11 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
 
   if (!licenseTypesAlreadyPresent()) {
     insertLicenseTypes();
+    inserted = true;
+  }
+
+  if (!programsAlreadyPresent()) {
+    insertPrograms();
     inserted = true;
   }
 
