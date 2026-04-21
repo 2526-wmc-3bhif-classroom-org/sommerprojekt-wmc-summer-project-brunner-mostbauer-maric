@@ -29,6 +29,13 @@ export interface LicenseProgram {
   LicenseProgramId: number;
   DrivingSchoolId: number;
   LicenseTypeId: number;
+  DateFrom: string;
+  DateTo: string;
+  Weekdays?: string | null;
+  IsSchnellkurs?: number | null;
+  Price: number;
+  MaxParticipants: number;
+  CurrentParticipants: number;
 }
 
 export interface Enrollment {
@@ -36,6 +43,7 @@ export interface Enrollment {
   UserId: number;
   LicenseProgramId: number;
   StartTime?: string | null;
+  Status: string;
 }
 
 export interface Appointment {
