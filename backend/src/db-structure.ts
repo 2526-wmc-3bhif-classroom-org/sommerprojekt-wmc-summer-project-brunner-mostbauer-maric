@@ -46,6 +46,13 @@ export const buildTables = (connection: Database) => {
         LicenseProgramId INTEGER PRIMARY KEY AUTOINCREMENT,
         DrivingSchoolId INTEGER NOT NULL,
         LicenseTypeId INTEGER NOT NULL,
+        DateFrom TEXT NOT NULL,
+        DateTo TEXT NOT NULL,
+        Weekdays TEXT,
+        IsSchnellkurs INTEGER DEFAULT 0,
+        Price REAL NOT NULL,
+        MaxParticipants INTEGER NOT NULL,
+        CurrentParticipants INTEGER DEFAULT 0,
         FOREIGN KEY (DrivingSchoolId) REFERENCES DrivingSchool(DrivingSchoolId) ON DELETE CASCADE,
         FOREIGN KEY (LicenseTypeId) REFERENCES LicenseType(LicenseTypeId) ON DELETE CASCADE
       );`,
@@ -57,6 +64,7 @@ export const buildTables = (connection: Database) => {
         UserId INTEGER NOT NULL,
         LicenseProgramId INTEGER NOT NULL,
         StartTime TEXT,
+        Status TEXT DEFAULT 'pending',
         FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE,
         FOREIGN KEY (LicenseProgramId) REFERENCES LicenseProgram(LicenseProgramId) ON DELETE CASCADE
       );`,
