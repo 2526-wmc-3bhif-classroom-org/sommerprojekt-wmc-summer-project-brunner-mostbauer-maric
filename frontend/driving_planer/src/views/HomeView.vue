@@ -17,7 +17,7 @@
       :initial="{ opacity: 0, x: -50 }"
       :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
     >
-    <button class="bg-black text-white text-center text-xl md:p-6 p-4 rounded-3xl md:m-5 cursor-pointer transition-transform duration-300 hover:-rotate-8"
+    <button class="bg-black text-white text-center text-xl md:p-6 p-4 rounded-3xl md:m-5 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
             @click="scrollTo('start-now')"
     >
       Jetzt anfangen
@@ -28,7 +28,7 @@
       :initial="{ opacity: 0, x: 50 }"
       :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
     >
-    <button class="bg-white text-black text-center text-xl md:p-6 p-4 m-5 rounded-3xl cursor-pointer transition-transform duration-300 hover:-rotate-8"
+    <button class="bg-white text-black text-center text-xl md:p-6 p-4 m-5 rounded-3xl cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
 
             @click="scrollTo('advantages')"
     >
@@ -79,7 +79,7 @@
     v-motion-pop-visible-once
     :duration="400"
   >
-    <button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer transition-transform duration-300 hover:-rotate-8"
+    <button class="bg-black text-white text-center text-xl p-6 rounded-3xl m-5 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl"
             @click="router.push(authStore.isAuthenticated ? '/start' : '/register')"
     >
       Jetzt direkt Starten

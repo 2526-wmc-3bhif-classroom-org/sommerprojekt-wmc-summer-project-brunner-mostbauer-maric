@@ -85,7 +85,7 @@ const aboutCards = [
         Starte jetzt und erlebe wie einfach der Weg zum Führerschein sein kann.
       </p>
       <button
-        class="bg-black text-white text-xl p-6 rounded-3xl cursor-pointer transition-transform duration-300 hover:-rotate-2"
+        class="bg-black text-white text-xl p-6 rounded-3xl cursor-pointer transition-transform duration-300 hover:scale-105 active:scale-95 shadow-lg"
         @click="$router.push('/register')"
       >
         Jetzt starten
