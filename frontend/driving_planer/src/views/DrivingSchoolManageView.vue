@@ -10,7 +10,7 @@
             Fahrschulportal
           </div>
           <HeaderMain title="Meine Kurse" desktopHeight="md:text-5xl" mobileHeight="text-2xl" class="md:pt-4 md:pb-2 pt-6 pb-2" :duration="500" />
-          <p class="text-center md:text-lg text-black/50 text-xs mt-2 transition-colors duration-300 hover:text-black/80" v-motion-fade-visible>
+          <p class="text-center md:text-lg text-black/50 text-xs m-5 transition-colors duration-300 hover:text-black/80" v-motion-fade-visible>
             Verwalte deine Fahrschulkurse – erstelle, bearbeite und behalte den Überblick.
           </p>
         </div>
