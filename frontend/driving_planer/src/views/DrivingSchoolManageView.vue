@@ -23,17 +23,17 @@
         </div>
 
         <!-- Toolbar row -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <div>
-            <h2 class="text-xl font-black text-slate-900">Kursübersicht</h2>
-            <p class="text-sm text-slate-400 mt-0.5">{{ courses.length }} Kurs{{ courses.length !== 1 ? 'e' : '' }} angelegt</p>
+        <div class="flex flex-col sm:flex-row items-center sm:justify-between justify-center gap-4 mb-6 p-4">
+          <div class="group cursor-default transition-all rounded-lg px-3 py-2 text-center sm:text-left">
+            <h2 class="text-xl font-black text-slate-900 group-hover:text-indigo-600">Kursübersicht</h2>
+            <p class="text-sm text-slate-400 mt-0.5 group-hover:text-indigo-500">{{ courses.length }} Kurs{{ courses.length !== 1 ? 'e' : '' }} angelegt</p>
           </div>
 
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 flex-col sm:flex-row sm:items-center">
             <!-- Filter by license -->
             <select
               v-model="filterLicense"
-              class="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-200 shadow-sm transition-all"
+              class="w-full sm:w-auto px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-200 shadow-sm transition-all"
             >
               <option value="">Alle Klassen</option>
               <option v-for="cls in usedLicenses" :key="cls" :value="cls">Klasse {{ cls }}</option>
@@ -42,7 +42,7 @@
             <!-- Add course button -->
             <button
               @click="openCreateModal"
-              class="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-md hover:shadow-lg"
+              class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-md hover:shadow-lg"
             >
               <i class="pi pi-plus text-xs"></i>
               Neuer Kurs
@@ -291,8 +291,8 @@
             </div>
 
             <!-- Price + Max participants -->
-            <div class="grid grid-cols-2 gap-4">
-              <div>
+            <div class="grid grid-cols-2 gap-4 pb-4">
+              <div class="mb-2">
                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Preis (€) *</label>
                 <input
                   v-model.number="form.price"
@@ -303,7 +303,7 @@
                 />
                 <p v-if="errors.price" class="text-xs text-red-500 mt-1.5">{{ errors.price }}</p>
               </div>
-              <div>
+              <div class="mb-2">
                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Max. Teilnehmer *</label>
                 <input
                   v-model.number="form.maxParticipants"
@@ -317,7 +317,7 @@
             </div>
 
             <!-- Current participants (edit only) -->
-            <div v-if="editingId !== null">
+            <div v-if="editingId !== null" class="pb-4">
               <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Aktuelle Teilnehmeranzahl</label>
               <input
                 v-model.number="form.currentParticipants"
