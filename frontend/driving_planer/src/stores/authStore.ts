@@ -10,8 +10,8 @@ export enum UserRole {
   SCHOOL = "school"
 }
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<User | null>(JSON.parse(localStorage.getItem('user') || 'null'))
-  const token = ref<string | null>(localStorage.getItem('token'))
+  const user = ref<User | null>(JSON.parse(sessionStorage.getItem('user') || 'null'))
+  const token = ref<string | null>(sessionStorage.getItem('token'))
 
   const isAuthenticated = computed(() => !!token.value)
   const isAdmin = computed(() => user.value?.Role === UserRole.ADMIN)
@@ -42,11 +42,11 @@ export const useAuthStore = defineStore('auth', () => {
 
     sessionStorage.setItem('token', data.accessToken)
     sessionStorage.setItem('user', JSON.stringify(data.user))
-    
+
     // Also update localStorage to match the ref initialization logic
     localStorage.setItem('token', data.accessToken)
     localStorage.setItem('user', JSON.stringify(data.user))
-    
+
     if(!fromRegister) {
       if(data.user.Role === UserRole.ADMIN || data.user.Role === UserRole.USER) {
         await router.push('/dashboard');

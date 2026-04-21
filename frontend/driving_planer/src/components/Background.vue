@@ -100,7 +100,7 @@ onMounted(async () => {
 
   /* Spawn additional particles when the user scrolls */
   const onScroll = (): void => {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 3; i++) {
       particles.push(spawnParticleInView())
     }
   }
@@ -126,10 +126,10 @@ onMounted(async () => {
 
   /* Periodically spawn new particles */
   spawnInterval = setInterval(() => {
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 2; i++) {
       particles.push(spawnParticle(c.width, c.height))
     }
-  }, 800)
+  }, 1200)
 
 
   /* Add event listeners */
@@ -138,7 +138,7 @@ onMounted(async () => {
 
 
   /* Initial particle population */
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < 60; i++) {
     particles.push(spawnParticle(c.width, c.height))
   }
 
@@ -150,7 +150,7 @@ onMounted(async () => {
     ctx.clearRect(0, 0, c.width, c.height)
 
     /* Occasionally spawn a random particle */
-    if (Math.random() < 0.3) particles.push(spawnParticle(c.width, c.height))
+    if (Math.random() < 0.1) particles.push(spawnParticle(c.width, c.height))
 
 
     /* Update and draw each particle */
