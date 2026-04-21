@@ -150,13 +150,11 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
       { Name: "Fahrschule Staudinger", Ort: "Sengsschmiedstraße 8, 4560 Kirchdorf", Inhaber: "Lars Staudinger", Email: "kirchdorf@fahrschule-staudinger.at", Link: "http://www.fahrschule-staudinger.at", Phone: "+43 7582 63183" },
       { Name: "Fahrschule Easy Drivers Leonding", Ort: "Haidfeldstraße 33, 4060 Leonding", Inhaber: "Harald Snopek", Email: "leonding@easydrivers.at", Link: "https://www.easydrivers.at/leonding/", Phone: "+43 7 32 99 77 99" },
       { Name: "Fahrschule Scharinger", Ort: "Gewerbegebiet 2, 5121 Ostermiething", Inhaber: "Ferdinand Scharinger", Email: "fahrschule-scharinger@aon.at", Link: "http://www.fahrschule-scharinger.at", Phone: "06278/7575" },
-      { Name: "startup®-fahrschule doppler", Ort: "Hauptstraße 77, 4040 Linz-Urfahr", Inhaber: "Christian Doppler", Email: "office@startup-doppler.at", Link: "https://www.startup-doppler.at/", Phone: "0664 60737 7000" },
       { Name: "Fahrschule Daniel Moritz", Ort: "Landstraße 83, 4020 Linz", Inhaber: "Daniel Moritz", Email: "fahrschule@moritz.at", Link: "https://www.moritz.at/", Phone: "0732/30 51 71" },
       { Name: "Fahrschule Gruber", Ort: "Max-Hirschenauer-Straße 8, 4780 Schärding", Inhaber: "Gerald Gruber", Email: "info@fahrschule-gruber.at", Link: "https://www.fahrschule-gruber.at/", Phone: "N/A" },
       { Name: "WM-Fahrschule", Ort: "Grünbachstraße 2, 4600 Wels", Inhaber: "Dragan Nedeljkovic", Email: "office@wm-fahrschule.at", Link: "https://www.wm-fahrschule.at/", Phone: " 07582/ 60666" },
       { Name: "Fahrschule Charly", Ort: "Linzer Str. 16, 4100 Ottensheim", Inhaber: "Charly Thann", Email: "info@fahrschule-charly.at", Link: "https://www.fahrschulecharly.at/", Phone: "03462/30 220" },
       { Name: "Fahrschule Aschauer", Ort: "Doktor-Groß-Straße 34, 4600 Wels", Inhaber: "Reinhard Aschauer", Email: "office@fahrschule-aschauer.at", Link: "https://fahrschule-aschauer.at/", Phone: "0043 7242 42 222" },
-      { Name: "Fahrschule Staudinger", Ort: "Sengsschmiedstraße 8, 4560 Kirchdorf", Inhaber: "Lars Staudinger", Email: "kirchdorf@fahrschule-staudinger.at", Link: "http://www.fahrschule-staudinger.at", Phone: "0681/81652924" },
       { Name: "Fahrschule Lindauer", Ort: "Landstraße 76, 4020 Linz", Inhaber: "Lindauer", Email: "buero@fahrschule-lindauer.at", Link: "https://fahrschule-lindauer.at/", Phone: "0732 609 609" },
       { Name: "Fahrschule Franz Kern", Ort: "Salzburgerstraße 1a, 5230 Mattighofen", Inhaber: "Franz Kern", Email: "info@fahrschule-kern.at", Link: "https://www.fahrschule-kern.at/", Phone: "07742 / 28 16" },
       { Name: "Fahrschule Hausherr", Ort: "Kuferzeile 49, 4810 Gmunden", Inhaber: "Norbert Hausherr", Email: "fahrschule@hausherr.at", Link: "http://www.hausherr.at", Phone: "07612 646 87" },
@@ -164,26 +162,18 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
       { Name: "Fahrschule Noha", Ort: "Goethestraße 13, 4020 Linz", Inhaber: "Michael Schönbaß", Email: "team@fahrschule-noha.at", Link: "http://www.fahrschule-noha.at/", Phone: "0732/770283" },
       { Name: "Fahrschule Grubhofer-Linz", Ort: "Ramsauerstraße 78, 4030 Linz", Inhaber: "Rothbauer", Email: "fahrschule-grubhofer@aon.at", Link: "https://www.fahrschule-grubhofer.at/", Phone: "07223/82435 od. 0699/16 46 80 82" },
       { Name: "Fahrschule Grubhofer-Enns", Ort: "Stadlgasse 4, 4470 Enns", Inhaber: "Rothbauer", Email: "fahrschule-grubhofer@aon.at", Link: "https://www.fahrschule-grubhofer.at/", Phone: "07223/82435 od. 0699/16 46 80 82" },
-      { Name: "Fahrschule Hausherr", Ort: "Kuferzeile 49, 4810 Gmunden", Inhaber: "Norbert Hausherr", Email: "fahrschule@hausherr.at", Link: "http://www.hausherr.at", Phone: "06132 23405" },
       { Name: "Fahrschule Pichler", Ort: "Veldner Straße 57, 4120 Neufelden", Inhaber: "Pichler", Email: "neufelden@einfacherzumschein.at", Link: "https://www.einfacherzumschein.at/", Phone: "N/A" },
       { Name: "Fahrschule Perfekt", Ort: "Siegfried-Marcus Strasse 5, 4070 Eferding", Inhaber: "", Email: "fahrschule.perfekt@aon.at", Link: "http://www.fahrschule-perfekt.net/", Phone: "07272/32 35" },
       { Name: "Fahrschule Lenkwerk", Ort: "Salzburger Str. 20, 4820 Bad Ischl", Inhaber: "", Email: "", Link: "http://www.lenkwerk.at", Phone: "+43 7242 277950" },
       { Name: "Fahrschule Höglinger", Ort: "Salzburger Straße 14, 4840 Vöcklabruck", Inhaber: "Höglinger", Email: "voecklabruck@drive-hoeglinger.at", Link: "https://www.hoeglinger-voecklabruck.at/", Phone: "07672 75 390" },
       { Name: "Fahrschule Börni", Ort: "Adalbert-Stifter-Straße 20, 4053 Haid", Inhaber: "Börni", Email: "fahrschule@boerni.at", Link: "https://www.boerni.at/", Phone: "+43 676 4115244" },
-      { Name: "Fahrschule Steininger", Ort: "Waidhofnerstraße 1, 3335 Weyer", Inhaber: "Ing. Karl Steininger", Email: "weyer@fahrschule-steininger.at", Link: "https://fahrschule-steininger.at/", Phone: "+43 7252 535 61" },
       { Name: "Fahrschule Oliver", Ort: "Grünbachstraße 2, 4600 Wels", Inhaber: "Dragan Nedeljkovic", Email: "office@fahrschule-oliver.at", Link: "http://www.fahrschule-oliver.at/", Phone: "+437242219966" },
-      { Name: "Fahrschule Auböck", Ort: "Linzer Straße 43, 4240 Freistadt", Inhaber: "Ing. Franz Auböck", Email: "office@ps-academy.at", Link: "https://www.ps-academy.at/", Phone: "+43 7942 72 4 71" },
-      { Name: "Fahrschule Aschauer", Ort: "Doktor-Groß-Straße 34, 4600 Wels", Inhaber: "Reinhard Aschauer", Email: "office@fahrschule-aschauer.at", Link: "https://fahrschule-aschauer.at/", Phone: "0043 7242 42 222" },
       { Name: "Fahrschule Easy Drivers Linz-Ebelsberg", Ort: "Hofmannsthalweg 1, 4030 Linz", Inhaber: "", Email: "ebelsberg@easydrivers.at", Link: "https://www.easydrivers.at/linz", Phone: "+43 732 890 545" },
-      { Name: "Fahrschule Burgstaller", Ort: "Alfred-Kubin-Straße 6, 4780 Schärding", Inhaber: "Ingrid & Johannes Burgstaller", Email: "schaerding@fahrschule-burgstaller.at", Link: "https://www.fahrschule-burgstaller.at/", Phone: "07712 / 28 01" },
       { Name: "Fahrschule My Friends", Ort: "Hostauerstraße 87, 4100 Ottensheim", Inhaber: "", Email: "info@fahrschule-myfriends.at", Link: "https://www.fahrschule-myfriends.at/", Phone: "+43 7234 86064" },
       { Name: "Fahrschule Easy Drivers Perg", Ort: "Linzer Straße 11, 4320 Perg", Inhaber: "", Email: "perg@easydrivers.at", Link: "https://www.easydrivers.at/perg/", Phone: "+43 7 2625 3123" },
       { Name: "Fahrschule DI Adolf Nefischer", Ort: "Dirnbergerstraße 42, 4320 Perg", Inhaber: "Adolf Nefischer", Email: "a.nefischer@aon.at", Link: "http://fahrschule-nefischer.at/", Phone: "07262 / 52453-0" },
       { Name: "Fahrschule Alkoven", Ort: "Hochfeldstraße 1, 4072 Alkoven", Inhaber: "Florian Köberl", Email: "info@fahrschule-alkoven.at", Link: "https://www.fahrschule-alkoven.at/", Phone: "+43 7274 647 47" },
-      { Name: "Fahrschule Burgstaller", Ort: "Schwanthalerstraße 2, 4770 Andorf", Inhaber: "Ingrid & Johannes Burgstaller", Email: "andorf@fahrschule-burgstaller.at", Link: "https://www.fahrschule-burgstaller.at/", Phone: "07712 / 28 01" },
       { Name: "Fahrschule KURT", Ort: "Sparkassenplatz 2, 4210 Gallneukirchen", Inhaber: "Kurt Pichler", Email: "office@fahrschule-pichler.at", Link: "https://www.einfacherzumschein.at/", Phone: "N/A" },
-      { Name: "Fahrschule Aschauer", Ort: "Doktor-Groß-Straße 34, 4600 Wels", Inhaber: "Reinhard Aschauer", Email: "office@fahrschule-aschauer.at", Link: "https://fahrschule-aschauer.at/", Phone: "07242 42 222" },
-      { Name: "Fahrschule DI Adolf Nefischer", Ort: "Dirnbergerstraße 42, 4320 Perg", Inhaber: "Adolf Nefischer", Email: "a.nefischer@aon.at", Link: "http://fahrschule-nefischer.at/", Phone: "07262 / 52453-0" },
     ];
 
     const insertStmt = unit.prepare(
@@ -203,6 +193,23 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
     }
   }
 
+  function insertLicenseTypes(): void {
+    const licenseTypes = ["A", "A1", "A2", "AM", "B", "BE", "C", "C1", "CE", "D", "D1", "DE"];
+    const insertStmt = unit.prepare(`INSERT OR IGNORE INTO LicenseType (Name) VALUES (?)`);
+    for (const name of licenseTypes) {
+      insertStmt.run(name);
+    }
+  }
+
+  function licenseTypesAlreadyPresent(): boolean {
+    try {
+      const checkStmt = unit.prepare<{ cnt: number }>("select count(*) as 'cnt' from LicenseType");
+      return (checkStmt.get()?.cnt ?? 0) > 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
   let inserted = false;
   if (!adminAlreadyPresent()) {
     insertAdmin();
@@ -211,6 +218,11 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
 
   if (!schoolsAlreadyPresent()) {
     insertSchools();
+    inserted = true;
+  }
+
+  if (!licenseTypesAlreadyPresent()) {
+    insertLicenseTypes();
     inserted = true;
   }
 
