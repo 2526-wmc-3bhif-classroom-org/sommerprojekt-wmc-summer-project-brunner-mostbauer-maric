@@ -63,7 +63,7 @@
             <!-- Card top accent band -->
             <div class="h-1.5 w-full" :class="licenseAccent(course.licenseType)"></div>
 
-            <div class="p-6 flex flex-col flex-1 gap-5">
+            <div class="p-7 flex flex-col flex-1 gap-6">
 
               <!-- License badge + actions -->
               <div class="flex items-start justify-between">
@@ -72,11 +72,11 @@
                     <i class="pi pi-id-card text-xs"></i>
                     Klasse {{ course.licenseType }}
                   </span>
-                  <p class="text-xs text-slate-400 mt-2 flex items-center gap-1.5">
+                  <p class="text-xs text-slate-400 flex items-center gap-1.5" style="margin-top: 1.25rem;">
                     <i class="pi pi-calendar text-[10px]"></i>
                     {{ formatDate(course.dateFrom) }} – {{ formatDate(course.dateTo) }}
                   </p>
-                  <p class="text-xs text-slate-400 mt-1 flex items-center flex-wrap gap-1">
+                  <p class="text-xs text-slate-400 flex items-center flex-wrap gap-1" style="margin-top: 1rem;">
                     <span v-for="day in course.weekdays" :key="day" class="inline-flex items-center gap-1 bg-indigo-50 text-indigo-500 px-1.5 py-0.5 rounded-md font-semibold">{{ day }}</span>
                     <span v-if="course.isSchnellkurs" class="inline-flex items-center gap-1 bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-md font-semibold">
                       <i class="pi pi-bolt text-[9px]"></i> Schnellkurs
@@ -217,7 +217,7 @@
                   {{ cls }}
                 </button>
               </div>
-              <p v-if="errors.licenseType" class="text-xs text-red-500 mt-1.5">{{ errors.licenseType }}</p>
+              <p v-if="errors.licenseType" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.licenseType }}</p>
             </div>
 
             <!-- Date range -->
@@ -243,8 +243,8 @@
                   />
                 </div>
               </div>
-              <p v-if="errors.dateFrom" class="text-xs text-red-500 mt-1.5">{{ errors.dateFrom }}</p>
-              <p v-if="errors.dateTo" class="text-xs text-red-500 mt-1">{{ errors.dateTo }}</p>
+              <p v-if="errors.dateFrom" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.dateFrom }}</p>
+              <p v-if="errors.dateTo" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.dateTo }}</p>
             </div>
 
             <!-- Wochentage -->
@@ -266,7 +266,7 @@
                   <span class="text-sm text-slate-700 font-semibold">{{ day }}</span>
                 </label>
               </div>
-              <p v-if="errors.weekdays" class="text-xs text-red-500 mt-1.5">{{ errors.weekdays }}</p>
+              <p v-if="errors.weekdays" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.weekdays }}</p>
             </div>
 
             <!-- Schnellkurs -->
@@ -301,7 +301,7 @@
                   placeholder="z. B. 2500"
                   class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
                 />
-                <p v-if="errors.price" class="text-xs text-red-500 mt-1.5">{{ errors.price }}</p>
+                <p v-if="errors.price" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.price }}</p>
               </div>
               <div class="mb-2">
                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Max. Teilnehmer *</label>
@@ -312,7 +312,7 @@
                   placeholder="z. B. 20"
                   class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
                 />
-                <p v-if="errors.maxParticipants" class="text-xs text-red-500 mt-1.5">{{ errors.maxParticipants }}</p>
+                <p v-if="errors.maxParticipants" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.maxParticipants }}</p>
               </div>
             </div>
 
@@ -326,7 +326,7 @@
                 :max="form.maxParticipants"
                 class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
               />
-              <p v-if="errors.currentParticipants" class="text-xs text-red-500 mt-1.5">{{ errors.currentParticipants }}</p>
+              <p v-if="errors.currentParticipants" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.currentParticipants }}</p>
             </div>
           </div>
 

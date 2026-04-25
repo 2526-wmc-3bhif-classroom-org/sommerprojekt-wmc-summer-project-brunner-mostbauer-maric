@@ -10,7 +10,7 @@
       delay: Math.min(index * 100, 300)
     }
   }"
-  class="card w-full h-28 rounded-2xl border flex items-center gap-4 px-4"
+  class="card w-full h-28 rounded-2xl border flex items-center gap-4 px-4 bg-white"
   :class="borderColor"
 >
     <!-- Icon -->
