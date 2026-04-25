@@ -191,7 +191,7 @@
           <!-- Modal header -->
           <div class="flex items-center gap-3 mb-7">
             <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
-              <i class="pi pi-pencil text-indigo-500"></i>
+              <i :class="editingId !== null ? 'pi pi-pencil' : 'pi pi-plus-circle'" class="text-indigo-500"></i>
             </div>
             <div>
               <h3 class="text-xl font-black text-slate-900">{{ editingId !== null ? 'Kurs bearbeiten' : 'Neuen Kurs erstellen' }}</h3>
@@ -448,7 +448,7 @@ function statusPill(c: Course) {
 /* ── Modal ── */
 const showModal = ref(false)
 const editingId = ref<number | null>(null)
-const emptyForm = () => ({ licenseType: '', dateFrom: '', dateTo: '', weekdays: [] as string[], isSchnellkurs: false, price: 0, maxParticipants: 20, currentParticipants: 0 })
+const emptyForm = () => ({ licenseType: '', dateFrom: '', dateTo: '', weekdays: [] as string[], isSchnellkurs: false, price: undefined as unknown as number, maxParticipants: 20, currentParticipants: 0 })
 
 function toggleWeekday(day: string) {
   const idx = form.value.weekdays.indexOf(day)

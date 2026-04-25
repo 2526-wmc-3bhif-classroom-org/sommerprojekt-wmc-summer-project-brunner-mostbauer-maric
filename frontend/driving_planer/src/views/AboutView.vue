@@ -91,8 +91,6 @@ const aboutCards = [
         Jetzt starten
       </button>
     </section>
-    <div class="mt-auto">
-      <FooterCmp />
-    </div>
+    <FooterCmp />
   </Background>
 </template>

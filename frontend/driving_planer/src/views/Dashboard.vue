@@ -31,7 +31,7 @@
               <div class="h-1 w-8 bg-black/10 rounded-full"></div>
             </div>
 
-            <div class="flex gap-3 pb-2">
+            <div class="flex gap-3 mb-4 pb-2">
               <input
                 v-model="kmInput"
                 type="number"
@@ -211,7 +211,7 @@
                 class="w-full bg-black text-white p-3 rounded-xl font-black text-xs hover:bg-zinc-800 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-[0.1em] shadow-sm"
                 >
                   <i class="pi pi-plus-circle text-sm"></i>
-                  Add
+                  Hinzufügen
                 </button>
             </div>
 

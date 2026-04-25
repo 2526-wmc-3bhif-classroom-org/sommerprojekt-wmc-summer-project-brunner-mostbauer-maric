@@ -1,6 +1,6 @@
 <template>
   <Background>
-  <HeaderMain title="Fahrschulplaner" desktopHeight="md:text-7xl" mobileHeight="text-3xl" class="md:py-18 pt-20 pb-10" :duration=500 />
+  <HeaderMain title="Fahrschulplaner" desktopHeight="md:text-7xl" mobileHeight="text-3xl" class="pt-20 pb-10 md:pb-16" :duration=500 />
 
   <p class="text-center md:text-xl text-black/50 text-sm"
      v-motion-fade
@@ -20,7 +20,7 @@
     <button class="bg-black text-white text-center text-xl md:p-6 p-4 rounded-3xl md:m-5 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
             @click="scrollTo('start-now')"
     >
-      Jetzt anfangen
+      Mehr erfahren
     </button>
     </div>
     <div
@@ -116,8 +116,8 @@ onMounted(async () => {
   await userStore.fetchUsersCount();
 })
 
-function scrollTo(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth' })
+function scrollTo(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 }
 
 

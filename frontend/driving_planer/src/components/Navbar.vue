@@ -8,6 +8,8 @@
       <button @click="sidebarOpen = !sidebarOpen" class="p-2 text-gray-600 hover:text-black transition-colors" aria-label="Menü öffnen">
         <i :class="'pi pi-bars'" class="text-xl"></i>
       </button>
+      <span class="font-black text-sm uppercase tracking-widest text-black">Driving Planer</span>
+      <div class="w-9"></div>
     </header>
 
     <!-- Dark overlay behind the sidebar (closes sidebar when clicked) -->

@@ -1,6 +1,6 @@
 <template>
   <Background>
-    <div class="min-h-screen flex flex-col items-center justify-start p-4 md:p-8">
+    <div class="min-h-screen flex flex-col items-center justify-start p-4 md:p-8 pt-24 md:pt-16">
       <div class="max-w-6xl w-full">
 
           <!-- Header section -->
@@ -87,6 +87,12 @@
                 <i class="pi pi-exclamation-triangle text-red-400 text-2xl"></i>
               </div>
               <p class="font-bold text-slate-700 mb-1">Daten konnten nicht geladen werden</p>
+            </div>
+
+            <!-- Loading state -->
+            <div v-else-if="isLoading" class="p-16 text-center">
+              <i class="pi pi-spin pi-spinner text-blue-400 text-3xl"></i>
+              <p class="text-sm text-slate-400 mt-4">Fahrschulen werden geladen...</p>
             </div>
 
             <div v-else class="overflow-x-auto">
@@ -179,7 +185,8 @@
 
               <!-- Empty state -->
               <div v-if="filteredSchools.length === 0" class="p-16 text-center">
-                  <p class="text-slate-400">Keine Fahrschulen gefunden.</p>
+                <h3 class="font-bold text-slate-700 mb-1">Keine Fahrschulen gefunden</h3>
+                <p class="text-sm text-slate-400">Versuche eine andere Suchanfrage.</p>
               </div>
             </div>
           </div>
@@ -213,6 +220,7 @@ interface WebsiteDrivingSchool extends DrivingSchool{
 /* Reactive state */
 const schools = ref<WebsiteDrivingSchool[]>([]);
 const loadingError = ref(false)
+const isLoading = ref(false)
 const search = ref('')
 
 /* Sync with store after fetch */
@@ -239,8 +247,10 @@ const uniqueOrte = computed(() =>
 )
 
 onMounted(async () => {
+  isLoading.value = true
   await schoolStore.fetchSchools()
   syncSchools()
+  isLoading.value = false
   if (schoolStore.error) {
     loadingError.value = true
   }

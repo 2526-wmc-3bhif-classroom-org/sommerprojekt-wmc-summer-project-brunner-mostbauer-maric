@@ -42,17 +42,17 @@
               >Das Datumsformat ist nicht korrekt. (Datum muss in der Zukunft sein).</span>
             </div>
             <div>
-              <label class="font-black text-lg mb-3 block text-black uppercase tracking-tight">Dein Lerntempo</label>
+              <label class="font-black text-lg mb-3 block text-black uppercase tracking-tight">Dein Lerntempo *</label>
               <select
                 v-model="formData.goal"
-                required
-                class="w-full p-4 bg-slate-50 border-2 border-transparent rounded-2xl text-black font-bold focus:bg-white focus:border-black transition-all outline-none appearance-none shadow-sm"
+                :class="['w-full p-4 border-2 rounded-2xl text-black font-bold focus:bg-white transition-all outline-none appearance-none shadow-sm', !goalValid ? 'border-red-400 bg-red-50/30' : 'bg-slate-50 border-transparent focus:border-black']"
               >
                 <option value="" disabled>Wähle ein Ziel...</option>
                 <option value="fast">🏎️ Schnellstmöglich (Intensiv)</option>
                 <option value="normal">🚗 Normales Tempo</option>
                 <option value="relaxed">🛵 Ganz entspannt</option>
               </select>
+              <span v-if="!goalValid" class="text-red-700 text-sm tracking-tight uppercase">Bitte ein Lerntempo wählen.</span>
             </div>
           </div>
 
@@ -103,13 +103,16 @@ const formData = reactive({
 })
 
 const dateValid = ref(true)
+const goalValid = ref(true)
 
 const submitForm = () => {
+  goalValid.value = !!formData.goal
   if (!formData.startDate || Number.isNaN(new Date(formData.startDate).getTime()) || new Date(formData.startDate).getTime() < new Date(Date.now()).getTime()) {
     dateValid.value = false
-    return
+  } else {
+    dateValid.value = true
   }
-  dateValid.value = true
+  if (!dateValid.value || !goalValid.value) return
 
   router.push('/dashboard')
 }
