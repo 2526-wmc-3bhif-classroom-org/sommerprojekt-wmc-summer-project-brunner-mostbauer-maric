@@ -62,7 +62,7 @@ async function handleLogin() {
           <div class="w-full relative">
             <input
               v-model="email"
-              type="text"
+              type="email"
               placeholder="Email"
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl hover:bg-white/10"
             />

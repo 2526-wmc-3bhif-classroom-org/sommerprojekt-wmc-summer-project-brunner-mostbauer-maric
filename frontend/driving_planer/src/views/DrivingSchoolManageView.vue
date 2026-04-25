@@ -109,7 +109,7 @@
                   <i class="pi pi-euro text-slate-400 text-sm"></i>
                 </div>
                 <div>
-                  <p class="text-xs text-slate-400 leading-none mb-0.5">Kurs preis</p>
+                  <p class="text-xs text-slate-400 leading-none mb-0.5">Kurspreis</p>
                   <p class="text-lg font-black text-slate-900">{{ course.price.toLocaleString('de-AT') }} €</p>
                 </div>
               </div>
@@ -149,7 +149,7 @@
                   @click="openEditModal(course)"
                   class="text-xs text-indigo-500 hover:text-indigo-700 font-bold transition-colors flex items-center gap-1"
                 >
-                  Details
+                  Bearbeiten
                   <i class="pi pi-arrow-right text-[10px]"></i>
                 </button>
               </div>

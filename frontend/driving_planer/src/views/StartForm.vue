@@ -111,7 +111,6 @@ const submitForm = () => {
   }
   dateValid.value = true
 
-  console.log('Startformular gesendet:', formData)
   router.push('/dashboard')
 }
 </script>

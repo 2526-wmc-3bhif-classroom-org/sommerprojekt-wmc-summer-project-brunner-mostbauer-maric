@@ -61,7 +61,7 @@ const aboutCards = [
     <!-- Cards -->
     <section class="py-4 px-6">
       <HeaderMain title="Was uns antreibt" desktopHeight="md:text-5xl" mobileHeight="text-2xl" :duration="400" />
-      <div class="flex justify-center items-center flex-wrap gap-6 py-10 grid grid-cols-1 md:grid-cols-2">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 py-10">
         <CardMain
           v-for="card in aboutCards"
           :key="card.title"

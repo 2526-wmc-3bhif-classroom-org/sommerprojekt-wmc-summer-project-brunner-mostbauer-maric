@@ -63,7 +63,9 @@
           role="button"
           aria-label="Profilmenü öffnen"
         >
-          <img src="https://placehold.co/600x400" alt="Benutzerprofil" class="w-full h-full object-cover" />
+          <div class="w-full h-full bg-slate-100 flex items-center justify-center">
+              <i class="pi pi-user text-slate-400 text-sm"></i>
+            </div>
         </div>
 
         <!-- PrimeVue popup menu -->
@@ -102,7 +104,9 @@
           role="button"
           aria-label="Profilmenü öffnen"
         >
-          <img src="https://placehold.co/600x400" alt="Benutzerprofil" class="w-full h-full object-cover" />
+          <div class="w-full h-full bg-slate-100 flex items-center justify-center">
+              <i class="pi pi-user text-slate-400 text-sm"></i>
+            </div>
         </div>
 
         <!-- PrimeVue popup menu -->

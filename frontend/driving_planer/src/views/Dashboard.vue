@@ -31,11 +31,12 @@
               <div class="h-1 w-8 bg-black/10 rounded-full"></div>
             </div>
 
-            <div class="flex gap-3 mb-6 pb-2">
+            <div class="flex gap-3 pb-2">
               <input
                 v-model="kmInput"
                 type="number"
-                placeholder="km..."
+                min="0"
+                placeholder="Kilometer..."
                 class="flex-1 p-3 bg-black/[0.03] border border-transparent rounded-xl text-black font-black text-base focus:bg-white focus:border-black transition-all outline-none placeholder:opacity-20"
                 @keyup.enter="addKm"
               />
@@ -46,9 +47,14 @@
                 <i class="pi pi-plus text-base"></i>
               </button>
             </div>
+            <span v-if="!validKm" class="text-red-500 font-black text-[10px] tracking-wide" style="margin-bottom: 0.75rem; display: block;">Bitte eine positive Kilometer-Zahl eingeben.</span>
 
             <div class="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-              <ul class="flex flex-col gap-2">
+              <div v-if="kmList.length === 0" class="flex flex-col items-center justify-center h-full gap-2 opacity-20">
+                <i class="pi pi-map-marker text-3xl"></i>
+                <p class="text-[10px] font-black uppercase tracking-wider">Noch keine Einträge</p>
+              </div>
+              <ul v-else class="flex flex-col gap-2">
                 <li
                   v-for="(km, i) in kmList"
                   :key="i"
@@ -82,7 +88,7 @@
               <input
                 v-model="checkInput"
                 type="text"
-                placeholder="New..."
+                placeholder="Neue Aufgabe..."
                 class="flex-1 p-3 bg-black/[0.03] border border-transparent rounded-xl text-black font-black text-sm focus:bg-white focus:border-black transition-all outline-none placeholder:opacity-20"
                 @keyup.enter="addCheck"
               />
@@ -95,7 +101,11 @@
             </div>
 
             <div class="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-              <div class="flex flex-col gap-2">
+              <div v-if="checklist.length === 0" class="flex flex-col items-center justify-center h-full gap-2 opacity-20">
+                <i class="pi pi-check-square text-3xl"></i>
+                <p class="text-[10px] font-black uppercase tracking-wider">Noch keine Aufgaben</p>
+              </div>
+              <div v-else class="flex flex-col gap-2">
                 <div
                   v-for="(item, i) in checklist"
                   :key="i"
@@ -186,11 +196,14 @@
                     </select>
                     <span v-if="!typeValid" class="text-red-500 font-black text-[10px] tracking-wide">Muss einen Anlass auswählen</span>
                   </div>
-                  <input
-                    v-model="dateInput"
-                    type="date"
-                    class="flex-1 p-3 bg-black/[0.03] border border-transparent rounded-xl text-black font-black text-xs focus:bg-white focus:border-black transition-all outline-none"
-                  />
+                  <div class="flex-1 flex flex-col gap-1">
+                    <input
+                      v-model="dateInput"
+                      type="date"
+                      :class="['p-3 bg-black/[0.03] border rounded-xl text-black font-black text-xs focus:bg-white transition-all outline-none w-full', !dateValid ? 'border-red-500 bg-red-50/30' : 'border-transparent focus:border-black']"
+                    />
+                    <span v-if="!dateValid" class="text-red-500 font-black text-[10px] tracking-wide">Datum muss in der Zukunft liegen.</span>
+                  </div>
                 </div>
 
                 <button
@@ -203,7 +216,11 @@
             </div>
 
             <div class="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-              <ul class="flex flex-col gap-2">
+              <div v-if="dates.length === 0" class="flex flex-col items-center justify-center h-full gap-2 opacity-20">
+                <i class="pi pi-calendar text-3xl"></i>
+                <p class="text-[10px] font-black uppercase tracking-wider">Noch keine Termine</p>
+              </div>
+              <ul v-else class="flex flex-col gap-2">
                   <li
                   v-for="(date, i) in dates"
                   :key="i"

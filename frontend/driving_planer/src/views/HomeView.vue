@@ -11,7 +11,7 @@
 
 
 
-  <div class="align-items-center m-5 md:w-full flex flex-auto justify-center py-12 gap-4 px-4 md:px-0">
+  <div class="m-5 md:w-full flex flex-auto justify-center py-12 gap-4 px-4 md:px-0">
     <div
       v-motion
       :initial="{ opacity: 0, x: -50 }"

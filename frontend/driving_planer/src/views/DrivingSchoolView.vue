@@ -1,8 +1,7 @@
 <template>
   <Background>
-    <div class="min-h-screen flex items-center justify-center p-4">
-      <div class="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
-        <div class="max-w-6xl w-full">
+    <div class="min-h-screen flex flex-col items-center justify-start p-4 md:p-8">
+      <div class="max-w-6xl w-full">
 
           <!-- Header section -->
           <div class="mb-8 flex flex-col items-center text-center relative z-0">
@@ -25,10 +24,8 @@
           <div class="py-6 grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
 
             <InfoStatsCard
-              v-for="(card, i) in 1"
-              :key="i"
-              :index="i"
-              title="Individuell"
+              :index="0"
+              title="Fahrschulen"
               :description="`${schools.length} Fahrschulen verfügbar`"
               icon="pi pi-car"
               iconColor="text-blue-500"
@@ -36,10 +33,8 @@
             />
 
             <InfoStatsCard
-              v-for="(card, i) in 1"
-              :key="i"
-              :index="i"
-              title="Effizient"
+              :index="1"
+              title="Mit Website"
               :description="`${schools.filter(s => s.Website).length} mit Website`"
               icon="pi pi-link"
               iconColor="text-violet-500"
@@ -47,10 +42,8 @@
             />
 
             <InfoStatsCard
-              v-for="(card, i) in 1"
-              :key="i"
-              :index="i"
-              title="Motivierend"
+              :index="2"
+              title="Standorte"
               :description="`${uniqueOrte} Orte verfügbar`"
               icon="pi pi-map-marker"
               iconColor="text-emerald-500"
@@ -192,13 +185,8 @@
           </div>
         </div>
       </div>
-    </div>
+    <FooterCmp />
   </Background>
-  <!-- Main page wrapper -->
-
-
-  <!-- Footer -->
-  <FooterCmp></FooterCmp>
 </template>
 
 <script setup lang="ts">
