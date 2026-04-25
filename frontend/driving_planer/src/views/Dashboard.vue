@@ -21,7 +21,7 @@
 
           <!-- Gefahrene Kilometer -->
           <div class="group bg-white border border-black/5 rounded-[1.8rem] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-500 flex flex-col h-[360px]" v-motion-slide-visible-bottom>
-            <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center justify-between mb-6 pb-2">
               <div class="flex items-center gap-4">
                 <div class="w-11 h-11 bg-black rounded-xl flex items-center justify-center shadow-md">
                   <i class="pi pi-map-marker text-white text-lg"></i>
@@ -31,7 +31,7 @@
               <div class="h-1 w-8 bg-black/10 rounded-full"></div>
             </div>
 
-            <div class="flex gap-3 mb-6">
+            <div class="flex gap-3 mb-6 pb-2">
               <input
                 v-model="kmInput"
                 type="number"
@@ -48,7 +48,7 @@
             </div>
 
             <div class="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-              <ul class="space-y-3">
+              <ul class="flex flex-col gap-2">
                 <li
                   v-for="(km, i) in kmList"
                   :key="i"
@@ -68,7 +68,7 @@
 
           <!-- Checkliste -->
           <div class="group bg-white border border-black/5 rounded-[1.8rem] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-500 flex flex-col h-[360px]" v-motion-slide-visible-bottom>
-            <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center justify-between mb-6 pb-2">
               <div class="flex items-center gap-4">
                 <div class="w-11 h-11 bg-black rounded-xl flex items-center justify-center shadow-md">
                   <i class="pi pi-check-square text-white text-lg"></i>
@@ -78,7 +78,7 @@
               <div class="h-1 w-8 bg-black/10 rounded-full"></div>
             </div>
 
-            <div class="flex gap-3 mb-6">
+            <div class="flex gap-3 mb-6 pb-2">
               <input
                 v-model="checkInput"
                 type="text"
@@ -95,7 +95,7 @@
             </div>
 
             <div class="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-              <div class="space-y-3">
+              <div class="flex flex-col gap-2">
                 <div
                   v-for="(item, i) in checklist"
                   :key="i"
@@ -130,7 +130,7 @@
 
           <!-- Dokumente -->
           <div class="group bg-white border border-black/5 rounded-[1.8rem] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-500 flex flex-col h-[360px]" v-motion-slide-visible-bottom>
-            <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center justify-between mb-6 pb-2">
               <div class="flex items-center gap-4">
                 <div class="w-11 h-11 bg-black rounded-xl flex items-center justify-center shadow-md">
                   <i class="pi pi-file-pdf text-white text-lg"></i>
@@ -161,7 +161,7 @@
 
           <!-- Prüfungstermine -->
           <div class="group bg-white border border-black/5 rounded-[1.8rem] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-500 flex flex-col h-[360px]" v-motion-slide-visible-bottom>
-            <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center justify-between mb-6 pb-2">
               <div class="flex items-center gap-4">
                 <div class="w-11 h-11 bg-black rounded-xl flex items-center justify-center shadow-md">
                   <i class="pi pi-calendar text-white text-lg"></i>
@@ -171,17 +171,21 @@
               <div class="h-1 w-8 bg-black/10 rounded-full"></div>
             </div>
 
-            <div class="flex flex-col gap-3 mb-5">
+            <div class="flex flex-col gap-3 mb-5 pb-2">
                 <div class="flex flex-col sm:flex-row gap-3">
-                  <select 
-                    v-model="typeInput"
-                    class="flex-1 p-3 bg-black/[0.03] border border-transparent rounded-xl text-black font-black text-xs focus:bg-white focus:border-black transition-all outline-none appearance-none cursor-pointer"
-                  >
-                    <option value="Theorie">THEORY</option>
-                    <option value="Praxis">PRACTICE</option>
-                    <option value="Erste Hilfe">FIRST AID</option>
-                    <option value="Arzt">DOCTOR</option>
-                  </select>
+                  <div class="flex-1 flex flex-col gap-1">
+                    <select
+                      v-model="typeInput"
+                      :class="['p-3 bg-black/[0.03] border rounded-xl text-black font-black text-xs focus:bg-white transition-all outline-none appearance-none cursor-pointer w-full', !typeValid ? 'border-red-500 bg-red-50/30' : 'border-transparent focus:border-black']"
+                    >
+                      <option value="" disabled>Anlass wählen...</option>
+                      <option value="Theorie">THEORY</option>
+                      <option value="Praxis">PRACTICE</option>
+                      <option value="Erste Hilfe">FIRST AID</option>
+                      <option value="Arzt">DOCTOR</option>
+                    </select>
+                    <span v-if="!typeValid" class="text-red-500 font-black text-[10px] tracking-wide">Muss einen Anlass auswählen</span>
+                  </div>
                   <input
                     v-model="dateInput"
                     type="date"
@@ -199,7 +203,7 @@
             </div>
 
             <div class="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-              <ul class="space-y-3">
+              <ul class="flex flex-col gap-2">
                   <li
                   v-for="(date, i) in dates"
                   :key="i"
@@ -278,16 +282,19 @@ const editCheck = (i: number) => {
 }
 
 /* Dates */
-const typeInput = ref('Test')
+const typeInput = ref('')
 const dateInput = ref('')
 const dates = ref<{ type: string, date: string }[]>([])
 const dateValid = ref<boolean>(true)
+const typeValid = ref<boolean>(true)
 const addDate = () => {
+  typeValid.value = !!typeInput.value
   if (!dateInput.value || Number.isNaN(new Date(dateInput.value).getTime()) || new Date(dateInput.value).getTime() < new Date(Date.now()).getTime()){
     dateValid.value = false;
-    return;
+  } else {
+    dateValid.value = true
   }
-  dateValid.value = true
+  if (!typeValid.value || !dateValid.value) return
   dates.value.push({
     type: typeInput.value,
     date: dateInput.value
