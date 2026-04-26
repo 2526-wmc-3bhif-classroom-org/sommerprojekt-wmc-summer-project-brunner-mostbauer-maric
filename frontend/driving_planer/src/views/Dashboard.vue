@@ -37,12 +37,12 @@
                 type="number"
                 min="0"
                 placeholder="Kilometer..."
-                class="flex-1 p-3 bg-black/[0.03] border border-transparent rounded-xl text-black font-black text-base focus:bg-white focus:border-black transition-all outline-none placeholder:opacity-20"
+                class="flex-1 p-2 md:p-3 bg-black/[0.03] border border-transparent rounded-xl text-black font-black text-sm md:text-base focus:bg-white focus:border-black transition-all outline-none placeholder:opacity-20 min-w-0"
                 @keyup.enter="addKm"
               />
               <button
                 @click="addKm"
-                class="bg-black text-white w-14 rounded-xl font-black hover:bg-zinc-800 active:scale-95 transition-all flex items-center justify-center shadow-sm"
+                class="bg-black text-white w-12 md:w-14 shrink-0 rounded-xl font-black hover:bg-zinc-800 active:scale-95 transition-all flex items-center justify-center shadow-sm"
               >
                 <i class="pi pi-plus text-base"></i>
               </button>
@@ -89,12 +89,12 @@
                 v-model="checkInput"
                 type="text"
                 placeholder="Neue Aufgabe..."
-                class="flex-1 p-3 bg-black/[0.03] border border-transparent rounded-xl text-black font-black text-sm focus:bg-white focus:border-black transition-all outline-none placeholder:opacity-20"
+                class="flex-1 p-2 md:p-3 bg-black/[0.03] border border-transparent rounded-xl text-black font-black text-xs md:text-sm focus:bg-white focus:border-black transition-all outline-none placeholder:opacity-20 min-w-0"
                 @keyup.enter="addCheck"
               />
               <button
                 @click="addCheck"
-                class="bg-black text-white w-14 rounded-xl font-black hover:bg-zinc-800 active:scale-95 transition-all flex items-center justify-center shadow-sm"
+                class="bg-black text-white w-12 md:w-14 shrink-0 rounded-xl font-black hover:bg-zinc-800 active:scale-95 transition-all flex items-center justify-center shadow-sm"
               >
                 <i class="pi pi-plus text-sm"></i>
               </button>
