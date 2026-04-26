@@ -189,10 +189,10 @@
                       :class="['p-3 bg-black/[0.03] border rounded-xl text-black font-black text-xs focus:bg-white transition-all outline-none appearance-none cursor-pointer w-full', !typeValid ? 'border-red-500 bg-red-50/30' : 'border-transparent focus:border-black']"
                     >
                       <option value="" disabled>Anlass wählen...</option>
-                      <option value="Theorie">THEORY</option>
-                      <option value="Praxis">PRACTICE</option>
-                      <option value="Erste Hilfe">FIRST AID</option>
-                      <option value="Arzt">DOCTOR</option>
+                      <option value="Theorie">Theorie</option>
+                      <option value="Praxis">Praktisch</option>
+                      <option value="Erste Hilfe">Erste Hilfekurs</option>
+                      <option value="Arzt">Doktor</option>
                     </select>
                     <span v-if="!typeValid" class="text-red-500 font-black text-[10px] tracking-wide">Muss einen Anlass auswählen</span>
                   </div>
