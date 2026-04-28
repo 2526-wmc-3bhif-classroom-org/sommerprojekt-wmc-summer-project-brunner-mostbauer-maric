@@ -7,6 +7,7 @@ export interface User {
   Email: string;
   PasswordHash: string;
   Role: UserRole;
+  AvatarPath?: string | null;
 }
 
 export class UserRepository {
@@ -54,6 +55,13 @@ export class UserRepository {
     const result = unit
       .prepare("UPDATE User SET UserName = ?, Email = ? WHERE UserId = ?")
       .run(userName, email, userId);
+    return result.changes > 0;
+  }
+
+  public updateAvatarPath(unit: Unit, userId: number, avatarPath: string | null): boolean {
+    const result = unit
+      .prepare("UPDATE User SET AvatarPath = ? WHERE UserId = ?")
+      .run(avatarPath, userId);
     return result.changes > 0;
   }
 }

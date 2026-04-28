@@ -126,4 +126,50 @@ export class UserService {
       unit.complete(success);
     }
   }
+
+  public updateUserAvatar(
+    userId: number,
+    avatarPath: string | null,
+    requestUserId: number,
+    requestUserRole: UserRole
+  ): ServiceResult {
+    if (isNaN(userId)) {
+      return {
+        status: StatusCodes.BAD_REQUEST,
+        error: { message: "Invalid user ID" },
+      };
+    }
+
+    if (requestUserId !== userId && requestUserRole !== UserRole.ADMIN) {
+      return {
+        status: StatusCodes.FORBIDDEN,
+        error: { message: "You are not authorized to update this user's avatar" },
+      };
+    }
+
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const updated = this.userRepo.updateAvatarPath(unit, userId, avatarPath);
+      if (updated) {
+        success = true;
+        return {
+          status: StatusCodes.OK,
+          data: { message: "Avatar uploaded successfully", avatarPath },
+        };
+      } else {
+        return {
+          status: StatusCodes.NOT_FOUND,
+          error: { message: "User not found" },
+        };
+      }
+    } catch (e: any) {
+      return {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        error: { message: e.message },
+      };
+    } finally {
+      unit.complete(success);
+    }
+  }
 }
