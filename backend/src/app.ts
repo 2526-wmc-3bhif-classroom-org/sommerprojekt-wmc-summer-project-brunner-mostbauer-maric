@@ -9,6 +9,8 @@ import { programRouter } from "./programs/program_router.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import cors from "cors";
+import fs from "fs";
+import path from "path";
 
 const swaggerOptions = {
   definition: {
@@ -54,6 +56,15 @@ app.use((err: any, req: Request, res: Response, next: any) => {
 });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Ensure avatars directory exists
+const avatarsDir = path.join(process.cwd(), "avatars");
+if (!fs.existsSync(avatarsDir)) {
+  fs.mkdirSync(avatarsDir, { recursive: true });
+}
+
+// Serve static files for avatars
+app.use("/avatars", express.static(avatarsDir));
 
 if (process.env.NODE_ENV !== "test") {
   try {
