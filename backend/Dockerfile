@@ -8,6 +8,9 @@ RUN npm install
 
 COPY . .
 
+# Create avatars directory for file uploads
+RUN mkdir -p avatars
+
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \

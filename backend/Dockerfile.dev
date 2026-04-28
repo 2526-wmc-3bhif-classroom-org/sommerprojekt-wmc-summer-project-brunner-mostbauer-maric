@@ -11,6 +11,9 @@ RUN npm install
 # but we still need the base structure.
 COPY . .
 
+# Create avatars directory for file uploads
+RUN mkdir -p avatars
+
 EXPOSE 3000
 
 # Start with tsx watch/auto-reload

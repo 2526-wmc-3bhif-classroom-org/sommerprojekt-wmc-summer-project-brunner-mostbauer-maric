@@ -3,6 +3,9 @@ services:
   backend:
     build:
       context: ./backend
+    volumes:
+      # NAMED VOLUME: Persists uploaded avatars across container restarts in production.
+      - backend-avatars:/app/avatars
     ports:
       - "3000:3000"
     healthcheck:
@@ -28,3 +31,6 @@ services:
       retries: 3
       start_period: 5s
     restart: unless-stopped
+
+volumes:
+  backend-avatars:
