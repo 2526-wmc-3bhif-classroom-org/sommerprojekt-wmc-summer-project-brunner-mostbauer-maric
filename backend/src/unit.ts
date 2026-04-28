@@ -277,8 +277,14 @@ class DB {
     const db = new BetterSqlite3(dbFileName, {
       fileMustExist: false,
       verbose: (s: unknown) => DB.logStatement(s),
+      timeout: 5000, // Wait up to 5 seconds if database is locked
     });
+    
+    // Enable WAL mode for better concurrent access
+    db.pragma("journal_mode = WAL");
     db.pragma("foreign_keys = ON");
+    // Ensure timeout is respected
+    db.pragma("busy_timeout = 5000");
 
     DB.ensureTablesCreated(db);
 

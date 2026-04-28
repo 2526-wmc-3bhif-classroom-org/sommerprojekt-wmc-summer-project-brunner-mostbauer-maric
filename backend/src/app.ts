@@ -70,7 +70,8 @@ if (process.env.NODE_ENV !== "test") {
     ensureSampleDataInserted(unit);
     unit.complete(true);
   } catch (err: any) {
-    console.error("Test mode initialization error:", err.message);
+    // Ignore test mode initialization errors - tests will handle their own setup
+    console.debug("Test mode initialization note:", err.message);
   }
 }
 
