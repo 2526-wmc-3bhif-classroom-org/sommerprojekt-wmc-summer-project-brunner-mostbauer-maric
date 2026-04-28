@@ -236,7 +236,28 @@ userRouter.put("/:id", isAuthenticated, (req, res) => {
  *       413:
  *         description: File too large
  */
-userRouter.post("/:id/avatar", isAuthenticated, upload.single("avatar"), (req, res) => {
+userRouter.post("/:id/avatar", isAuthenticated, (req, res, next) => {
+  upload.single("avatar")(req, res, (err: any) => {
+    if (err) {
+      // Handle multer errors
+      if (err.code === "LIMIT_FILE_SIZE") {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: { message: "File too large. Maximum size is 5MB" } });
+      } else if (err.message && err.message.includes("Only image files")) {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: { message: err.message } });
+      } else {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: { message: err.message || "File upload failed" } });
+      }
+      return;
+    }
+    next();
+  });
+}, (req, res) => {
   try {
     const userId = parseInt(req.params.id);
     const authReq = req as AuthRequest;
@@ -260,7 +281,7 @@ userRouter.post("/:id/avatar", isAuthenticated, upload.single("avatar"), (req, r
     if (result.error) {
       res.status(result.status).json({ error: result.error });
     } else {
-      res.status(result.status).json(result.data);
+      res.status(result.status).json({ data: result.data });
     }
   } catch (error) {
     res
