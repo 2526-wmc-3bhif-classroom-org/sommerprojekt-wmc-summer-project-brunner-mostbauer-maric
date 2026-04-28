@@ -90,8 +90,10 @@ import { useRouter } from 'vue-router'
 import Background from '@/components/Background.vue'
 import HeaderMain from '@/components/HeaderMain.vue'
 import FooterCmp from '@/components/FooterCmp.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const classes = ['A', 'B', 'BE', 'C', 'CE', 'D', 'L', 'T']
 
@@ -114,6 +116,9 @@ const submitForm = () => {
   }
   if (!dateValid.value || !goalValid.value) return
 
+  if (authStore.user?.UserId) {
+    localStorage.setItem(`enrolled_${authStore.user.UserId}`, 'true')
+  }
   router.push('/dashboard')
 }
 </script>

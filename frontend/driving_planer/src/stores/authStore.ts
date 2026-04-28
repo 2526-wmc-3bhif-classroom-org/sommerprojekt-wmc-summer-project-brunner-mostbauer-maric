@@ -48,9 +48,12 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('user', JSON.stringify(data.user))
 
     if(!fromRegister) {
-      if(data.user.Role === UserRole.ADMIN || data.user.Role === UserRole.USER) {
-        await router.push('/dashboard');
-      }else if(data.user.Role === UserRole.SCHOOL){
+      if(data.user.Role === UserRole.USER) {
+        const hasEnrolled = localStorage.getItem(`enrolled_${data.user.UserId}`)
+        await router.push(hasEnrolled ? '/dashboard' : '/start')
+      } else if(data.user.Role === UserRole.ADMIN) {
+        await router.push('/dashboard')
+      } else if(data.user.Role === UserRole.SCHOOL){
         await router.push('/manage')
       }
     }
