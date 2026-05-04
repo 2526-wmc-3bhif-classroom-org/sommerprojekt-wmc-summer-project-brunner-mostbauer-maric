@@ -56,19 +56,7 @@
             </div>
           </div>
 
-          <!-- School selection -->
-          <div>
-            <label class="font-black text-xl mb-3 block text-black uppercase tracking-tight">Fahrschule</label>
-            <div class="relative">
-              <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input
-                v-model="formData.schoolSearch"
-                type="text"
-                placeholder="Name der Fahrschule eingeben..."
-                class="w-full p-4 pl-12 bg-slate-50 border-2 border-transparent rounded-2xl text-black font-bold focus:bg-white focus:border-black transition-all outline-none shadow-sm"
-              />
-            </div>
-          </div>
+
 
           <button
             type="submit"
@@ -95,13 +83,12 @@ import { useAuthStore } from '@/stores/authStore'
 const router = useRouter()
 const authStore = useAuthStore()
 
-const classes = ['A', 'B', 'BE', 'C', 'CE', 'D', 'L', 'T']
+const classes = ['AM','A1', 'A2', 'A', 'B1', 'B', 'C1', 'C', 'D1', 'D', 'BE', 'C1E', 'CE', 'D1E', 'DE', 'F']
 
 const formData = reactive({
   licenseClass: 'B',
   startDate: new Date().toISOString().split('T')[0],
   goal: '',
-  schoolSearch: ''
 })
 
 const dateValid = ref(true)
@@ -109,7 +96,8 @@ const goalValid = ref(true)
 
 const submitForm = () => {
   goalValid.value = !!formData.goal
-  if (!formData.startDate || Number.isNaN(new Date(formData.startDate).getTime()) || new Date(formData.startDate).getTime() < new Date(Date.now()).getTime()) {
+  const timestampForm = new Date(formData.startDate).getTime();
+  if (!formData.startDate || Number.isNaN(timestampForm) || !checkIfFuture(new Date(formData.startDate), new Date(Date.now()))) {
     dateValid.value = false
   } else {
     dateValid.value = true
@@ -120,6 +108,15 @@ const submitForm = () => {
     localStorage.setItem(`enrolled_${authStore.user.UserId}`, 'true')
   }
   router.push('/dashboard')
+}
+
+const checkIfFuture = (formDate: Date, todayDate: Date) => {
+  const d1 = new Date(formDate.getTime());
+  const d2 = new Date(todayDate.getTime());
+
+  d1.setHours(0, 0, 0, 0);
+  d2.setHours(0, 0, 0, 0);
+  return d1.getTime() >= d2.getTime();
 }
 </script>
 

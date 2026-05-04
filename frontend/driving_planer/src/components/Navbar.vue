@@ -154,13 +154,16 @@ const menu = ref(null)
 const sidebarOpen = ref(false)
 
 // Navigation links used in the sidebar
-const links = [
-  { to: '/', title: 'Zuhause', icon: 'pi-home' },
-  { to: '/about', title: 'Über uns', icon: 'pi-info-circle' },
-  { to: '/schools', title: 'Fahrschulen', icon: 'pi-book' },
-  { to: '/dashboard', title: 'Dashboard', icon: 'pi-chart-bar' },
-  { to: '/manage', title: 'Kursverwaltung', icon: 'pi-building' }
-]
+const links = computed(() => {
+  const allLinks = [
+    { to: '/',          title: 'Zuhause',       icon: 'pi-home',        show: true },
+    { to: '/about',     title: 'Über uns',       icon: 'pi-info-circle', show: true },
+    { to: '/schools',   title: 'Fahrschulen',    icon: 'pi-book',        show: true },
+    { to: '/dashboard', title: 'Dashboard',      icon: 'pi-chart-bar',   show: authStore.isAdmin || authStore.isStudent },
+    { to: '/manage',    title: 'Kursverwaltung', icon: 'pi-building',    show: authStore.isAdmin || authStore.isSchool },
+  ]
+  return allLinks.filter(link => link.show)
+})
 
 // Dynamic menu items depending on login state
 const menuItems = computed(() => {
