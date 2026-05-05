@@ -284,11 +284,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted} from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import Background from '@/components/Background.vue'
 import FooterCmp from '@/components/FooterCmp.vue'
 import { useAuthStore } from '@/stores/authStore'
-import type {User} from "@/types.ts";
+import type { User } from '@/types.ts'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 const authStore = useAuthStore()
@@ -310,8 +310,8 @@ const passwords = reactive({ current: '', new: '', confirm: '' })
 const fileInput = ref<HTMLInputElement | null>(null)
 
 onMounted(() => {
-  userName.value = authStore.user.UserName;
-  email.value = authStore.user.Email;
+  userName.value = authStore.user.UserName
+  email.value = authStore.user.Email
 })
 
 const errors = reactive({
@@ -362,22 +362,23 @@ const saveProfile = async () => {
       const response = await fetch(API_URL + `/users/${userId}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${authStore.token}`,
+          Authorization: `Bearer ${authStore.token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          'userName': userName.value,
-          'email': email.value,
+          userName: userName.value,
+          email: email.value,
         }),
       })
       if (response.ok) {
         console.log('Update Profile')
       } else {
         console.error('Failed update Profile')
+        throw new Error();
       }
       displayName.value = userName.value
       displayEmail.value = email.value
-      const user: User = JSON.parse(<string>sessionStorage.getItem('user'));
+      const user: User = JSON.parse(<string>sessionStorage.getItem('user'))
       user.UserName = displayName.value
       user.Email = email.value
       sessionStorage.setItem('user', JSON.stringify(user))
@@ -388,7 +389,7 @@ const saveProfile = async () => {
   }
 }
 
-const updatePassword = () => {
+const updatePassword = async () => {
   let valid = true
   if (!passwords.current) {
     errors.currentPass = 'Aktuelles Passwort fehlt'
@@ -402,9 +403,35 @@ const updatePassword = () => {
     errors.confirmPass = 'Passwörter nicht identisch'
     valid = false
   }
+  if (!passwords.confirm) {
+    errors.confirmPass = 'Neues Passwort fehlt'
+  }
 
   if (valid) {
-    closePasswordModal()
+    try {
+      const response = await fetch(API_URL + `/users/${userId}/password`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "currentPassword": passwords.current,
+          "newPassword": passwords.new,
+        })
+      })
+      if(response.ok) {
+        console.log('Update Password')
+      }else {
+        console.error('Something went wrong, while updating password');
+        throw new Error();
+      }
+
+      closePasswordModal()
+    } catch (err) {
+      errors.currentPass = "Passwort passt nicht";
+
+    }
   }
 }
 
