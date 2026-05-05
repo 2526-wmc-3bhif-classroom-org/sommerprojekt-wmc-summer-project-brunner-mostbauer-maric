@@ -1,5 +1,6 @@
 import { UserRepository } from "./user_repository.js";
 import type { User } from "./user_repository.js";
+import { ProgramRepository } from "../programs/program_repository.js";
 import { Unit } from "../unit.js";
 import { StatusCodes } from "http-status-codes";
 import { UserRole } from "../models/types.js";
@@ -253,6 +254,38 @@ export class UserService {
       };
     } finally {
       unit.complete(success);
+    }
+  }
+
+  public getUserEnrollments(userId: number, requestUserId: number, requestUserRole: UserRole): ServiceResult {
+    if (isNaN(userId)) {
+      return {
+        status: StatusCodes.BAD_REQUEST,
+        error: { message: "Invalid user ID" },
+      };
+    }
+
+    if (requestUserId !== userId && requestUserRole !== UserRole.ADMIN) {
+      return {
+        status: StatusCodes.FORBIDDEN,
+        error: { message: "You are not authorized to view these enrollments" },
+      };
+    }
+
+    const unit = Unit.createReadonly();
+    try {
+      const enrollments = ProgramRepository.getEnrollmentsByUser(unit, userId);
+      return {
+        status: StatusCodes.OK,
+        data: enrollments
+      };
+    } catch (e: any) {
+      return {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        error: { message: e.message },
+      };
+    } finally {
+      unit.complete();
     }
   }
 }

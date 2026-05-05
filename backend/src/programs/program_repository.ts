@@ -77,4 +77,14 @@ export class ProgramRepository {
     `);
     stmt.run(change, programId);
   }
+
+  public static getEnrollmentsByUser(unit: Unit, userId: number): any[] {
+    const stmt = unit.prepare(`
+      SELECT e.*, p.* 
+      FROM Enrollment e
+      JOIN LicenseProgram p ON e.LicenseProgramId = p.LicenseProgramId
+      WHERE e.UserId = ?
+    `);
+    return stmt.all(userId);
+  }
 }
