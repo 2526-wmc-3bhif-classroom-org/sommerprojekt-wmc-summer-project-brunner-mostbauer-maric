@@ -83,4 +83,80 @@ export class ProgramService {
       unit.complete();
     }
   }
+
+  public enrollUser(programId: number, targetUserId: number, requestUserId: number, requestUserRole: UserRole): ServiceResult {
+    if (requestUserRole !== "admin" && requestUserId !== targetUserId) {
+      return {
+        status: StatusCodes.FORBIDDEN,
+        error: { message: "You can only enroll yourself unless you are an admin" },
+      };
+    }
+
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const program = ProgramRepository.findById(unit, programId);
+      if (!program) {
+        return { status: StatusCodes.NOT_FOUND, error: { message: "Program not found" } };
+      }
+
+      if (program.CurrentParticipants >= program.MaxParticipants) {
+        return { status: StatusCodes.BAD_REQUEST, error: { message: "Program is full" } };
+      }
+
+      const existingEnrollment = ProgramRepository.checkEnrollment(unit, targetUserId, programId);
+      if (existingEnrollment) {
+        return { status: StatusCodes.BAD_REQUEST, error: { message: "User is already enrolled in this program" } };
+      }
+
+      const enrollmentId = ProgramRepository.enrollUser(unit, targetUserId, programId);
+      ProgramRepository.updateCurrentParticipants(unit, programId, 1);
+      
+      success = true;
+      return {
+        status: StatusCodes.CREATED,
+        data: { id: enrollmentId, message: "Successfully enrolled" },
+      };
+    } catch (e: any) {
+      return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
+    } finally {
+      unit.complete(success);
+    }
+  }
+
+  public unenrollUser(programId: number, targetUserId: number, requestUserId: number, requestUserRole: UserRole): ServiceResult {
+    if (requestUserRole !== "admin" && requestUserId !== targetUserId) {
+      return {
+        status: StatusCodes.FORBIDDEN,
+        error: { message: "You can only unenroll yourself unless you are an admin" },
+      };
+    }
+
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const program = ProgramRepository.findById(unit, programId);
+      if (!program) {
+        return { status: StatusCodes.NOT_FOUND, error: { message: "Program not found" } };
+      }
+
+      const existingEnrollment = ProgramRepository.checkEnrollment(unit, targetUserId, programId);
+      if (!existingEnrollment) {
+        return { status: StatusCodes.BAD_REQUEST, error: { message: "User is not enrolled in this program" } };
+      }
+
+      ProgramRepository.unenrollUser(unit, targetUserId, programId);
+      ProgramRepository.updateCurrentParticipants(unit, programId, -1);
+      
+      success = true;
+      return {
+        status: StatusCodes.OK,
+        data: { message: "Successfully unenrolled" },
+      };
+    } catch (e: any) {
+      return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
+    } finally {
+      unit.complete(success);
+    }
+  }
 }

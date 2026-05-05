@@ -43,4 +43,38 @@ export class ProgramRepository {
     const stmt = unit.prepare<LicenseProgram>("SELECT * FROM LicenseProgram");
     return stmt.all();
   }
+
+  public static enrollUser(unit: Unit, userId: number, programId: number): number {
+    const stmt = unit.prepare(`
+      INSERT INTO Enrollment (UserId, LicenseProgramId, Status)
+      VALUES (?, ?, 'active')
+    `);
+    stmt.run(userId, programId);
+    return unit.getLastRowId();
+  }
+
+  public static unenrollUser(unit: Unit, userId: number, programId: number): void {
+    const stmt = unit.prepare(`
+      DELETE FROM Enrollment
+      WHERE UserId = ? AND LicenseProgramId = ?
+    `);
+    stmt.run(userId, programId);
+  }
+
+  public static checkEnrollment(unit: Unit, userId: number, programId: number): any {
+    const stmt = unit.prepare(`
+      SELECT * FROM Enrollment
+      WHERE UserId = ? AND LicenseProgramId = ?
+    `);
+    return stmt.get(userId, programId);
+  }
+
+  public static updateCurrentParticipants(unit: Unit, programId: number, change: number): void {
+    const stmt = unit.prepare(`
+      UPDATE LicenseProgram
+      SET CurrentParticipants = CurrentParticipants + ?
+      WHERE LicenseProgramId = ?
+    `);
+    stmt.run(change, programId);
+  }
 }
