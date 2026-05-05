@@ -124,4 +124,29 @@ describe("User API Extension", () => {
       expect(res.status).toBe(StatusCodes.OK);
     });
   });
+
+  describe("GET /api/users/:id/enrollments", () => {
+    it("should allow owner to get their enrollments", async () => {
+      const res = await request(app)
+        .get(`/api/users/${testUserId}/enrollments`)
+        .set("Authorization", `Bearer ${userToken}`);
+      expect(res.status).toBe(StatusCodes.OK);
+      expect(Array.isArray(res.body)).toBe(true);
+    });
+
+    it("should allow admin to get any user's enrollments", async () => {
+      const res = await request(app)
+        .get(`/api/users/${testUserId}/enrollments`)
+        .set("Authorization", `Bearer ${adminToken}`);
+      expect(res.status).toBe(StatusCodes.OK);
+      expect(Array.isArray(res.body)).toBe(true);
+    });
+
+    it("should forbid non-owner non-admin from getting enrollments", async () => {
+      const res = await request(app)
+        .get("/api/users/1/enrollments") // Admin user ID
+        .set("Authorization", `Bearer ${userToken}`);
+      expect(res.status).toBe(StatusCodes.FORBIDDEN);
+    });
+  });
 });

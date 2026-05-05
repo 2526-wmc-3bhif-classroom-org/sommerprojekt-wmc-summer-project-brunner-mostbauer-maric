@@ -55,7 +55,56 @@ app.use((err: any, req: Request, res: Response, next: any) => {
   next();
 });
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// hardcoded quick login for swagger
+const customJsStr = `
+window.addEventListener('load', () => {
+  const interval = setInterval(() => {
+    const authWrapper = document.querySelector('.auth-wrapper');
+    if (authWrapper && !document.getElementById('dev-login-btn')) {
+      const btn = document.createElement('button');
+      btn.id = 'dev-login-btn';
+      btn.className = 'btn authorize unlocked';
+      btn.style.marginRight = '10px';
+      btn.style.backgroundColor = '#4990e2';
+      btn.style.borderColor = '#4990e2';
+      btn.style.color = '#fff';
+      btn.innerHTML = '<span>Dev Login</span>';
+      btn.onclick = async () => {
+        try {
+          btn.innerHTML = '<span>Logging in...</span>';
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: 'admin@admin.com', password: 'admin' })
+          });
+          const data = await response.json();
+          if (data.accessToken) {
+            window.ui.authActions.authorize({
+              bearerAuth: {
+                name: 'bearerAuth',
+                schema: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+                value: data.accessToken
+              }
+            });
+            btn.innerHTML = '<span>Logged In</span>';
+            setTimeout(() => btn.innerHTML = '<span>Dev Login</span>', 2000);
+          } else {
+            alert('Login failed: ' + (data.error?.message || 'Unknown error'));
+            btn.innerHTML = '<span>Dev Login</span>';
+          }
+        } catch(e) {
+          console.error(e);
+          alert('Login error');
+          btn.innerHTML = '<span>Dev Login</span>';
+        }
+      };
+      authWrapper.prepend(btn);
+    }
+  }, 500);
+});
+`;
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, { customJsStr }));
 
 // Ensure avatars directory exists
 const avatarsDir = path.join(process.cwd(), "avatars");
