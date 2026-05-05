@@ -40,7 +40,8 @@ export class AuthService {
         UserName: user.UserName,
         Email: user.Email,
         Role: user.Role,
-        IsSchool: user.Role === UserRole.SCHOOL
+        IsSchool: user.Role === UserRole.SCHOOL,
+        AvatarPath: user.AvatarPath
       };
 
       const token = jwt.sign({ user: userClaims }, SECRET_KEY, { expiresIn: "30m" });
