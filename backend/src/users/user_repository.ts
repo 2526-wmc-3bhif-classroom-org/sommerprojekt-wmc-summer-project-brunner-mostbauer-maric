@@ -33,6 +33,12 @@ export class UserRepository {
       .get(email);
   }
 
+  public getById(unit: Unit, userId: number): User | undefined {
+    return unit
+      .prepare<User>("SELECT * FROM User WHERE UserId = ?")
+      .get(userId);
+  }
+
   public create(unit: Unit, userName: string, email: string, passwordHash: string, role: UserRole): number {
     const result = unit
       .prepare("INSERT INTO User (UserName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?)")
@@ -62,6 +68,13 @@ export class UserRepository {
     const result = unit
       .prepare("UPDATE User SET AvatarPath = ? WHERE UserId = ?")
       .run(avatarPath, userId);
+    return result.changes > 0;
+  }
+
+  public updatePassword(unit: Unit, userId: number, passwordHash: string): boolean {
+    const result = unit
+      .prepare("UPDATE User SET PasswordHash = ? WHERE UserId = ?")
+      .run(passwordHash, userId);
     return result.changes > 0;
   }
 }
