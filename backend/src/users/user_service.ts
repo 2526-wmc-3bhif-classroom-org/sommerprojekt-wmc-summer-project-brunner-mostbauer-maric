@@ -3,6 +3,7 @@ import type { User } from "./user_repository.js";
 import { Unit } from "../unit.js";
 import { StatusCodes } from "http-status-codes";
 import { UserRole } from "../models/types.js";
+import bcrypt from "bcrypt";
 
 export interface ServiceResult<T = any> {
   status: number;
@@ -161,6 +162,88 @@ export class UserService {
         return {
           status: StatusCodes.NOT_FOUND,
           error: { message: "User not found" },
+        };
+      }
+    } catch (e: any) {
+      return {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        error: { message: e.message },
+      };
+    } finally {
+      unit.complete(success);
+    }
+  }
+
+  public changePassword(
+    userId: number,
+    newPassword?: string,
+    currentPassword?: string,
+    requestUserId?: number,
+    requestUserRole?: UserRole
+  ): ServiceResult {
+    if (isNaN(userId)) {
+      return {
+        status: StatusCodes.BAD_REQUEST,
+        error: { message: "Invalid user ID" },
+      };
+    }
+
+    if (!newPassword) {
+      return {
+        status: StatusCodes.BAD_REQUEST,
+        error: { message: "New password is required" },
+      };
+    }
+
+    if (requestUserId !== userId && requestUserRole !== UserRole.ADMIN) {
+      return {
+        status: StatusCodes.FORBIDDEN,
+        error: { message: "You are not authorized to change this password" },
+      };
+    }
+
+    if (requestUserRole !== UserRole.ADMIN && requestUserId === userId) {
+      if (!currentPassword) {
+        return {
+          status: StatusCodes.BAD_REQUEST,
+          error: { message: "Current password is required" },
+        };
+      }
+    }
+
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const user = this.userRepo.getById(unit, userId);
+      if (!user) {
+        return {
+          status: StatusCodes.NOT_FOUND,
+          error: { message: "User not found" },
+        };
+      }
+
+      if (requestUserRole !== UserRole.ADMIN) {
+        if (!bcrypt.compareSync(currentPassword!, user.PasswordHash)) {
+          return {
+            status: StatusCodes.UNAUTHORIZED,
+            error: { message: "Incorrect current password" },
+          };
+        }
+      }
+
+      const passwordHash = bcrypt.hashSync(newPassword, 10);
+      const updated = this.userRepo.updatePassword(unit, userId, passwordHash);
+
+      if (updated) {
+        success = true;
+        return {
+          status: StatusCodes.OK,
+          data: { message: "Password updated successfully" },
+        };
+      } else {
+        return {
+          status: StatusCodes.INTERNAL_SERVER_ERROR,
+          error: { message: "Failed to update password" },
         };
       }
     } catch (e: any) {
