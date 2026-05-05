@@ -169,7 +169,7 @@ const links = computed(() => {
 const menuItems = computed(() => {
   if (authStore.isAuthenticated) {
     return [
-      { label: `Profil (${authStore.user?.UserName})`, icon: 'pi pi-user' },
+      { label: `Profil (${authStore.user?.UserName})`, icon: 'pi pi-user', command: () => {router.push('/profile')} },
       { label: 'Logout', icon: 'pi pi-sign-out', command: () => { handleLogout() } }
     ]
   } else {

@@ -53,6 +53,12 @@ const router = createRouter({
       component: () => import('../views/DrivingSchoolManageView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/ProfilView.vue'),
+      meta: { requiresAuth: true },
+    }
   ],
   // This function is to handle that you always are on the highest point when you change the page
   scrollBehavior(to, from, savedPosition) {
