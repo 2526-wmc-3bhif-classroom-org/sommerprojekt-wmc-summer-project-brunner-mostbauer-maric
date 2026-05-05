@@ -46,6 +46,7 @@ const upload = multer({
  * /api/users/count:
  *   get:
  *     summary: Retrieve the total number of users
+ *     tags: [Users]
  *     security: []
  *     responses:
  *       200:
@@ -75,6 +76,7 @@ userRouter.get("/count", (req, res) => {
  * /api/users:
  *   get:
  *     summary: Retrieve a list of users
+ *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -102,6 +104,7 @@ userRouter.get("/", isAuthenticated, isAdmin, (req, res) => {
  * /api/users/{id}:
  *   delete:
  *     summary: Delete a user
+ *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -141,6 +144,7 @@ userRouter.delete("/:id", isAuthenticated, isAdmin, (req, res) => {
  * /api/users/{id}:
  *   put:
  *     summary: Update a user's account details
+ *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -202,6 +206,7 @@ userRouter.put("/:id", isAuthenticated, (req, res) => {
  * /api/users/{id}/avatar:
  *   post:
  *     summary: Upload a user avatar image
+ *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -296,6 +301,7 @@ userRouter.post("/:id/avatar", isAuthenticated, (req, res, next) => {
  * /api/users/{id}/password:
  *   patch:
  *     summary: Change a user's password
+ *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:

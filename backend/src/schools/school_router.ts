@@ -43,6 +43,7 @@ const schoolService: SchoolService = SchoolService.Instance;
  * /api/schools:
  *   get:
  *     summary: Retrieve a list of driving schools
+ *     tags: [Schools]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -72,6 +73,7 @@ schoolRouter.get("/", isAuthenticated, (req, res) => {
  * /api/schools/count:
  *   get:
  *     summary: Retrieve the total number of driving schools
+ *     tags: [Schools]
  *     security: []
  *     responses:
  *       200:
@@ -101,6 +103,7 @@ schoolRouter.get("/count", (req, res) => {
  * /api/schools/{schoolId}:
  *   get:
  *     summary: Retrieve a single driving school
+ *     tags: [Schools]
  *     security:
  *       - bearerAuth: []
  *     parameters:
