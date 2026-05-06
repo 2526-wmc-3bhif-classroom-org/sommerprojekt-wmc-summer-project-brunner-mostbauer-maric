@@ -1,341 +1,215 @@
 <template>
   <Background>
-    <div class="min-h-screen flex flex-col items-center justify-start p-4 md:p-8 pt-24 md:pt-16">
+    <!-- Padding-Top und responsive Paddings angepasst -->
+    <div class="min-h-screen flex flex-col items-center justify-start p-4 sm:p-8 md:p-12 pt-20">
 
-      <div class="max-w-5xl w-full px-4 md:px-6" v-motion-fade-visible>
+      <div class="max-w-6xl w-full px-2 sm:px-4" v-motion-fade-visible>
 
-        <div class="text-center mb-6 md:mb-10 p-4">
+        <!-- HEADER - Abstand optimiert -->
+        <div class="text-center mb-16 md:mb-24" style="margin-bottom: 7px">
           <HeaderMain
             title="Dashboard"
-            desktopHeight="md:text-6xl"
-            mobileHeight="text-4xl"
+            desktopHeight="md:text-7xl"
+            mobileHeight="text-5xl"
             class="pb-0 text-black leading-none"
             :duration="500"
           />
-          <p class="text-black font-black text-[9px] md:text-[10px] tracking-[0.2em] uppercase opacity-30 mt-1">
-            Driving Management
+          <p class="text-black font-black text-[10px] md:text-[12px] tracking-[0.3em] uppercase opacity-30 mt-6">
+            Driving Management System
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 items-stretch">
+        <!-- GRID SYSTEM - gap für mobile verkleinert, items-stretch sorgt für gleiche Kartenhöhe -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-stretch">
 
-          <!-- Gefahrene Kilometer -->
-          <div class="group bg-white border border-black/5 rounded-[1.8rem] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-500 flex flex-col h-[360px]" v-motion-slide-visible-bottom>
-            <div class="flex items-center justify-between mb-6 pb-2">
-              <div class="flex items-center gap-4">
-                <div class="w-11 h-11 bg-black rounded-xl flex items-center justify-center shadow-md">
-                  <i class="pi pi-map-marker text-white text-lg"></i>
-                </div>
-                <h2 class="font-black text-xl text-black uppercase tracking-tighter">KM-Log</h2>
+          <!-- KM-LOG CARD -->
+          <div class="bg-white border border-black/5 rounded-[2.5rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] flex flex-col h-full w-full" v-motion-slide-visible-bottom>
+            <div class="flex items-center gap-5 mb-8" style="margin-bottom: 7px">
+              <div class="w-12 h-12 md:w-14 md:h-14 bg-black rounded-2xl flex items-center justify-center shadow-lg">
+                <i class="pi pi-map-marker text-white text-xl md:text-2xl"></i>
               </div>
-              <div class="h-1 w-8 bg-black/10 rounded-full"></div>
+              <h2 class="font-black text-2xl md:text-3xl text-black uppercase tracking-tighter">KM-Log</h2>
             </div>
 
-            <div class="flex gap-3 mb-4 pb-2">
-              <input
-                v-model="kmInput"
-                type="number"
-                min="0"
-                placeholder="Kilometer..."
-                class="flex-1 p-2 md:p-3 bg-black/[0.03] border border-transparent rounded-xl text-black font-black text-sm md:text-base focus:bg-white focus:border-black transition-all outline-none placeholder:opacity-20 min-w-0"
-                @keyup.enter="addKm"
-              />
-              <button
-                @click="addKm"
-                class="bg-black text-white w-12 md:w-14 shrink-0 rounded-xl font-black hover:bg-zinc-800 active:scale-95 transition-all flex items-center justify-center shadow-sm"
-              >
-                <i class="pi pi-plus text-base"></i>
-              </button>
-            </div>
-            <span v-if="!validKm" class="text-red-500 font-black text-[10px] tracking-wide" style="margin-bottom: 0.75rem; display: block;">Bitte eine positive Kilometer-Zahl eingeben.</span>
-
-            <div class="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-              <div v-if="kmList.length === 0" class="flex flex-col items-center justify-center h-full gap-2 opacity-20">
-                <i class="pi pi-map-marker text-3xl"></i>
-                <p class="text-[10px] font-black uppercase tracking-wider">Noch keine Einträge</p>
+            <div class="flex flex-col gap-4 mb-8">
+              <div class="grid grid-cols-2 gap-4">
+                <input v-model="kmStart" type="number" placeholder="Start KM" class="p-4 bg-zinc-50 border border-transparent rounded-xl text-black font-bold text-sm outline-none focus:bg-white focus:border-black transition-all w-full" />
+                <input v-model="kmEnd" type="number" placeholder="End KM" class="p-4 bg-zinc-50 border border-transparent rounded-xl text-black font-bold text-sm outline-none focus:bg-white focus:border-black transition-all w-full" />
               </div>
-              <ul v-else class="flex flex-col gap-2">
-                <li
-                  v-for="(km, i) in kmList"
-                  :key="i"
-                  class="group/item text-sm text-black font-black bg-black/[0.02] p-4 rounded-xl flex justify-between items-center border border-black/5 hover:border-black/20 hover:bg-white transition-all duration-300"
-                >
-                  <div class="flex items-center gap-4">
-                    <span class="text-[8px] bg-black text-white w-4 h-4 rounded-full flex items-center justify-center font-black italic">#{{ i + 1 }}</span>
-                    <span class="text-base">{{ km }} <span class="text-[9px] opacity-30">KM</span></span>
-                  </div>
-                  <button @click="removeKm(i)" class="w-8 h-8 rounded-lg flex items-center justify-center text-black/10 hover:text-red-600 hover:bg-red-50 transition-all">
-                    <i class="pi pi-trash text-[10px]"></i>
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Checkliste -->
-          <div class="group bg-white border border-black/5 rounded-[1.8rem] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-500 flex flex-col h-[360px]" v-motion-slide-visible-bottom>
-            <div class="flex items-center justify-between mb-6 pb-2">
-              <div class="flex items-center gap-4">
-                <div class="w-11 h-11 bg-black rounded-xl flex items-center justify-center shadow-md">
-                  <i class="pi pi-check-square text-white text-lg"></i>
-                </div>
-                <h2 class="font-black text-xl text-black uppercase tracking-tighter">Tasks</h2>
+              <div class="grid grid-cols-2 gap-4">
+                <input v-model="locStart" type="text" placeholder="Start Ort" class="p-4 bg-zinc-50 border border-transparent rounded-xl text-black font-bold text-sm outline-none focus:bg-white focus:border-black transition-all w-full" />
+                <input v-model="locEnd" type="text" placeholder="Ziel Ort" class="p-4 bg-zinc-50 border border-transparent rounded-xl text-black font-bold text-sm outline-none focus:bg-white focus:border-black transition-all w-full" />
               </div>
-              <div class="h-1 w-8 bg-black/10 rounded-full"></div>
-            </div>
+              <input v-model="conditionInput" type="text" placeholder="Fahrbedingungen..." class="p-4 bg-zinc-50 border border-transparent rounded-xl text-black font-bold text-sm outline-none focus:bg-white focus:border-black w-full" />
 
-            <div class="flex gap-3 mb-6 pb-2">
-              <input
-                v-model="checkInput"
-                type="text"
-                placeholder="Neue Aufgabe..."
-                class="flex-1 p-2 md:p-3 bg-black/[0.03] border border-transparent rounded-xl text-black font-black text-xs md:text-sm focus:bg-white focus:border-black transition-all outline-none placeholder:opacity-20 min-w-0"
-                @keyup.enter="addCheck"
-              />
-              <button
-                @click="addCheck"
-                class="bg-black text-white w-12 md:w-14 shrink-0 rounded-xl font-black hover:bg-zinc-800 active:scale-95 transition-all flex items-center justify-center shadow-sm"
-              >
-                <i class="pi pi-plus text-sm"></i>
+              <button @click="addKmEntry" class="w-full bg-black text-white p-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl active:scale-95">
+                Fahrt speichern
               </button>
             </div>
 
-            <div class="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-              <div v-if="checklist.length === 0" class="flex flex-col items-center justify-center h-full gap-2 opacity-20">
-                <i class="pi pi-check-square text-3xl"></i>
-                <p class="text-[10px] font-black uppercase tracking-wider">Noch keine Aufgaben</p>
-              </div>
-              <div v-else class="flex flex-col gap-2">
-                <div
-                  v-for="(item, i) in checklist"
-                  :key="i"
-                  class="flex items-center justify-between p-4 rounded-xl bg-black/[0.02] border border-black/5 hover:border-black/20 hover:bg-white transition-all duration-300 group/item"
-                >
-                  <label class="flex items-center gap-4 cursor-pointer flex-1">
-                    <div class="relative flex items-center justify-center">
-                      <input
-                        type="checkbox"
-                        v-model="item.done"
-                        class="peer appearance-none w-6 h-6 border-2 border-black/10 rounded-md checked:bg-black checked:border-black transition-all cursor-pointer"
-                      />
-                      <i class="pi pi-check absolute text-white text-[10px] opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
-                    </div>
-                    <span :class="item.done ? 'line-through text-black/20 italic' : 'text-black font-black'" class="text-lg transition-all">
-                      {{ item.text }}
-                    </span>
-                  </label>
-
-                  <div class="flex gap-2">
-                    <button @click="editCheck(i)" class="w-8 h-8 rounded-lg flex items-center justify-center text-black/10 hover:text-blue-600 hover:bg-blue-50 transition-all">
-                      <i class="pi pi-pencil text-[10px]"></i>
-                    </button>
-                    <button @click="removeCheck(i)" class="w-8 h-8 rounded-lg flex items-center justify-center text-black/10 hover:text-red-600 hover:bg-red-50 transition-all">
-                      <i class="pi pi-trash text-[10px]"></i>
-                    </button>
+            <!-- Scrollbereich flexibel -->
+            <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-[200px] max-h-[300px]">
+              <div v-if="kmEntries.length === 0" class="flex flex-col items-center justify-center py-10 opacity-20"><i class="pi pi-map text-4xl mb-2"></i><p class="font-black uppercase text-xs">Leer</p></div>
+              <div v-else class="space-y-4">
+                <div v-for="(entry, i) in kmEntries" :key="i" class="p-5 rounded-3xl border-l-[10px] flex justify-between items-center bg-zinc-50 border border-black/5 shadow-sm border-l-black">
+                  <div class="flex flex-col gap-1">
+                    <span class="text-[10px] font-black uppercase opacity-40 italic">{{ entry.startLoc }} → {{ entry.endLoc }}</span>
+                    <span class="text-xl md:text-2xl font-black text-black">{{ entry.diff }} KM</span>
                   </div>
+                  <button @click="removeKmEntry(i)" class="text-black/10 hover:text-red-600 p-2"><i class="pi pi-trash"></i></button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Dokumente -->
-          <div class="group bg-white border border-black/5 rounded-[1.8rem] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-500 flex flex-col h-[360px]" v-motion-slide-visible-bottom>
-            <div class="flex items-center justify-between mb-6 pb-2">
-              <div class="flex items-center gap-4">
-                <div class="w-11 h-11 bg-black rounded-xl flex items-center justify-center shadow-md">
-                  <i class="pi pi-file-pdf text-white text-lg"></i>
-                </div>
-                <h2 class="font-black text-xl text-black uppercase tracking-tighter">Files</h2>
-              </div>
-              <div class="h-1 w-8 bg-black/10 rounded-full"></div>
+          <!-- TASKS CARD -->
+          <div class="bg-white border border-black/5 rounded-[2.5rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] flex flex-col h-full w-full" v-motion-slide-visible-bottom >
+            <div class="flex items-center gap-5 mb-8" style="margin-bottom: 7px">
+              <div class="w-12 h-12 md:w-14 md:h-14 bg-black rounded-2xl flex items-center justify-center shadow-lg"><i class="pi pi-check-square text-white text-xl md:text-2xl"></i></div>
+              <h2 class="font-black text-2xl md:text-3xl text-black uppercase tracking-tighter">Tasks</h2>
             </div>
-
-            <div class="flex-1">
-              <div class="relative h-full border border-dashed border-black/[0.1] rounded-2xl bg-black/[0.02] hover:bg-white hover:border-black/20 transition-all group/upload cursor-pointer flex flex-col items-center justify-center p-6 text-center">
-                <input
-                  type="file"
-                  class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                />
-                <div class="flex flex-col items-center gap-4 group-hover:scale-[1.01] transition-transform duration-500">
-                  <div class="w-16 h-16 rounded-full bg-black flex items-center justify-center shadow-lg">
-                    <i class="pi pi-cloud-upload text-3xl text-white"></i>
-                  </div>
-                  <div>
-                    <p class="text-black font-black text-base mb-1">Upload</p>
-                    <p class="text-black/30 font-bold text-[9px] max-w-[160px] leading-tight">Dateien hier ablegen</p>
-                  </div>
-                </div>
+            <div class="flex gap-3 mb-8">
+              <input v-model="checkInput" @keyup.enter="addCheck" type="text" placeholder="Aufgabe..." class="flex-1 p-4 bg-zinc-50 border border-transparent rounded-2xl text-black font-bold outline-none focus:bg-white focus:border-black transition-all" />
+              <button @click="addCheck" class="bg-black text-white px-5 md:px-7 rounded-2xl hover:bg-zinc-800 transition-all shadow-lg active:scale-95"><i class="pi pi-plus font-bold"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-[200px] max-h-[450px]">
+              <div v-for="(item, i) in checklist" :key="i" class="flex items-center justify-between p-5 rounded-[1.8rem] bg-zinc-50 mb-4 border border-black/[0.03]">
+                <label class="flex items-center gap-4 cursor-pointer flex-1">
+                  <input type="checkbox" v-model="item.done" class="w-6 h-6 rounded-lg accent-black cursor-pointer shadow-sm" />
+                  <span :class="item.done ? 'line-through opacity-30 italic' : 'font-black'" class="text-lg md:text-xl text-black">{{ item.text }}</span>
+                </label>
+                <button @click="removeCheck(i)" class="text-black/10 hover:text-red-600 p-2"><i class="pi pi-trash"></i></button>
               </div>
             </div>
           </div>
 
-          <!-- Prüfungstermine -->
-          <div class="group bg-white border border-black/5 rounded-[1.8rem] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all duration-500 flex flex-col h-[360px]" v-motion-slide-visible-bottom>
-            <div class="flex items-center justify-between mb-6 pb-2">
-              <div class="flex items-center gap-4">
-                <div class="w-11 h-11 bg-black rounded-xl flex items-center justify-center shadow-md">
-                  <i class="pi pi-calendar text-white text-lg"></i>
-                </div>
-                <h2 class="font-black text-xl text-black uppercase tracking-tighter">Events</h2>
+          <!-- KALENDER CARD -->
+          <div class="bg-white border border-black/5 rounded-[2.5rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] flex flex-col h-full relative overflow-hidden w-full" v-motion-slide-visible-bottom>
+            <div class="flex items-center justify-between mb-8" style="margin-bottom: 7px">
+              <div class="flex items-center gap-5">
+                <div class="w-12 h-12 md:w-14 md:h-14 bg-black rounded-2xl flex items-center justify-center shadow-lg"><i class="pi pi-calendar text-white text-xl md:text-2xl"></i></div>
+                <h2 class="font-black text-2xl md:text-3xl text-black uppercase tracking-tighter">Planer</h2>
               </div>
-              <div class="h-1 w-8 bg-black/10 rounded-full"></div>
+              <div class="flex gap-2">
+                <button @click="prevMonth" class="w-9 h-9 rounded-xl bg-zinc-50 hover:bg-black hover:text-white transition-all flex items-center justify-center border border-black/5"><i class="pi pi-chevron-left text-[10px]"></i></button>
+                <button @click="nextMonth" class="w-9 h-9 rounded-xl bg-zinc-50 hover:bg-black hover:text-white transition-all flex items-center justify-center border border-black/5"><i class="pi pi-chevron-right text-[10px]"></i></button>
+              </div>
             </div>
-
-            <div class="flex flex-col gap-3 mb-5 pb-2">
-                <div class="flex flex-col sm:flex-row gap-3">
-                  <div class="flex-1 flex flex-col gap-1">
-                    <select
-                      v-model="typeInput"
-                      :class="['p-3 bg-black/[0.03] border rounded-xl text-black font-black text-xs focus:bg-white transition-all outline-none appearance-none cursor-pointer w-full', !typeValid ? 'border-red-500 bg-red-50/30' : 'border-transparent focus:border-black']"
-                    >
-                      <option value="" disabled>Anlass wählen...</option>
-                      <option value="Theorie">Theorie</option>
-                      <option value="Praxis">Praktisch</option>
-                      <option value="Erste Hilfe">Erste Hilfekurs</option>
-                      <option value="Arzt">Doktor</option>
-                    </select>
-                    <span v-if="!typeValid" class="text-red-500 font-black text-[10px] tracking-wide">Muss einen Anlass auswählen</span>
-                  </div>
-                  <div class="flex-1 flex flex-col gap-1">
-                    <input
-                      v-model="dateInput"
-                      type="date"
-                      :class="['p-3 bg-black/[0.03] border rounded-xl text-black font-black text-xs focus:bg-white transition-all outline-none w-full', !dateValid ? 'border-red-500 bg-red-50/30' : 'border-transparent focus:border-black']"
-                    />
-                    <span v-if="!dateValid" class="text-red-500 font-black text-[10px] tracking-wide">Datum muss in der Zukunft liegen.</span>
-                  </div>
-                </div>
-
-                <button
-                @click="addDate"
-                class="w-full bg-black text-white p-3 rounded-xl font-black text-xs hover:bg-zinc-800 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-[0.1em] shadow-sm"
-                >
-                  <i class="pi pi-plus-circle text-sm"></i>
-                  Hinzufügen
+            <div class="text-center mb-6"><span class="text-xs md:text-sm font-black uppercase tracking-[0.2em] text-black">{{ calendarMonthLabel }}</span></div>
+            <div class="grid grid-cols-7 gap-1 md:gap-4 mb-4">
+              <div v-for="dayName in ['Mo','Di','Mi','Do','Fr','Sa','So']" :key="dayName" class="text-center text-[9px] md:text-[10px] font-black opacity-30 uppercase">{{ dayName }}</div>
+              <div v-for="(day, i) in calendarDays" :key="i" class="aspect-square flex items-center justify-center">
+                <button v-if="day" @click="openCalendarEntry(day)"
+                        :class="['w-9 h-9 md:w-12 md:h-12 rounded-xl md:rounded-2xl font-black text-sm md:text-lg transition-all relative flex items-center justify-center',
+                  isToday(day) ? 'bg-black text-white shadow-xl scale-105' : 'text-black hover:bg-zinc-100',
+                  hasEntry(day) && !isToday(day) ? 'border-2 border-black/10 bg-zinc-50' : '']">
+                  {{ day }}
+                  <span v-if="hasEntry(day)" class="absolute bottom-1 w-1 h-1 rounded-full" :class="isToday(day) ? 'bg-white' : 'bg-black'"></span>
                 </button>
-            </div>
-
-            <div class="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-              <div v-if="dates.length === 0" class="flex flex-col items-center justify-center h-full gap-2 opacity-20">
-                <i class="pi pi-calendar text-3xl"></i>
-                <p class="text-[10px] font-black uppercase tracking-wider">Noch keine Termine</p>
               </div>
-              <ul v-else class="flex flex-col gap-2">
-                  <li
-                  v-for="(date, i) in dates"
-                  :key="i"
-                  class="group/item text-sm text-black font-black bg-black/[0.02] p-4 rounded-xl border-l-[6px] border-black flex justify-between items-center hover:bg-white transition-all shadow-sm"
-                  >
-                    <div class="flex flex-col">
-                      <span class="text-[8px] uppercase text-black/20 font-black tracking-[0.1em] mb-1">{{ date.type }}</span>
-                      <span class="text-base leading-tight">
-                        {{ new Date(date.date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' }) }}
-                      </span>
-                    </div>
+            </div>
+            <!-- Kalender Modal -->
+            <transition name="slide-up">
+              <div v-if="calendarModalOpen" class="absolute inset-0 bg-white rounded-[2.5rem] p-6 md:p-10 flex flex-col z-20 shadow-2xl">
+                <div class="flex justify-between items-center mb-6">
+                  <span class="text-xs font-black uppercase opacity-40">{{ calendarSelectedLabel }}</span>
+                  <button @click="calendarModalOpen = false" class="text-black/20 hover:text-black p-2"><i class="pi pi-times"></i></button>
+                </div>
+                <textarea v-model="calendarEntryText" placeholder="Notiz..." class="flex-1 bg-zinc-50 rounded-3xl p-5 text-black font-bold text-base outline-none resize-none border-2 border-transparent focus:border-black" />
+                <button @click="saveCalendarEntry" class="mt-6 h-14 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs active:scale-95">Speichern</button>
+              </div>
+            </transition>
+          </div>
 
-                    <div class="flex gap-2">
-                      <button @click="editDate(i)" class="w-8 h-8 rounded-lg flex items-center justify-center text-black/10 hover:text-blue-600 hover:bg-blue-50 transition-all">
-                        <i class="pi pi-pencil text-[10px]"></i>
-                      </button>
-                      <button @click="removeDate(i)" class="w-8 h-8 rounded-lg flex items-center justify-center text-black/10 hover:text-red-600 hover:bg-red-50 transition-all">
-                        <i class="pi pi-trash text-[10px]"></i>
-                      </button>
-                    </div>
-                  </li>
-                </ul>
+          <!-- EVENTS CARD -->
+          <div class="bg-white border border-black/5 rounded-[2.5rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] flex flex-col h-full w-full" v-motion-slide-visible-bottom>
+            <div class="flex items-center gap-5 mb-8" style="margin-bottom: 7px">
+              <div class="w-12 h-12 md:w-14 md:h-14 bg-black rounded-2xl flex items-center justify-center shadow-lg"><i class="pi pi-calendar-plus text-white text-xl md:text-2xl"></i></div>
+              <h2 class="font-black text-2xl md:text-3xl text-black uppercase tracking-tighter">Events</h2>
+            </div>
+            <div class="flex flex-col gap-4 mb-8">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <select v-model="typeInput" class="p-4 bg-zinc-50 border border-transparent rounded-2xl text-black font-black text-xs outline-none focus:bg-white focus:border-black appearance-none cursor-pointer w-full">
+                  <option value="" disabled>Anlass</option>
+                  <option value="Theorie">Theorie</option>
+                  <option value="Praxis">Fahrstunde</option>
+                  <option value="Erste Hilfe">Kurs</option>
+                </select>
+                <input v-model="dateInput" type="date" class="p-4 bg-zinc-50 border border-transparent rounded-2xl text-black font-black text-xs outline-none focus:bg-white focus:border-black w-full" />
+              </div>
+              <button @click="addDate" class="w-full bg-black text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl active:scale-95">Termin fixieren</button>
+            </div>
+            <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-[200px] max-h-[350px]">
+              <div v-for="(date, i) in dates" :key="i" class="p-5 rounded-3xl border-l-[10px] border-black bg-zinc-50 flex justify-between items-center mb-5 shadow-sm">
+                <div class="flex flex-col">
+                  <span class="text-[9px] font-black uppercase opacity-20">{{ date.type }}</span>
+                  <span class="font-black text-lg md:text-xl text-black">{{ new Date(date.date).toLocaleDateString('de-DE') }}</span>
+                </div>
+                <button @click="removeDate(i)" class="text-black/10 hover:text-red-600 p-2"><i class="pi pi-trash"></i></button>
+              </div>
             </div>
           </div>
-        </div>      </div>
-    </div>
 
+        </div>
+      </div>
+    </div>
     <FooterCmp />
   </Background>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Background from '@/components/Background.vue'
 import HeaderMain from '@/components/HeaderMain.vue'
 import FooterCmp from '@/components/FooterCmp.vue'
 
-/* KM */
-const kmInput = ref('')
-const kmList = ref<number[]>([])
-const validKm = ref<boolean>(true);
+// Hilfsfunktionen für Sync
+const syncKmLog = () => {}
+const syncTasks = () => {}
+const syncCalendar = () => {}
+const syncEvents = () => {}
 
-
-const addKm = () => {
-  if (!kmInput.value || Number.isNaN(Number(kmInput.value)) || Number(kmInput.value) <= 0) {
-    validKm.value = false
-    return
-  }
-  validKm.value = true;
-  kmList.value.push(Number(kmInput.value))
-  kmInput.value = ''
+// KM-LOG
+const kmStart = ref<number | null>(null), kmEnd = ref<number | null>(null), locStart = ref(''), locEnd = ref(''), conditionInput = ref(''), kmEntries = ref<any[]>([])
+const addKmEntry = () => {
+  if (kmStart.value === null || kmEnd.value === null || !locStart.value || !locEnd.value) return
+  kmEntries.value.unshift({ startLoc: locStart.value, endLoc: locEnd.value, diff: kmEnd.value - kmStart.value })
+  kmStart.value = kmEnd.value; kmEnd.value = null; locStart.value = locEnd.value; locEnd.value = ''; syncKmLog()
 }
+const removeKmEntry = (i: number) => { kmEntries.value.splice(i, 1); syncKmLog() }
 
-const removeKm = (i:number) => {
-  kmList.value.splice(i,1)
-}
+// TASKS
+const checkInput = ref(''), checklist = ref<any[]>([])
+const addCheck = () => { if (!checkInput.value.trim()) return; checklist.value.push({ text: checkInput.value, done: false }); checkInput.value = ''; syncTasks() }
+const removeCheck = (i: number) => { checklist.value.splice(i, 1); syncTasks() }
 
-/* Checklist */
-const checkInput = ref('')
-const checklist = ref<{ text: string, done: boolean }[]>([])
+// CALENDAR
+const calendarYear = ref(new Date().getFullYear()), calendarMonth = ref(new Date().getMonth()), calendarEntries = ref<Record<string, string>>({}), calendarModalOpen = ref(false), calendarSelectedDay = ref<number | null>(null), calendarEntryText = ref('')
+const calendarMonthLabel = computed(() => new Date(calendarYear.value, calendarMonth.value).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }))
+const calendarSelectedLabel = computed(() => calendarSelectedDay.value ? `${calendarSelectedDay.value}. ${calendarMonthLabel.value}` : '')
+const calendarDays = computed(() => {
+  const firstDow = (new Date(calendarYear.value, calendarMonth.value, 1).getDay() + 6) % 7
+  const daysInMonth = new Date(calendarYear.value, calendarMonth.value + 1, 0).getDate()
+  const cells = Array(firstDow).fill(null); for (let d = 1; d <= daysInMonth; d++) cells.push(d)
+  while (cells.length % 7 !== 0) cells.push(null); return cells
+})
+const entryKey = (day: number) => `${calendarYear.value}-${calendarMonth.value + 1}-${day}`
+const isToday = (day: number) => { const t = new Date(); return day === t.getDate() && calendarMonth.value === t.getMonth() && calendarYear.value === t.getFullYear() }
+const hasEntry = (day: number | null) => day !== null && !!calendarEntries.value[entryKey(day)]
+const openCalendarEntry = (day: number) => { calendarSelectedDay.value = day; calendarEntryText.value = calendarEntries.value[entryKey(day)] || ''; calendarModalOpen.value = true }
+const saveCalendarEntry = () => { if (calendarSelectedDay.value) calendarEntries.value[entryKey(calendarSelectedDay.value)] = calendarEntryText.value; calendarModalOpen.value = false; syncCalendar() }
+const prevMonth = () => { if (calendarMonth.value === 0) { calendarMonth.value = 11; calendarYear.value-- } else calendarMonth.value-- }
+const nextMonth = () => { if (calendarMonth.value === 11) { calendarMonth.value = 0; calendarYear.value++ } else calendarMonth.value++ }
 
-const addCheck = () => {
-  if (!checkInput.value.trim()) return
-  checklist.value.push({ text: checkInput.value, done: false })
-  checkInput.value = ''
-}
-
-const removeCheck = (i: number) => {
-  checklist.value.splice(i, 1)
-}
-
-const editCheck = (i: number) => {
-  const item = checklist.value[i]
-  checkInput.value = item.text
-  checklist.value.splice(i, 1)
-}
-
-/* Dates */
-const typeInput = ref('')
-const dateInput = ref('')
-const dates = ref<{ type: string, date: string }[]>([])
-const dateValid = ref<boolean>(true)
-const typeValid = ref<boolean>(true)
-const addDate = () => {
-  typeValid.value = !!typeInput.value
-  if (!dateInput.value || Number.isNaN(new Date(dateInput.value).getTime()) || new Date(dateInput.value).getTime() < new Date(Date.now()).getTime()){
-    dateValid.value = false;
-  } else {
-    dateValid.value = true
-  }
-  if (!typeValid.value || !dateValid.value) return
-  dates.value.push({
-    type: typeInput.value,
-    date: dateInput.value
-  })
-
-  dateInput.value = ''
-  typeInput.value = ''
-}
-
-/* function to remove dates */
-const removeDate = (index: number) => {
-  dates.value.splice(index, 1)
-}
-
-const editDate = (i: number) => {
-  const item = dates.value[i]
-
-  typeInput.value = item.type
-  dateInput.value = item.date
-
-  dates.value.splice(i, 1)
-}
-
+// EVENTS
+const typeInput = ref(''), dateInput = ref(''), dates = ref<any[]>([])
+const addDate = () => { if (!typeInput.value || !dateInput.value) return; dates.value.push({ type: typeInput.value, date: dateInput.value }); typeInput.value = ''; dateInput.value = ''; syncEvents() }
+const removeDate = (i: number) => { dates.value.splice(i, 1); syncEvents() }
 </script>
 
 <style scoped>
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+.slide-up-enter-active, .slide-up-leave-active { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.slide-up-enter-from, .slide-up-leave-to { opacity: 0; transform: translateY(30px); }
 </style>
