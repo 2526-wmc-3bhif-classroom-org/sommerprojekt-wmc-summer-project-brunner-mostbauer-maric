@@ -97,14 +97,16 @@
             <div class="flex items-center justify-between" style="margin-bottom: 40px">
               <div class="flex items-center gap-4">
                 <div class="w-2 h-8 bg-black rounded-full"></div>
-                <h2 class="font-black text-2xl text-black uppercase tracking-tight">Planer</h2>
+                <div>
+                  <h2 class="font-black text-2xl text-black uppercase tracking-tight">Planer</h2>
+                  <p class="text-xs font-bold text-black/40 uppercase tracking-widest" style="margin-top: 4px">{{ calendarMonthLabel }}</p>
+                </div>
               </div>
               <div class="flex gap-2">
                 <button @click="prevMonth" class="w-8 h-8 rounded-full bg-zinc-50 hover:bg-black hover:text-white transition-all flex items-center justify-center"><i class="pi pi-chevron-left text-[10px]"></i></button>
                 <button @click="nextMonth" class="w-8 h-8 rounded-full bg-zinc-50 hover:bg-black hover:text-white transition-all flex items-center justify-center"><i class="pi pi-chevron-right text-[10px]"></i></button>
               </div>
             </div>
-            <div class="text-center mb-8 font-black uppercase tracking-[0.2em] text-[10px] opacity-30">{{ calendarMonthLabel }}</div>
             <div class="grid grid-cols-7 gap-2 mb-4 flex-1">
               <div v-for="dayName in ['M','D','M','D','F','S','S']" :key="dayName" class="text-center text-[10px] font-bold opacity-20">{{ dayName }}</div>
               <div v-for="(day, i) in calendarDays" :key="i" class="aspect-square flex items-center justify-center">
