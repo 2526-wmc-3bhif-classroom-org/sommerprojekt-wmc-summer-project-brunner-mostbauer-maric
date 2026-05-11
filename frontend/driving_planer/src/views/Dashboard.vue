@@ -93,7 +93,7 @@
           </div>
 
           <!-- KALENDER CARD -->
-          <div class="bg-white rounded-[3rem] p-8 md:p-10 shadow-[0_30px_60px_rgba(0,0,0,0.02)] flex flex-col h-full border border-zinc-100 relative overflow-hidden" v-motion-slide-visible-bottom>
+          <div class="bg-white rounded-[3rem] p-8 md:p-10 shadow-[0_30px_60px_rgba(0,0,0,0.02)] flex flex-col h-full border border-zinc-100 relative" v-motion-slide-visible-bottom>
             <div class="flex items-center justify-between" style="margin-bottom: 40px">
               <div class="flex items-center gap-4">
                 <div class="w-2 h-8 bg-black rounded-full"></div>
@@ -116,14 +116,24 @@
             <div class="grid grid-cols-7 gap-2 mb-4 flex-1">
               <div v-for="(dayName, i) in ['Mo','Di','Mi','Do','Fr','Sa','So']" :key="i" class="text-center text-xs font-black text-black/50">{{ dayName }}</div>
               <div v-for="(day, i) in calendarDays" :key="i" class="flex flex-col items-center justify-start" style="padding-top: 4px; min-height: 3.5rem">
-                <button v-if="day" @click="openCalendarEntry(day)"
-                        :class="['w-9 h-9 rounded-xl font-bold text-sm transition-all relative flex items-center justify-center flex-shrink-0',
-                  isToday(day) ? 'bg-black text-white shadow-xl' :
-                  isCourseDay(day) ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' :
-                  'text-black hover:bg-zinc-50',
-                  hasEntry(day) && !isToday(day) ? 'after:content-[\'\'] after:absolute after:top-1 after:right-1 after:w-1.5 after:h-1.5 after:bg-black after:rounded-full' : '']">
-                  {{ day }}
-                </button>
+                <div class="relative">
+                  <button v-if="day" @click="openCalendarEntry(day)"
+                          @mouseenter="hoveredDay = day"
+                          @mouseleave="hoveredDay = null"
+                          :class="['w-9 h-9 rounded-xl font-bold text-sm transition-all relative flex items-center justify-center flex-shrink-0',
+                    isToday(day) ? 'bg-black text-white shadow-xl' :
+                    isCourseDay(day) ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' :
+                    'text-black hover:bg-zinc-50',
+                    hasEntry(day) && !isToday(day) ? 'after:content-[\'\'] after:absolute after:top-1 after:right-1 after:w-1.5 after:h-1.5 after:bg-black after:rounded-full' : '']">
+                    {{ day }}
+                  </button>
+                  <div
+                    v-if="day && hoveredDay === day && isCourseDay(day) && joinedCourseWithTimes?.timeFrom && joinedCourseWithTimes?.timeTo"
+                    class="absolute left-1/2 bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-xl whitespace-nowrap pointer-events-none z-30 shadow-lg"
+                    style="bottom: calc(100% + 6px); transform: translateX(-50%)">
+                    {{ joinedCourseWithTimes.timeFrom }} – {{ joinedCourseWithTimes.timeTo }}
+                  </div>
+                </div>
                 <div v-if="day && eventsForDay(day).length > 0" class="flex gap-0.5 flex-wrap justify-center" style="margin-top: 3px">
                   <span
                     v-for="(ev, j) in eventsForDay(day)" :key="j"
@@ -134,7 +144,7 @@
               </div>
             </div>
             <transition name="slide-up">
-              <div v-if="calendarModalOpen" class="absolute inset-0 bg-white p-8 flex flex-col z-20">
+              <div v-if="calendarModalOpen" class="absolute inset-0 overflow-hidden rounded-[3rem] bg-white p-8 flex flex-col z-20">
                 <div class="flex justify-between items-center mb-6">
                   <span class="text-[10px] font-black uppercase opacity-30">{{ calendarSelectedLabel }}</span>
                   <button @click="calendarModalOpen = false" class="text-black/20 hover:text-black p-2"><i class="pi pi-times"></i></button>
@@ -211,6 +221,7 @@ import FooterCmp from '@/components/FooterCmp.vue'
 import { useAuthStore } from '@/stores/authStore'
 
 const authStore = useAuthStore()
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 const syncKmLog = () => {}
 const syncTasks = () => {}
@@ -221,10 +232,26 @@ const syncEvents = () => {
   }
 }
 
-const joinedCourse = computed(() => {
-  if (!authStore.user) return null
-  const raw = localStorage.getItem(`joinedCourse_${authStore.user.UserId}`)
-  return raw ? JSON.parse(raw) : null
+const joinedCourse = ref<any>(null)
+
+const courseTimesCache = ref<Record<string, { timeFrom: string; timeTo: string }>>({})
+
+function loadCourseTimes() {
+  const merged: Record<string, { timeFrom: string; timeTo: string }> = {}
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i)
+    if (key === 'courseTimes' || key?.startsWith('courseTimes_')) {
+      const raw = localStorage.getItem(key)
+      if (raw) Object.assign(merged, JSON.parse(raw))
+    }
+  }
+  courseTimesCache.value = merged
+}
+
+const joinedCourseWithTimes = computed(() => {
+  const course = joinedCourse.value
+  if (!course) return null
+  return { ...course, ...(courseTimesCache.value[String(course.id)] ?? courseTimesCache.value[course.id] ?? {}) }
 })
 
 const weekdayToJS: Record<string, number> = { Mo: 1, Di: 2, Mi: 3, Do: 4, Fr: 5, Sa: 6, So: 0 }
@@ -234,7 +261,9 @@ const isCourseDay = (day: number | null): boolean => {
   const m = String(calendarMonth.value + 1).padStart(2, '0')
   const d = String(day).padStart(2, '0')
   const dateStr = `${calendarYear.value}-${m}-${d}`
-  if (dateStr < joinedCourse.value.dateFrom || dateStr > joinedCourse.value.dateTo) return false
+  const courseFrom = (joinedCourse.value.dateFrom ?? '').substring(0, 10)
+  const courseTo = (joinedCourse.value.dateTo ?? '').substring(0, 10)
+  if (dateStr < courseFrom || dateStr > courseTo) return false
   const courseDays = (joinedCourse.value.weekdays as string[]).map(w => weekdayToJS[w])
   return courseDays.includes(new Date(calendarYear.value, calendarMonth.value, day).getDay())
 }
@@ -303,6 +332,7 @@ const addCheck = () => {
 const removeCheck = (i: number) => { checklist.value.splice(i, 1); syncTasks() }
 
 // CALENDAR LOGIC
+const hoveredDay = ref<number | null>(null)
 const calendarYear = ref(new Date().getFullYear())
 const calendarMonth = ref(new Date().getMonth())
 const calendarEntries = ref<Record<string, string>>({})
@@ -332,11 +362,37 @@ const dateInput = ref('')
 const dates = ref<any[]>([])
 const eventError = ref('')
 
-onMounted(() => {
+onMounted(async () => {
   if (authStore.user?.UserId) {
     const raw = localStorage.getItem(`events_${authStore.user.UserId}`)
     if (raw) dates.value = JSON.parse(raw)
+
+    const joinedRaw = localStorage.getItem(`joinedCourse_${authStore.user.UserId}`)
+    if (joinedRaw) joinedCourse.value = JSON.parse(joinedRaw)
+
+    if (joinedCourse.value?.id) {
+      try {
+        const res = await fetch(`${API_URL}/programs`, {
+          headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+        })
+        if (res.ok) {
+          const json = await res.json()
+          const fresh = (json.data ?? []).find((p: any) => p.LicenseProgramId === joinedCourse.value.id)
+          if (fresh) {
+            const updated = {
+              ...joinedCourse.value,
+              dateFrom: fresh.DateFrom,
+              dateTo: fresh.DateTo,
+              weekdays: fresh.Weekdays ? fresh.Weekdays.split(',') : joinedCourse.value.weekdays,
+            }
+            localStorage.setItem(`joinedCourse_${authStore.user.UserId}`, JSON.stringify(updated))
+            joinedCourse.value = updated
+          }
+        }
+      } catch {}
+    }
   }
+  loadCourseTimes()
 })
 watch([typeInput, dateInput], () => { eventError.value = '' })
 const addDate = () => {

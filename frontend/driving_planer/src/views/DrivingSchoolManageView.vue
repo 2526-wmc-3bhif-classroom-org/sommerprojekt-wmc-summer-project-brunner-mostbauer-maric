@@ -256,6 +256,35 @@
               <p v-if="errors.dateTo" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.dateTo }}</p>
             </div>
 
+            <!-- Time range -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Uhrzeit *</label>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-semibold mb-1">Von</label>
+                  <input
+                    v-model="form.timeFrom"
+                    type="text"
+                    placeholder="08:00"
+                    maxlength="5"
+                    class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
+                  />
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 font-semibold mb-1">Bis</label>
+                  <input
+                    v-model="form.timeTo"
+                    type="text"
+                    placeholder="16:00"
+                    maxlength="5"
+                    class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
+                  />
+                </div>
+              </div>
+              <p v-if="errors.timeFrom" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.timeFrom }}</p>
+              <p v-if="errors.timeTo" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.timeTo }}</p>
+            </div>
+
             <!-- Wochentage -->
             <div>
               <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Wochentage</label>
@@ -420,6 +449,8 @@ interface Course {
   licenseType: string
   dateFrom: string
   dateTo: string
+  timeFrom: string
+  timeTo: string
   weekdays: string[]
   isSchnellkurs: boolean
   price: number
@@ -433,6 +464,8 @@ function mapProgram(p: any): Course {
     licenseType: LICENSE_ID_TO_NAME[p.LicenseTypeId] ?? String(p.LicenseTypeId),
     dateFrom: p.DateFrom,
     dateTo: p.DateTo,
+    timeFrom: p.TimeFrom ?? '',
+    timeTo: p.TimeTo ?? '',
     weekdays: p.Weekdays ? p.Weekdays.split(',') : [],
     isSchnellkurs: !!p.IsSchnellkurs,
     price: p.Price,
@@ -482,6 +515,31 @@ function removeCourseEdit(id: number) {
   localStorage.setItem(courseEditsKey(), JSON.stringify(edits))
 }
 
+function courseTimesKey() {
+  return 'courseTimes'
+}
+function getCourseTimes(): Record<number, { timeFrom: string; timeTo: string }> {
+  const merged: Record<number, { timeFrom: string; timeTo: string }> = {}
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i)
+    if (key === 'courseTimes' || key?.startsWith('courseTimes_')) {
+      const raw = localStorage.getItem(key)
+      if (raw) Object.assign(merged, JSON.parse(raw))
+    }
+  }
+  return merged
+}
+function saveCourseTime(id: number, timeFrom: string, timeTo: string) {
+  const times = getCourseTimes()
+  times[id] = { timeFrom, timeTo }
+  localStorage.setItem(courseTimesKey(), JSON.stringify(times))
+}
+function removeCourseTime(id: number) {
+  const times = getCourseTimes()
+  delete times[id]
+  localStorage.setItem(courseTimesKey(), JSON.stringify(times))
+}
+
 /* ── Filter ── */
 const filterLicense = ref('')
 const filteredCourses = computed(() =>
@@ -502,7 +560,11 @@ async function fetchCourses() {
     })
     if (res.ok) {
       const json = await res.json()
-      const all: Course[] = (json.data ?? []).map(mapProgram)
+      const times = getCourseTimes()
+      const all: Course[] = (json.data ?? []).map((p: any) => {
+        const base = mapProgram(p)
+        return { ...base, ...(times[base.id] ?? {}) }
+      })
       if (authStore.isSchool) {
         const ownIds = getOwnCourseIds()
         const edits = getCourseEdits()
@@ -574,7 +636,7 @@ function statusPill(c: Course) {
 const showModal = ref(false)
 const editingId = ref<number | null>(null)
 const saveError = ref('')
-const emptyForm = () => ({ licenseType: '', dateFrom: '', dateTo: '', weekdays: [] as string[], isSchnellkurs: false, price: undefined as unknown as number, maxParticipants: 20, currentParticipants: 0 })
+const emptyForm = () => ({ licenseType: '', dateFrom: '', dateTo: '', timeFrom: '', timeTo: '', weekdays: [] as string[], isSchnellkurs: false, price: undefined as unknown as number, maxParticipants: 20, currentParticipants: 0 })
 
 function toggleWeekday(day: string) {
   const idx = form.value.weekdays.indexOf(day)
@@ -586,6 +648,12 @@ const errors = ref<Record<string, string>>({})
 
 /* ── Computed today string for min-date ── */
 const todayISO = new Date().toISOString().split('T')[0]
+
+function isValidTime(t: string): boolean {
+  if (!/^\d{2}:\d{2}$/.test(t)) return false
+  const [h, m] = t.split(':').map(Number)
+  return h >= 0 && h <= 23 && m >= 0 && m <= 59
+}
 
 function validate() {
   const e: Record<string, string> = {}
@@ -604,6 +672,18 @@ function validate() {
     e.dateTo = 'Bitte ein Enddatum angeben.'
   } else if (form.value.dateTo < (form.value.dateFrom || todayISO)) {
     e.dateTo = 'Enddatum muss nach dem Startdatum liegen.'
+  }
+  if (!form.value.timeFrom) {
+    e.timeFrom = 'Bitte eine Startzeit angeben.'
+  } else if (!isValidTime(form.value.timeFrom)) {
+    e.timeFrom = 'Ungültige Zeit – Format: HH:MM (z. B. 08:30).'
+  }
+  if (!form.value.timeTo) {
+    e.timeTo = 'Bitte eine Endzeit angeben.'
+  } else if (!isValidTime(form.value.timeTo)) {
+    e.timeTo = 'Ungültige Zeit – Format: HH:MM (z. B. 16:00).'
+  } else if (form.value.timeFrom && isValidTime(form.value.timeFrom) && form.value.timeTo <= form.value.timeFrom) {
+    e.timeTo = 'Endzeit muss nach der Startzeit liegen.'
   }
   if (form.value.price <= 0) {
     e.price = 'Preis muss größer als 0 sein.'
@@ -639,6 +719,8 @@ async function saveCourse() {
         LicenseTypeId: LICENSE_TYPE_IDS[form.value.licenseType],
         DateFrom: form.value.dateFrom,
         DateTo: form.value.dateTo,
+        TimeFrom: form.value.timeFrom,
+        TimeTo: form.value.timeTo,
         Weekdays: form.value.weekdays.join(','),
         IsSchnellkurs: form.value.isSchnellkurs ? 1 : 0,
         Price: form.value.price,
@@ -646,6 +728,7 @@ async function saveCourse() {
       })
     })
     if (res.ok) {
+      saveCourseTime(editingId.value, form.value.timeFrom, form.value.timeTo)
       removeCourseEdit(editingId.value)
       closeModal()
       await fetchCourses()
@@ -665,6 +748,8 @@ async function saveCourse() {
         LicenseTypeId: LICENSE_TYPE_IDS[form.value.licenseType],
         DateFrom: form.value.dateFrom,
         DateTo: form.value.dateTo,
+        TimeFrom: form.value.timeFrom,
+        TimeTo: form.value.timeTo,
         Weekdays: form.value.weekdays.join(','),
         IsSchnellkurs: form.value.isSchnellkurs ? 1 : 0,
         Price: form.value.price,
@@ -673,7 +758,9 @@ async function saveCourse() {
     })
     if (res.ok) {
       const json = await res.json()
-      addOwnCourseId(json.data.id)
+      const newId = json.data.id
+      addOwnCourseId(newId)
+      saveCourseTime(newId, form.value.timeFrom, form.value.timeTo)
       closeModal()
       await fetchCourses()
     } else {
@@ -696,6 +783,7 @@ async function deleteCourse() {
   if (res.ok) {
     removeOwnCourseId(id)
     removeCourseEdit(id)
+    removeCourseTime(id)
     courses.value = courses.value.filter(c => c.id !== id)
   }
   deleteTargetId.value = null
