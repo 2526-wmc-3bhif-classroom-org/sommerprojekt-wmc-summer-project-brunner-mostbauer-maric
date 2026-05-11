@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Background from '@/components/Background.vue'
 import HeaderMain from '@/components/HeaderMain.vue'
@@ -80,12 +80,29 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const classes = ['AM','A1', 'A2', 'A', 'B1', 'B', 'C1', 'C', 'D1', 'D', 'BE', 'C1E', 'CE', 'D1E', 'DE', 'F']
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
-const availableCourses = [
-  { licenseType: 'B',  dateFrom: '2026-05-11', dateTo: '2026-05-31' },
-  { licenseType: 'A',  dateFrom: '2026-06-01', dateTo: '2026-06-21' },
-  { licenseType: 'BE', dateFrom: '2026-07-01', dateTo: '2026-07-19' },
-]
+const licenseTypeMapping: Record<number, string> = {
+  1: 'A', 2: 'A1', 3: 'A2', 4: 'AM', 5: 'B', 6: 'BE', 7: 'C', 8: 'C1', 9: 'CE', 10: 'D', 11: 'D1', 12: 'DE'
+}
+
+const availableCourses = ref<any[]>([])
+
+onMounted(async () => {
+  try {
+    const response = await fetch(`${API_URL}/programs`)
+    const result = await response.json()
+    if (result.data) {
+      availableCourses.value = result.data.map((p: any) => ({
+        licenseType: licenseTypeMapping[p.LicenseTypeId] || 'Unknown',
+        dateFrom: p.DateFrom,
+        dateTo: p.DateTo
+      }))
+    }
+  } catch (e) {
+    console.error('Failed to fetch programs:', e)
+  }
+})
 
 const formData = reactive({
   licenseClass: 'B',
@@ -112,7 +129,7 @@ const submitForm = () => {
   }
   if (!dateValid.value || !goalValid.value) return
 
-  classValid.value = availableCourses.some(
+  classValid.value = availableCourses.value.some(
     c => c.licenseType === formData.licenseClass && c.dateTo >= formData.startDate
   )
   if (!classValid.value) return
