@@ -122,10 +122,15 @@ userRouter.get("/", isAuthenticated, isAdmin, (req, res) => {
  *       404:
  *         description: User not found
  */
-userRouter.delete("/:id", isAuthenticated, isAdmin, (req, res) => {
+userRouter.delete("/:id", isAuthenticated, (req, res) => {
   try {
     const userId = parseInt(req.params.id);
-    const result = userService.deleteUser(userId);
+    const authReq = req as AuthRequest;
+    const result = userService.deleteUser(
+      userId,
+      authReq.payload?.user.UserId || 0,
+      authReq.payload?.user.Role as UserRole
+    );
     if (result.error) {
       res.status(result.status).json({ error: result.error });
     } else {

@@ -41,11 +41,18 @@ export class UserService {
     }
   }
 
-  public deleteUser(userId: number): ServiceResult {
+  public deleteUser(userId: number, requestUserId: number, requestUserRole: UserRole): ServiceResult {
     if (isNaN(userId)) {
       return {
         status: StatusCodes.BAD_REQUEST,
         error: { message: "Invalid user ID" },
+      };
+    }
+
+    if (requestUserId !== userId && requestUserRole !== UserRole.ADMIN) {
+      return {
+        status: StatusCodes.FORBIDDEN,
+        error: { message: "You are not authorized to delete this account" },
       };
     }
 

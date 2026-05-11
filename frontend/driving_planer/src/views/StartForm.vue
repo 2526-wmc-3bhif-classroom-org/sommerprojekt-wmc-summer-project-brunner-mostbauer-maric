@@ -17,58 +17,14 @@
               <div
                 v-for="cls in classes"
                 :key="cls"
-                @click="formData.licenseClass = cls"
+                @click="selectClass(cls)"
                 :class="['p-4 rounded-2xl border-2 font-black text-center cursor-pointer transition-all active:scale-95',
                   formData.licenseClass === cls ? 'bg-black text-white border-black shadow-md' : 'bg-slate-50 text-black border-transparent hover:border-black/20']"
               >
                 {{ cls }}
               </div>
             </div>
-          </div>
-
-          <!-- Driving School -->
-          <div>
-            <label class="font-black text-xl mb-4 block text-black uppercase tracking-tight">Fahrschule</label>
-            <div v-if="schoolsLoading" class="flex items-center justify-center py-8 text-black/30">
-              <i class="pi pi-spin pi-spinner text-xl"></i>
-            </div>
-            <div v-else-if="schools.length === 0" class="flex flex-col items-center justify-center py-8 opacity-30 gap-2">
-              <i class="pi pi-building text-2xl"></i>
-              <p class="text-xs font-black uppercase tracking-wider">Keine Fahrschulen verfügbar</p>
-            </div>
-            <div v-else class="flex flex-col gap-2">
-              <div class="relative">
-                <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-black/30 text-sm"></i>
-                <input
-                  v-model="schoolSearch"
-                  type="text"
-                  placeholder="Fahrschule suchen..."
-                  class="w-full pl-10 pr-4 py-3 bg-slate-50 border-2 border-transparent rounded-2xl text-black font-bold focus:bg-white focus:border-black transition-all outline-none text-sm"
-                />
-              </div>
-              <div class="flex flex-col gap-2 overflow-y-auto pr-1" style="max-height: 17.5rem">
-                <div v-if="filteredSchools.length === 0" class="flex flex-col items-center justify-center py-6 opacity-30 gap-2">
-                  <i class="pi pi-search text-2xl"></i>
-                  <p class="text-xs font-black uppercase tracking-wider">Keine Treffer</p>
-                </div>
-                <div
-                  v-for="school in filteredSchools"
-                  :key="school.DrivingSchoolId"
-                  @click="toggleSchool(school.DrivingSchoolId)"
-                  :class="['flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all active:scale-[0.99]',
-                    formData.schoolId === school.DrivingSchoolId
-                      ? 'bg-black text-white border-black shadow-md'
-                      : 'bg-slate-50 text-black border-transparent hover:border-black/20']"
-                >
-                  <div class="flex flex-col gap-0.5">
-                    <span class="font-black text-sm">{{ school.Name }}</span>
-                    <span class="text-xs opacity-50">{{ school.Location }}</span>
-                  </div>
-                  <i v-if="formData.schoolId === school.DrivingSchoolId" class="pi pi-check text-sm"></i>
-                </div>
-              </div>
-            </div>
-            <span v-if="!schoolValid" class="text-red-700 text-sm tracking-tight uppercase">Bitte eine Fahrschule wählen.</span>
+            <span v-if="!classValid" class="text-red-700 text-sm tracking-tight uppercase" style="margin-top: 0.5rem; display: block;">Für Klasse {{ formData.licenseClass }} sind ab diesem Datum keine Kurse verfügbar.</span>
           </div>
 
           <!-- Start Date & Goal -->
@@ -113,70 +69,59 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed, onMounted } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Background from '@/components/Background.vue'
 import HeaderMain from '@/components/HeaderMain.vue'
 import FooterCmp from '@/components/FooterCmp.vue'
 import { useAuthStore } from '@/stores/authStore'
-import { useSchoolStore } from '@/stores/schoolStore'
-import type { DrivingSchool } from '@/types'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const schoolStore = useSchoolStore()
 
 const classes = ['AM','A1', 'A2', 'A', 'B1', 'B', 'C1', 'C', 'D1', 'D', 'BE', 'C1E', 'CE', 'D1E', 'DE', 'F']
 
-const schools = ref<DrivingSchool[]>([])
-const schoolsLoading = ref(false)
-const schoolSearch = ref('')
-
-const filteredSchools = computed(() =>
-  schools.value.filter(s =>
-    s.Name.toLowerCase().includes(schoolSearch.value.toLowerCase()) ||
-    s.Location?.toLowerCase().includes(schoolSearch.value.toLowerCase())
-  )
-)
-
-onMounted(async () => {
-  schoolsLoading.value = true
-  await schoolStore.fetchSchools()
-  schools.value = schoolStore.schools
-  schoolsLoading.value = false
-})
+const availableCourses = [
+  { licenseType: 'B',  dateFrom: '2027-06-15', dateTo: '2027-06-28' },
+  { licenseType: 'A',  dateFrom: '2027-07-01', dateTo: '2027-07-14' },
+  { licenseType: 'BE', dateFrom: '2027-08-20', dateTo: '2027-09-05' },
+]
 
 const formData = reactive({
   licenseClass: 'B',
   startDate: new Date().toISOString().split('T')[0],
   goal: '',
-  schoolId: null as number | null,
 })
 
 const dateValid = ref(true)
 const goalValid = ref(true)
-const schoolValid = ref(true)
+const classValid = ref(true)
 
-const toggleSchool = (id: number) => {
-  formData.schoolId = formData.schoolId === id ? null : id
-  schoolValid.value = true
+const selectClass = (cls: string) => {
+  formData.licenseClass = cls
+  classValid.value = true
 }
 
 const submitForm = () => {
   goalValid.value = !!formData.goal
-  schoolValid.value = formData.schoolId !== null
   const timestampForm = new Date(formData.startDate).getTime()
   if (!formData.startDate || Number.isNaN(timestampForm) || !checkIfFuture(new Date(formData.startDate), new Date(Date.now()))) {
     dateValid.value = false
   } else {
     dateValid.value = true
   }
-  if (!dateValid.value || !goalValid.value || !schoolValid.value) return
+  if (!dateValid.value || !goalValid.value) return
+
+  classValid.value = availableCourses.some(
+    c => c.licenseType === formData.licenseClass && c.dateTo >= formData.startDate
+  )
+  if (!classValid.value) return
 
   if (authStore.user?.UserId) {
     localStorage.setItem(`enrolled_${authStore.user.UserId}`, 'true')
+    localStorage.setItem(`licenseClass_${authStore.user.UserId}`, formData.licenseClass)
   }
-  router.push('/dashboard')
+  router.push('/manage')
 }
 
 const checkIfFuture = (formDate: Date, todayDate: Date) => {

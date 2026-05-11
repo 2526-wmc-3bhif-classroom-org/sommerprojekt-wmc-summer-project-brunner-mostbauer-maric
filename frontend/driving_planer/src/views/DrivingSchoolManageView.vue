@@ -15,13 +15,6 @@
           </p>
         </div>
 
-        <!-- Stats row -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-          <InfoStatsCard :index="0" title="Kurse gesamt" :description="`${courses.length} aktive Kurse`" icon="pi pi-list" iconColor="text-indigo-500" borderColor="border-indigo-500" />
-          <InfoStatsCard :index="1" title="Eingeschriebene" :description="`${totalParticipants} Fahrschüler gesamt`" icon="pi pi-users" iconColor="text-violet-500" borderColor="border-violet-500" />
-          <InfoStatsCard :index="2" title="Klassen" :description="`${uniqueLicenses} verschiedene Führerscheinklassen`" icon="pi pi-id-card" iconColor="text-sky-500" borderColor="border-sky-500" />
-        </div>
-
         <!-- Toolbar row -->
         <div class="flex flex-col sm:flex-row items-center sm:justify-between justify-center gap-4 mb-6 p-4">
           <div class="group cursor-default transition-all rounded-lg px-3 py-2 text-center sm:text-left">
@@ -32,6 +25,7 @@
           <div class="flex items-center gap-3 flex-col sm:flex-row sm:items-center">
             <!-- Filter by license -->
             <select
+              v-if="!authStore.isStudent"
               v-model="filterLicense"
               class="w-full sm:w-auto px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-200 shadow-sm transition-all"
             >
@@ -41,6 +35,7 @@
 
             <!-- Add course button -->
             <button
+              v-if="authStore.isSchool || authStore.isAdmin"
               @click="openCreateModal"
               class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-md hover:shadow-lg"
             >
@@ -85,7 +80,7 @@
                 </div>
 
                 <!-- Action buttons (visible on hover) -->
-                <div class="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <div v-if="authStore.isSchool || authStore.isAdmin" class="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   <button
                     @click="openEditModal(course)"
                     class="w-8 h-8 flex items-center justify-center rounded-lg text-indigo-400 hover:bg-indigo-50 hover:text-indigo-600 hover:scale-110 transition-all"
@@ -146,10 +141,19 @@
                   {{ statusLabel(course) }}
                 </span>
                 <button
+                  v-if="authStore.isSchool || authStore.isAdmin"
                   @click="openEditModal(course)"
                   class="text-xs text-indigo-500 hover:text-indigo-700 font-bold transition-colors flex items-center gap-1"
                 >
                   Bearbeiten
+                  <i class="pi pi-arrow-right text-[10px]"></i>
+                </button>
+                <button
+                  v-else
+                  @click="joinCourse(course.id)"
+                  class="text-xs text-emerald-500 hover:text-emerald-700 font-bold transition-colors flex items-center gap-1"
+                >
+                  Beitreten
                   <i class="pi pi-arrow-right text-[10px]"></i>
                 </button>
               </div>
@@ -167,7 +171,7 @@
             {{ filterLicense ? `Keine Kurse für Klasse ${filterLicense} gefunden.` : 'Erstelle deinen ersten Kurs und starte durch.' }}
           </p>
           <button
-            v-if="!filterLicense"
+            v-if="!filterLicense && (authStore.isSchool || authStore.isAdmin)"
             @click="openCreateModal"
             class="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold rounded-xl transition-all shadow-md"
           >
@@ -365,11 +369,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import Background from '@/components/Background.vue'
 import HeaderMain from '@/components/HeaderMain.vue'
 import FooterCmp from '@/components/FooterCmp.vue'
 import InfoStatsCard from '@/components/InfoStatsCard.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 /* ── Types ── */
 interface Course {
@@ -392,6 +398,9 @@ const courses = ref<Course[]>([
   { id: 3, licenseType: 'BE', dateFrom: '2027-08-20', dateTo: '2027-09-05', weekdays: ['Di', 'Do'],                          isSchnellkurs: false, price: 1800, maxParticipants: 15, currentParticipants: 3  },
 ])
 
+const authStore = useAuthStore()
+const router = useRouter()
+
 /* ── Filter ── */
 const filterLicense = ref('')
 const filteredCourses = computed(() =>
@@ -400,6 +409,13 @@ const filteredCourses = computed(() =>
     : courses.value
 )
 const usedLicenses = computed(() => [...new Set(courses.value.map(c => c.licenseType))])
+
+onMounted(() => {
+  if (authStore.isStudent && authStore.user) {
+    const saved = localStorage.getItem(`licenseClass_${authStore.user.UserId}`)
+    if (saved) filterLicense.value = saved
+  }
+})
 
 /* ── Computed stats ── */
 const totalParticipants = computed(() => courses.value.reduce((s, c) => s + c.currentParticipants, 0))
@@ -517,6 +533,15 @@ function saveCourse() {
 const deleteTargetId = ref<number | null>(null)
 function confirmDelete(id: number) { deleteTargetId.value = id }
 function deleteCourse() { courses.value = courses.value.filter(c => c.id !== deleteTargetId.value); deleteTargetId.value = null }
+
+/* ── Join ── */
+function joinCourse(id: number) {
+  const course = courses.value.find(c => c.id === id)
+  if (course && authStore.user) {
+    localStorage.setItem(`joinedCourse_${authStore.user.UserId}`, JSON.stringify(course))
+  }
+  router.push('/dashboard')
+}
 </script>
 
 <style scoped>

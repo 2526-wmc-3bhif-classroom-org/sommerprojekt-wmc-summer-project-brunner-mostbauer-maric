@@ -116,6 +116,19 @@
             >
               <i class="pi pi-lock text-sm"></i> Passwort ändern
             </button>
+
+            <div class="flex items-center gap-3 mt-4 mb-2">
+              <div class="flex-1 h-px bg-black/10"></div>
+              <span class="text-xs text-black/30 font-medium">oder</span>
+              <div class="flex-1 h-px bg-black/10"></div>
+            </div>
+
+            <button
+              @click="showDeleteModal = true"
+              class="w-full bg-white text-red-500 text-sm font-semibold py-4 rounded-2xl cursor-pointer border border-red-200 transition-all duration-300 hover:scale-[1.02] hover:bg-red-50 active:scale-[0.98] flex items-center justify-center gap-2"
+            >
+              <i class="pi pi-trash text-sm"></i> Account löschen
+            </button>
           </div>
         </div>
       </div>
@@ -279,6 +292,39 @@
       </div>
     </Transition>
 
+    <!-- DELETE ACCOUNT MODAL -->
+    <Transition name="fade">
+      <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="showDeleteModal = false"></div>
+        <div class="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden">
+          <div class="px-8 py-10 flex flex-col items-center text-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center">
+              <i class="pi pi-exclamation-triangle text-red-400 text-2xl"></i>
+            </div>
+            <div>
+              <h2 class="font-black text-xl text-slate-900 mb-2">Account wirklich löschen?</h2>
+              <p class="text-sm text-slate-500">Diese Aktion ist unwiderruflich. Dein Account und alle zugehörigen Daten werden dauerhaft gelöscht.</p>
+            </div>
+            <p v-if="deleteError" class="text-red-500 text-xs w-full text-left">{{ deleteError }}</p>
+            <div class="flex gap-3 w-full" style="margin-top: 0.5rem">
+              <button
+                @click="showDeleteModal = false"
+                class="flex-1 py-3.5 rounded-2xl border border-black/10 text-slate-600 font-semibold text-sm hover:bg-black/[0.03] transition-all cursor-pointer"
+              >
+                Abbrechen
+              </button>
+              <button
+                @click="deleteAccount"
+                class="flex-1 py-3.5 rounded-2xl bg-red-500 hover:bg-red-600 active:scale-95 text-white font-semibold text-sm transition-all shadow-md cursor-pointer"
+              >
+                Löschen
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
     <FooterCmp />
   </Background>
 </template>
@@ -297,6 +343,8 @@ const userId = authStore.user.UserId
 // UI States
 const showPasswordModal = ref(false)
 const showImageModal = ref(false)
+const showDeleteModal = ref(false)
+const deleteError = ref('')
 const isDragging = ref(false)
 const previewImage = ref<string | null>(null)
 
@@ -432,6 +480,26 @@ const updatePassword = async () => {
       errors.currentPass = "Passwort passt nicht";
 
     }
+  }
+}
+
+const deleteAccount = async () => {
+  deleteError.value = ''
+  try {
+    const response = await fetch(API_URL + `/users/${userId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${authStore.token}` },
+    })
+    if (response.ok) {
+      localStorage.removeItem(`enrolled_${userId}`)
+      localStorage.removeItem(`licenseClass_${userId}`)
+      authStore.logout()
+    } else {
+      const err = await response.json()
+      deleteError.value = err.error?.message || 'Löschen fehlgeschlagen'
+    }
+  } catch {
+    deleteError.value = 'Netzwerkfehler beim Löschen'
   }
 }
 

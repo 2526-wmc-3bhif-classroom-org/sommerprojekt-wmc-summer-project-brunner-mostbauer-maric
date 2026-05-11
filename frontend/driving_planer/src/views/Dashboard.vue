@@ -112,7 +112,9 @@
               <div v-for="(day, i) in calendarDays" :key="i" class="aspect-square flex items-center justify-center">
                 <button v-if="day" @click="openCalendarEntry(day)"
                         :class="['w-10 h-10 rounded-xl font-bold text-sm transition-all relative flex items-center justify-center',
-                  isToday(day) ? 'bg-black text-white shadow-xl' : 'text-black hover:bg-zinc-50',
+                  isToday(day) ? 'bg-black text-white shadow-xl' :
+                  isCourseDay(day) ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' :
+                  'text-black hover:bg-zinc-50',
                   hasEntry(day) && !isToday(day) ? 'after:content-[\'\'] after:absolute after:top-1 after:right-1 after:w-1.5 after:h-1.5 after:bg-black after:rounded-full' : '']">
                   {{ day }}
                 </button>
@@ -193,11 +195,32 @@ import { ref, computed, watch } from 'vue'
 import Background from '@/components/Background.vue'
 import HeaderMain from '@/components/HeaderMain.vue'
 import FooterCmp from '@/components/FooterCmp.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const syncKmLog = () => {}
 const syncTasks = () => {}
 const syncCalendar = () => {}
 const syncEvents = () => {}
+
+const authStore = useAuthStore()
+
+const joinedCourse = computed(() => {
+  if (!authStore.user) return null
+  const raw = localStorage.getItem(`joinedCourse_${authStore.user.UserId}`)
+  return raw ? JSON.parse(raw) : null
+})
+
+const weekdayToJS: Record<string, number> = { Mo: 1, Di: 2, Mi: 3, Do: 4, Fr: 5, Sa: 6, So: 0 }
+
+const isCourseDay = (day: number | null): boolean => {
+  if (!day || !joinedCourse.value) return false
+  const m = String(calendarMonth.value + 1).padStart(2, '0')
+  const d = String(day).padStart(2, '0')
+  const dateStr = `${calendarYear.value}-${m}-${d}`
+  if (dateStr < joinedCourse.value.dateFrom || dateStr > joinedCourse.value.dateTo) return false
+  const courseDays = (joinedCourse.value.weekdays as string[]).map(w => weekdayToJS[w])
+  return courseDays.includes(new Date(calendarYear.value, calendarMonth.value, day).getDay())
+}
 
 // KM-LOG LOGIC
 const kmStart = ref<number | null>(null)
