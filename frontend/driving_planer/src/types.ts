@@ -5,6 +5,7 @@ export interface User {
   UserName: string;
   Email: string;
   Role: string;
+  AvatarPath?: string;
 }
 
 export interface AuthResponse {

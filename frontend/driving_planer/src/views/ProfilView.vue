@@ -17,7 +17,7 @@
                 @click="showImageModal = true"
                 class="group relative w-20 h-20 rounded-2xl bg-white/10 border-2 border-white/20 flex items-center justify-center shrink-0 overflow-hidden transition-all hover:border-white/40 cursor-pointer"
               >
-                <img v-if="previewImage" :src="previewImage" class="w-full h-full object-cover" />
+                <img v-if="displayImage" :src="displayImage" class="w-full h-full object-cover" />
                 <i
                   v-else
                   class="pi pi-user text-white text-3xl group-hover:opacity-0 transition-opacity"
@@ -160,14 +160,15 @@
                     ? 'border-black bg-black/[0.03]'
                     : 'border-black/10 bg-black/[0.01]',
               ]"
-              class="w-full h-56 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center gap-3 transition-all duration-300"
+              class="w-full h-56 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center gap-3 transition-all duration-300 relative overflow-hidden"
             >
+              <img v-if="displayImage" :src="displayImage" class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none" />
               <i
-                class="pi pi-cloud-upload text-3xl"
+                class="pi pi-cloud-upload text-3xl z-10"
                 :class="errors.image ? 'text-red-400' : 'text-black/20'"
               ></i>
               <p
-                class="text-sm font-medium"
+                class="text-sm font-medium z-10"
                 :class="errors.image ? 'text-red-500' : 'text-black/60'"
               >
                 Bild hierher ziehen
@@ -330,7 +331,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import Background from '@/components/Background.vue'
 import FooterCmp from '@/components/FooterCmp.vue'
 import { useAuthStore } from '@/stores/authStore'
@@ -339,6 +340,21 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 const authStore = useAuthStore()
 const userId = authStore.user.UserId
+
+const avatarUrl = computed(() => {
+  if (authStore.user?.AvatarPath) {
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace(/\/api\/?$/, '')
+    const path = authStore.user.AvatarPath.startsWith('avatars/') 
+      ? authStore.user.AvatarPath 
+      : `avatars/${authStore.user.AvatarPath}`
+    return `${baseUrl}/${path}`
+  }
+  return ''
+})
+
+const displayImage = computed(() => {
+  return previewImage.value || avatarUrl.value
+})
 
 // UI States
 const showPasswordModal = ref(false)
@@ -386,6 +402,8 @@ const uploadAvatar = async (file: File) => {
 
     if (response.ok) {
       console.log('Avatar erfolgreich hochgeladen')
+      const data = await response.json()
+      authStore.updateUser({ AvatarPath: data.data.avatarPath })
     } else {
       const err = await response.json()
       errors.image = err.message || 'Upload fehlgeschlagen'

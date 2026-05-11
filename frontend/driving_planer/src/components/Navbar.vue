@@ -65,9 +65,10 @@
           role="button"
           aria-label="Profilmenü öffnen"
         >
-          <div class="w-full h-full bg-slate-100 flex items-center justify-center">
+          <img v-if="authStore.user?.AvatarPath" :src="avatarUrl" alt="User Avatar" class="w-full h-full object-cover" />
+          <div v-else class="w-full h-full bg-slate-100 flex items-center justify-center">
               <i class="pi pi-user text-slate-400 text-sm"></i>
-            </div>
+          </div>
         </div>
 
         <!-- PrimeVue popup menu -->
@@ -106,9 +107,10 @@
           role="button"
           aria-label="Profilmenü öffnen"
         >
-          <div class="w-full h-full bg-slate-100 flex items-center justify-center">
+          <img v-if="authStore.user?.AvatarPath" :src="avatarUrl" alt="User Avatar" class="w-full h-full object-cover" />
+          <div v-else class="w-full h-full bg-slate-100 flex items-center justify-center">
               <i class="pi pi-user text-slate-400 text-sm"></i>
-            </div>
+          </div>
         </div>
 
         <!-- PrimeVue popup menu -->
@@ -136,6 +138,18 @@ import Menu from 'primevue/menu'
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+
+const avatarUrl = computed(() => {
+  if (authStore.user?.AvatarPath) {
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace(/\/api\/?$/, '')
+    // If AvatarPath already contains 'avatars/', avoid duplicating it
+    const path = authStore.user.AvatarPath.startsWith('avatars/') 
+      ? authStore.user.AvatarPath 
+      : `avatars/${authStore.user.AvatarPath}`
+    return `${baseUrl}/${path}`
+  }
+  return ''
+})
 
 // Reference to the scroll container for resetting scroll position
 const scrollContainer = ref<HTMLElement | null>(null)

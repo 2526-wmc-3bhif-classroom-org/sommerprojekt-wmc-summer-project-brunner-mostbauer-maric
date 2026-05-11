@@ -101,5 +101,13 @@ export const useAuthStore = defineStore('auth', () => {
     router.push('/login')
   }
 
-  return { user, token, isAuthenticated, isAdmin, isSchool, isStudent, login, register, logout }
+  function updateUser(userData: Partial<User>) {
+    if (user.value) {
+      user.value = { ...user.value, ...userData }
+      sessionStorage.setItem('user', JSON.stringify(user.value))
+      localStorage.setItem('user', JSON.stringify(user.value))
+    }
+  }
+
+  return { user, token, isAuthenticated, isAdmin, isSchool, isStudent, login, register, logout, updateUser }
 })
