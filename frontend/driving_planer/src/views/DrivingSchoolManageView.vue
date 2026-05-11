@@ -150,7 +150,7 @@
                 </button>
                 <button
                   v-else
-                  @click="joinCourse(course.id)"
+                  @click="openJoinModal(course.id)"
                   class="text-xs text-emerald-500 hover:text-emerald-700 font-bold transition-colors flex items-center gap-1"
                 >
                   Beitreten
@@ -365,6 +365,28 @@
       </div>
     </Transition>
 
+    <!-- ── Join confirm ── -->
+    <Transition name="modal">
+      <div v-if="joinTargetId !== null" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="joinTargetId = null"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 z-10 text-center">
+          <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i class="pi pi-user-plus text-emerald-400 text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-black text-slate-900 mb-2">Kurs beitreten?</h3>
+          <div v-if="joinTargetCourse" class="text-sm text-slate-500 mb-2">
+            <span class="font-bold text-slate-700">Klasse {{ joinTargetCourse.licenseType }}</span>
+            &nbsp;·&nbsp;{{ formatDate(joinTargetCourse.dateFrom) }} – {{ formatDate(joinTargetCourse.dateTo) }}
+          </div>
+          <p class="text-sm text-slate-400 mb-8">Die Kurstage werden in deinem Kalender angezeigt.</p>
+          <div class="flex gap-3">
+            <button @click="joinTargetId = null" class="flex-1 py-3.5 rounded-xl border border-gray-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all">Abbrechen</button>
+            <button @click="confirmJoin" class="flex-1 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-bold text-sm transition-all shadow-md">Beitreten</button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
   </Background>
 </template>
 
@@ -393,9 +415,9 @@ interface Course {
 /* ── Mock data — swap with API calls later ── */
 let nextId = 4
 const courses = ref<Course[]>([
-  { id: 1, licenseType: 'B',  dateFrom: '2027-06-15', dateTo: '2027-06-28', weekdays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'], isSchnellkurs: false, price: 2500, maxParticipants: 20, currentParticipants: 14 },
-  { id: 2, licenseType: 'A',  dateFrom: '2027-07-01', dateTo: '2027-07-14', weekdays: ['Mo', 'Mi', 'Fr', 'Sa'],              isSchnellkurs: true,  price: 3200, maxParticipants: 10, currentParticipants: 10 },
-  { id: 3, licenseType: 'BE', dateFrom: '2027-08-20', dateTo: '2027-09-05', weekdays: ['Di', 'Do'],                          isSchnellkurs: false, price: 1800, maxParticipants: 15, currentParticipants: 3  },
+  { id: 1, licenseType: 'B',  dateFrom: '2026-05-11', dateTo: '2026-05-31', weekdays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'], isSchnellkurs: false, price: 2500, maxParticipants: 20, currentParticipants: 14 },
+  { id: 2, licenseType: 'A',  dateFrom: '2026-06-01', dateTo: '2026-06-21', weekdays: ['Mo', 'Mi', 'Fr', 'Sa'],              isSchnellkurs: true,  price: 3200, maxParticipants: 10, currentParticipants: 10 },
+  { id: 3, licenseType: 'BE', dateFrom: '2026-07-01', dateTo: '2026-07-19', weekdays: ['Di', 'Do'],                          isSchnellkurs: false, price: 1800, maxParticipants: 15, currentParticipants: 3  },
 ])
 
 const authStore = useAuthStore()
@@ -535,11 +557,19 @@ function confirmDelete(id: number) { deleteTargetId.value = id }
 function deleteCourse() { courses.value = courses.value.filter(c => c.id !== deleteTargetId.value); deleteTargetId.value = null }
 
 /* ── Join ── */
-function joinCourse(id: number) {
-  const course = courses.value.find(c => c.id === id)
-  if (course && authStore.user) {
-    localStorage.setItem(`joinedCourse_${authStore.user.UserId}`, JSON.stringify(course))
+const joinTargetId = ref<number | null>(null)
+const joinTargetCourse = computed(() =>
+  joinTargetId.value !== null ? courses.value.find(c => c.id === joinTargetId.value) : null
+)
+
+function openJoinModal(id: number) { joinTargetId.value = id }
+
+function confirmJoin() {
+  if (!joinTargetCourse.value) return
+  if (authStore.user) {
+    localStorage.setItem(`joinedCourse_${authStore.user.UserId}`, JSON.stringify(joinTargetCourse.value))
   }
+  joinTargetId.value = null
   router.push('/dashboard')
 }
 </script>

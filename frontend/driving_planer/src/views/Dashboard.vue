@@ -107,17 +107,30 @@
                 <button @click="nextMonth" class="w-8 h-8 rounded-full bg-zinc-50 hover:bg-black hover:text-white transition-all flex items-center justify-center"><i class="pi pi-chevron-right text-[10px]"></i></button>
               </div>
             </div>
+            <div v-if="calendarLegend.length > 0" class="flex gap-4 flex-wrap" style="margin-bottom: 12px">
+              <div v-for="item in calendarLegend" :key="item.label" class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full flex-shrink-0" :class="item.color"></span>
+                <span class="text-[10px] font-black text-black/40 uppercase tracking-widest">{{ item.label }}</span>
+              </div>
+            </div>
             <div class="grid grid-cols-7 gap-2 mb-4 flex-1">
-              <div v-for="dayName in ['M','D','M','D','F','S','S']" :key="dayName" class="text-center text-[10px] font-bold opacity-20">{{ dayName }}</div>
-              <div v-for="(day, i) in calendarDays" :key="i" class="aspect-square flex items-center justify-center">
+              <div v-for="(dayName, i) in ['Mo','Di','Mi','Do','Fr','Sa','So']" :key="i" class="text-center text-xs font-black text-black/50">{{ dayName }}</div>
+              <div v-for="(day, i) in calendarDays" :key="i" class="flex flex-col items-center justify-start" style="padding-top: 4px; min-height: 3.5rem">
                 <button v-if="day" @click="openCalendarEntry(day)"
-                        :class="['w-10 h-10 rounded-xl font-bold text-sm transition-all relative flex items-center justify-center',
+                        :class="['w-9 h-9 rounded-xl font-bold text-sm transition-all relative flex items-center justify-center flex-shrink-0',
                   isToday(day) ? 'bg-black text-white shadow-xl' :
                   isCourseDay(day) ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' :
                   'text-black hover:bg-zinc-50',
                   hasEntry(day) && !isToday(day) ? 'after:content-[\'\'] after:absolute after:top-1 after:right-1 after:w-1.5 after:h-1.5 after:bg-black after:rounded-full' : '']">
                   {{ day }}
                 </button>
+                <div v-if="day && eventsForDay(day).length > 0" class="flex gap-0.5 flex-wrap justify-center" style="margin-top: 3px">
+                  <span
+                    v-for="(ev, j) in eventsForDay(day)" :key="j"
+                    class="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                    :class="eventColorMap[ev.type] ?? 'bg-gray-400'"
+                  ></span>
+                </div>
               </div>
             </div>
             <transition name="slide-up">
@@ -191,18 +204,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import Background from '@/components/Background.vue'
 import HeaderMain from '@/components/HeaderMain.vue'
 import FooterCmp from '@/components/FooterCmp.vue'
 import { useAuthStore } from '@/stores/authStore'
 
+const authStore = useAuthStore()
+
 const syncKmLog = () => {}
 const syncTasks = () => {}
 const syncCalendar = () => {}
-const syncEvents = () => {}
-
-const authStore = useAuthStore()
+const syncEvents = () => {
+  if (authStore.user?.UserId) {
+    localStorage.setItem(`events_${authStore.user.UserId}`, JSON.stringify(dates.value))
+  }
+}
 
 const joinedCourse = computed(() => {
   if (!authStore.user) return null
@@ -220,6 +237,27 @@ const isCourseDay = (day: number | null): boolean => {
   if (dateStr < joinedCourse.value.dateFrom || dateStr > joinedCourse.value.dateTo) return false
   const courseDays = (joinedCourse.value.weekdays as string[]).map(w => weekdayToJS[w])
   return courseDays.includes(new Date(calendarYear.value, calendarMonth.value, day).getDay())
+}
+
+const eventColorMap: Record<string, string> = {
+  Theorie: 'bg-amber-400',
+  Praxis:  'bg-emerald-400',
+}
+
+const calendarLegend = computed(() => {
+  const items: { label: string; color: string }[] = []
+  if (joinedCourse.value) items.push({ label: 'Kurs', color: 'bg-indigo-400' })
+  if (dates.value.some(e => e.type === 'Theorie')) items.push({ label: 'Theorie', color: 'bg-amber-400' })
+  if (dates.value.some(e => e.type === 'Praxis')) items.push({ label: 'Praxis', color: 'bg-emerald-400' })
+  return items
+})
+
+const eventsForDay = (day: number | null): typeof dates.value => {
+  if (!day) return []
+  const m = String(calendarMonth.value + 1).padStart(2, '0')
+  const d = String(day).padStart(2, '0')
+  const dateStr = `${calendarYear.value}-${m}-${d}`
+  return dates.value.filter(e => e.date === dateStr)
 }
 
 // KM-LOG LOGIC
@@ -293,6 +331,13 @@ const typeInput = ref('')
 const dateInput = ref('')
 const dates = ref<any[]>([])
 const eventError = ref('')
+
+onMounted(() => {
+  if (authStore.user?.UserId) {
+    const raw = localStorage.getItem(`events_${authStore.user.UserId}`)
+    if (raw) dates.value = JSON.parse(raw)
+  }
+})
 watch([typeInput, dateInput], () => { eventError.value = '' })
 const addDate = () => {
   if (!typeInput.value || !dateInput.value) { eventError.value = "Felder unvollständig"; return }

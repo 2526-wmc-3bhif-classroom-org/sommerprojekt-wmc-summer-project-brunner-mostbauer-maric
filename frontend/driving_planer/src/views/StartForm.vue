@@ -82,9 +82,9 @@ const authStore = useAuthStore()
 const classes = ['AM','A1', 'A2', 'A', 'B1', 'B', 'C1', 'C', 'D1', 'D', 'BE', 'C1E', 'CE', 'D1E', 'DE', 'F']
 
 const availableCourses = [
-  { licenseType: 'B',  dateFrom: '2027-06-15', dateTo: '2027-06-28' },
-  { licenseType: 'A',  dateFrom: '2027-07-01', dateTo: '2027-07-14' },
-  { licenseType: 'BE', dateFrom: '2027-08-20', dateTo: '2027-09-05' },
+  { licenseType: 'B',  dateFrom: '2026-05-11', dateTo: '2026-05-31' },
+  { licenseType: 'A',  dateFrom: '2026-06-01', dateTo: '2026-06-21' },
+  { licenseType: 'BE', dateFrom: '2026-07-01', dateTo: '2026-07-19' },
 ]
 
 const formData = reactive({
