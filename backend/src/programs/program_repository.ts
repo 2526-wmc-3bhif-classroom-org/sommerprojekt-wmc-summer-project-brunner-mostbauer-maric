@@ -69,6 +69,31 @@ export class ProgramRepository {
     return stmt.get(userId, programId);
   }
 
+  public static update(unit: Unit, programId: number, data: Partial<LicenseProgram>): boolean {
+    const stmt = unit.prepare(`
+      UPDATE LicenseProgram
+      SET LicenseTypeId = ?, DateFrom = ?, DateTo = ?, Weekdays = ?,
+          IsSchnellkurs = ?, Price = ?, MaxParticipants = ?
+      WHERE LicenseProgramId = ?
+    `);
+    const result = stmt.run(
+      data.LicenseTypeId,
+      data.DateFrom,
+      data.DateTo,
+      data.Weekdays ?? null,
+      data.IsSchnellkurs ?? 0,
+      data.Price,
+      data.MaxParticipants,
+      programId
+    );
+    return (result.changes as number) > 0;
+  }
+
+  public static delete(unit: Unit, programId: number): boolean {
+    const result = unit.prepare('DELETE FROM LicenseProgram WHERE LicenseProgramId = ?').run(programId);
+    return (result.changes as number) > 0;
+  }
+
   public static updateCurrentParticipants(unit: Unit, programId: number, change: number): void {
     const stmt = unit.prepare(`
       UPDATE LicenseProgram

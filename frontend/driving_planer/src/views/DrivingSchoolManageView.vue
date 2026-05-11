@@ -11,7 +11,7 @@
           </div>
           <HeaderMain title="Meine Kurse" desktopHeight="md:text-5xl" mobileHeight="text-2xl" class="md:pt-4 md:pb-2 pt-6 pb-2" :duration="500" />
           <p class="text-center md:text-lg text-black/50 text-xs m-5 transition-colors duration-300 hover:text-black/80" v-motion-fade-visible>
-            Verwalte deine Fahrschulkurse – erstelle, bearbeite und behalte den Überblick.
+            {{ authStore.isStudent ? 'Wähle deine Kurse – tritt einem Kurs bei und starte durch.' : 'Verwalte deine Fahrschulkurse – erstelle, bearbeite und behalte den Überblick.' }}
           </p>
         </div>
 
@@ -19,7 +19,7 @@
         <div class="flex flex-col sm:flex-row items-center sm:justify-between justify-center gap-4 mb-6 p-4">
           <div class="group cursor-default transition-all rounded-lg px-3 py-2 text-center sm:text-left">
             <h2 class="text-xl font-black text-slate-900 group-hover:text-indigo-600">Kursübersicht</h2>
-            <p class="text-sm text-slate-400 mt-0.5 group-hover:text-indigo-500">{{ courses.length }} Kurs{{ courses.length !== 1 ? 'e' : '' }} angelegt</p>
+            <p class="text-sm text-slate-400 mt-0.5 group-hover:text-indigo-500">{{ filteredCourses.length }} Kurs{{ filteredCourses.length !== 1 ? 'e' : '' }} angelegt</p>
           </div>
 
           <div class="flex items-center gap-3 flex-col sm:flex-row sm:items-center">
@@ -45,8 +45,13 @@
           </div>
         </div>
 
+        <!-- Loading state -->
+        <div v-if="isLoading" class="flex items-center justify-center py-24">
+          <i class="pi pi-spin pi-spinner text-indigo-400 text-3xl"></i>
+        </div>
+
         <!-- Course card grid -->
-        <div v-if="filteredCourses.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        <div v-else-if="filteredCourses.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
           <div
             v-for="(course, i) in filteredCourses"
             :key="course.id"
@@ -335,7 +340,8 @@
           </div>
 
           <!-- Actions -->
-          <div class="flex gap-3 mt-10">
+          <p v-if="saveError" class="text-xs text-red-500 text-center" style="margin-top: 0.6rem;">{{ saveError }}</p>
+          <div class="flex gap-3 mt-4">
             <button @click="closeModal" class="flex-1 py-3.5 rounded-xl border border-gray-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all">
               Abbrechen
             </button>
@@ -399,6 +405,15 @@ import FooterCmp from '@/components/FooterCmp.vue'
 import InfoStatsCard from '@/components/InfoStatsCard.vue'
 import { useAuthStore } from '@/stores/authStore'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+
+const LICENSE_TYPE_IDS: Record<string, number> = {
+  A: 1, A1: 2, A2: 3, AM: 4, B: 5, BE: 6, C: 7, C1: 8, CE: 9, D: 10, D1: 11, DE: 12
+}
+const LICENSE_ID_TO_NAME: Record<number, string> = Object.fromEntries(
+  Object.entries(LICENSE_TYPE_IDS).map(([k, v]) => [v, k])
+)
+
 /* ── Types ── */
 interface Course {
   id: number
@@ -412,16 +427,60 @@ interface Course {
   currentParticipants: number
 }
 
-/* ── Mock data — swap with API calls later ── */
-let nextId = 4
-const courses = ref<Course[]>([
-  { id: 1, licenseType: 'B',  dateFrom: '2026-05-11', dateTo: '2026-05-31', weekdays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'], isSchnellkurs: false, price: 2500, maxParticipants: 20, currentParticipants: 14 },
-  { id: 2, licenseType: 'A',  dateFrom: '2026-06-01', dateTo: '2026-06-21', weekdays: ['Mo', 'Mi', 'Fr', 'Sa'],              isSchnellkurs: true,  price: 3200, maxParticipants: 10, currentParticipants: 10 },
-  { id: 3, licenseType: 'BE', dateFrom: '2026-07-01', dateTo: '2026-07-19', weekdays: ['Di', 'Do'],                          isSchnellkurs: false, price: 1800, maxParticipants: 15, currentParticipants: 3  },
-])
+function mapProgram(p: any): Course {
+  return {
+    id: p.LicenseProgramId,
+    licenseType: LICENSE_ID_TO_NAME[p.LicenseTypeId] ?? String(p.LicenseTypeId),
+    dateFrom: p.DateFrom,
+    dateTo: p.DateTo,
+    weekdays: p.Weekdays ? p.Weekdays.split(',') : [],
+    isSchnellkurs: !!p.IsSchnellkurs,
+    price: p.Price,
+    maxParticipants: p.MaxParticipants,
+    currentParticipants: p.CurrentParticipants,
+  }
+}
+
+const courses = ref<Course[]>([])
+const isLoading = ref(false)
 
 const authStore = useAuthStore()
 const router = useRouter()
+
+/* ── School course ownership via localStorage ── */
+function schoolCoursesKey() {
+  return `schoolCourseIds_${authStore.user?.UserId ?? 0}`
+}
+function getOwnCourseIds(): number[] {
+  const raw = localStorage.getItem(schoolCoursesKey())
+  return raw ? JSON.parse(raw) : []
+}
+function addOwnCourseId(id: number) {
+  const ids = getOwnCourseIds()
+  if (!ids.includes(id)) localStorage.setItem(schoolCoursesKey(), JSON.stringify([...ids, id]))
+}
+function removeOwnCourseId(id: number) {
+  const ids = getOwnCourseIds().filter(i => i !== id)
+  localStorage.setItem(schoolCoursesKey(), JSON.stringify(ids))
+}
+
+function courseEditsKey() {
+  return `schoolCourseEdits_${authStore.user?.UserId ?? 0}`
+}
+function getCourseEdits(): Record<number, Partial<Course>> {
+  const raw = localStorage.getItem(courseEditsKey())
+  return raw ? JSON.parse(raw) : {}
+}
+function saveCourseEdit(id: number, data: Partial<Course>) {
+  const edits = getCourseEdits()
+  edits[id] = data
+  localStorage.setItem(courseEditsKey(), JSON.stringify(edits))
+}
+function removeCourseEdit(id: number) {
+  const edits = getCourseEdits()
+  delete edits[id]
+  localStorage.setItem(courseEditsKey(), JSON.stringify(edits))
+}
 
 /* ── Filter ── */
 const filterLicense = ref('')
@@ -432,11 +491,39 @@ const filteredCourses = computed(() =>
 )
 const usedLicenses = computed(() => [...new Set(courses.value.map(c => c.licenseType))])
 
-onMounted(() => {
+async function fetchCourses() {
+  isLoading.value = true
+  try {
+    const res = await fetch(`${API_URL}/programs`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(authStore.token ? { Authorization: `Bearer ${authStore.token}` } : {})
+      }
+    })
+    if (res.ok) {
+      const json = await res.json()
+      const all: Course[] = (json.data ?? []).map(mapProgram)
+      if (authStore.isSchool) {
+        const ownIds = getOwnCourseIds()
+        const edits = getCourseEdits()
+        courses.value = all
+          .filter(c => ownIds.includes(c.id))
+          .map(c => ({ ...c, ...edits[c.id] }))
+      } else {
+        courses.value = all
+      }
+    }
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(async () => {
   if (authStore.isStudent && authStore.user) {
     const saved = localStorage.getItem(`licenseClass_${authStore.user.UserId}`)
     if (saved) filterLicense.value = saved
   }
+  await fetchCourses()
 })
 
 /* ── Computed stats ── */
@@ -486,6 +573,7 @@ function statusPill(c: Course) {
 /* ── Modal ── */
 const showModal = ref(false)
 const editingId = ref<number | null>(null)
+const saveError = ref('')
 const emptyForm = () => ({ licenseType: '', dateFrom: '', dateTo: '', weekdays: [] as string[], isSchnellkurs: false, price: undefined as unknown as number, maxParticipants: 20, currentParticipants: 0 })
 
 function toggleWeekday(day: string) {
@@ -533,28 +621,85 @@ function validate() {
 }
 
 function openCreateModal() {
-  form.value = emptyForm(); editingId.value = null; errors.value = {}; showModal.value = true
+  form.value = emptyForm(); editingId.value = null; errors.value = {}; saveError.value = ''; showModal.value = true
 }
 function openEditModal(c: Course) {
-  form.value = { ...c }; editingId.value = c.id; errors.value = {}; showModal.value = true
+  form.value = { ...c }; editingId.value = c.id; errors.value = {}; saveError.value = ''; showModal.value = true
 }
 function closeModal() { showModal.value = false }
 
-function saveCourse() {
+async function saveCourse() {
   if (!validate()) return
+  saveError.value = ''
   if (editingId.value !== null) {
-    const idx = courses.value.findIndex(c => c.id === editingId.value)
-    if (idx !== -1) courses.value[idx] = { ...form.value, id: editingId.value }
+    const res = await fetch(`${API_URL}/programs/${editingId.value}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
+      body: JSON.stringify({
+        LicenseTypeId: LICENSE_TYPE_IDS[form.value.licenseType],
+        DateFrom: form.value.dateFrom,
+        DateTo: form.value.dateTo,
+        Weekdays: form.value.weekdays.join(','),
+        IsSchnellkurs: form.value.isSchnellkurs ? 1 : 0,
+        Price: form.value.price,
+        MaxParticipants: form.value.maxParticipants,
+      })
+    })
+    if (res.ok) {
+      removeCourseEdit(editingId.value)
+      closeModal()
+      await fetchCourses()
+    } else {
+      const json = await res.json().catch(() => ({}))
+      saveError.value = json?.error?.message ?? 'Änderungen konnten nicht gespeichert werden.'
+    }
   } else {
-    courses.value.push({ ...form.value, id: nextId++, currentParticipants: 0 })
+    const res = await fetch(`${API_URL}/programs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authStore.token ?? ''}`
+      },
+      body: JSON.stringify({
+        DrivingSchoolId: 1,
+        LicenseTypeId: LICENSE_TYPE_IDS[form.value.licenseType],
+        DateFrom: form.value.dateFrom,
+        DateTo: form.value.dateTo,
+        Weekdays: form.value.weekdays.join(','),
+        IsSchnellkurs: form.value.isSchnellkurs ? 1 : 0,
+        Price: form.value.price,
+        MaxParticipants: form.value.maxParticipants,
+      })
+    })
+    if (res.ok) {
+      const json = await res.json()
+      addOwnCourseId(json.data.id)
+      closeModal()
+      await fetchCourses()
+    } else {
+      const json = await res.json().catch(() => ({}))
+      saveError.value = json?.error?.message ?? 'Kurs konnte nicht erstellt werden.'
+    }
   }
-  closeModal()
 }
 
 /* ── Delete ── */
 const deleteTargetId = ref<number | null>(null)
 function confirmDelete(id: number) { deleteTargetId.value = id }
-function deleteCourse() { courses.value = courses.value.filter(c => c.id !== deleteTargetId.value); deleteTargetId.value = null }
+async function deleteCourse() {
+  if (deleteTargetId.value === null) return
+  const id = deleteTargetId.value
+  const res = await fetch(`${API_URL}/programs/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+  })
+  if (res.ok) {
+    removeOwnCourseId(id)
+    removeCourseEdit(id)
+    courses.value = courses.value.filter(c => c.id !== id)
+  }
+  deleteTargetId.value = null
+}
 
 /* ── Join ── */
 const joinTargetId = ref<number | null>(null)
@@ -564,13 +709,22 @@ const joinTargetCourse = computed(() =>
 
 function openJoinModal(id: number) { joinTargetId.value = id }
 
-function confirmJoin() {
+async function confirmJoin() {
   if (!joinTargetCourse.value) return
-  if (authStore.user) {
-    localStorage.setItem(`joinedCourse_${authStore.user.UserId}`, JSON.stringify(joinTargetCourse.value))
+  const res = await fetch(`${API_URL}/programs/${joinTargetId.value}/enroll`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${authStore.token ?? ''}`
+    }
+  })
+  if (res.ok) {
+    if (authStore.user) {
+      localStorage.setItem(`joinedCourse_${authStore.user.UserId}`, JSON.stringify(joinTargetCourse.value))
+    }
+    joinTargetId.value = null
+    router.push('/dashboard')
   }
-  joinTargetId.value = null
-  router.push('/dashboard')
 }
 </script>
 

@@ -229,4 +229,32 @@ router.delete("/:id/enroll", isAuthenticated, async (req: AuthRequest, res: Resp
   }
 });
 
+router.put("/:id", isAuthenticated, async (req: AuthRequest, res: Response) => {
+  const programId = parseInt(req.params.id);
+  if (isNaN(programId)) {
+    res.status(StatusCodes.BAD_REQUEST).json({ error: { message: "Invalid program ID" } });
+    return;
+  }
+  const result = ProgramService.Instance.updateProgram(programId, req.body, req.payload!.user.Role);
+  if (result.error) {
+    res.status(result.status).json({ error: result.error });
+  } else {
+    res.status(result.status).json({ data: result.data });
+  }
+});
+
+router.delete("/:id", isAuthenticated, async (req: AuthRequest, res: Response) => {
+  const programId = parseInt(req.params.id);
+  if (isNaN(programId)) {
+    res.status(StatusCodes.BAD_REQUEST).json({ error: { message: "Invalid program ID" } });
+    return;
+  }
+  const result = ProgramService.Instance.deleteProgram(programId, req.payload!.user.Role);
+  if (result.error) {
+    res.status(result.status).json({ error: result.error });
+  } else {
+    res.status(result.status).json({ data: result.data });
+  }
+});
+
 export { router as programRouter };

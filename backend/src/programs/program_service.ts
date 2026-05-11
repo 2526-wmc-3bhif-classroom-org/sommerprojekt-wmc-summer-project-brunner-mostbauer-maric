@@ -1,6 +1,7 @@
 import { Unit } from "../unit.js";
 import { ProgramRepository } from "./program_repository.js";
-import type { LicenseProgram, UserRole } from "../models/types.js";
+import { UserRole } from "../models/types.js";
+import type { LicenseProgram } from "../models/types.js";
 import { StatusCodes } from "http-status-codes";
 import type { ServiceResult } from "../users/user_service.js";
 
@@ -81,6 +82,45 @@ export class ProgramService {
       };
     } finally {
       unit.complete();
+    }
+  }
+
+  public updateProgram(programId: number, data: any, requestUserRole: UserRole): ServiceResult {
+    if (requestUserRole !== UserRole.ADMIN && requestUserRole !== UserRole.SCHOOL) {
+      return { status: StatusCodes.FORBIDDEN, error: { message: "Only schools or admins can update programs" } };
+    }
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const existing = ProgramRepository.findById(unit, programId);
+      if (!existing) return { status: StatusCodes.NOT_FOUND, error: { message: "Program not found" } };
+      const updated = success = ProgramRepository.update(unit, programId, { ...existing, ...data });
+      return updated
+        ? { status: StatusCodes.OK, data: { message: "Updated" } }
+        : { status: StatusCodes.NOT_FOUND, error: { message: "Program not found" } };
+    } catch (e: any) {
+      return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
+    } finally {
+      unit.complete(success);
+    }
+  }
+
+  public deleteProgram(programId: number, requestUserRole: UserRole): ServiceResult {
+    if (requestUserRole !== UserRole.ADMIN && requestUserRole !== UserRole.SCHOOL) {
+      return { status: StatusCodes.FORBIDDEN, error: { message: "Only schools or admins can delete programs" } };
+    }
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const deleted = ProgramRepository.delete(unit, programId);
+      success = deleted;
+      return deleted
+        ? { status: StatusCodes.OK, data: { message: "Deleted" } }
+        : { status: StatusCodes.NOT_FOUND, error: { message: "Program not found" } };
+    } catch (e: any) {
+      return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
+    } finally {
+      unit.complete(success);
     }
   }
 
