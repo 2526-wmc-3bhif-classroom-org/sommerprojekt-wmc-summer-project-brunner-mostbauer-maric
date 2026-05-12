@@ -58,6 +58,11 @@ const router = createRouter({
       name: 'profile',
       component: () => import('../views/ProfilView.vue'),
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/impressum',
+      name: 'impressum',
+      component: () => import('../views/ImpressumView.vue'),
     }
   ],
   // This function is to handle that you always are on the highest point when you change the page
