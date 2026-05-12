@@ -76,3 +76,14 @@ export interface Comment {
   ParentCommentId?: number | null;
   Content: string;
 }
+
+export interface KmLog {
+  KmLogId: number;
+  UserId: number;
+  StartKm: number;
+  EndKm: number;
+  StartLocation: string;
+  EndLocation: string;
+  Conditions?: string | null;
+  Timestamp?: string;
+}

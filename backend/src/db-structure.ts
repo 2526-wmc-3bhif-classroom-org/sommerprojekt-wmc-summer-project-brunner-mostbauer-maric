@@ -116,6 +116,20 @@ export const buildTables = (connection: Database) => {
         FOREIGN KEY (ParentCommentId) REFERENCES Comment(CommentId) ON DELETE CASCADE
       );`,
       );
+
+    connection.exec(
+        `CREATE TABLE IF NOT EXISTS KmLog (
+        KmLogId INTEGER PRIMARY KEY AUTOINCREMENT,
+        UserId INTEGER NOT NULL,
+        StartKm REAL NOT NULL,
+        EndKm REAL NOT NULL,
+        StartLocation TEXT NOT NULL,
+        EndLocation TEXT NOT NULL,
+        Conditions TEXT,
+        Timestamp TEXT DEFAULT (CURRENT_TIMESTAMP),
+        FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE
+      );`,
+      );
   } catch (err) {
     throw err;
   }
