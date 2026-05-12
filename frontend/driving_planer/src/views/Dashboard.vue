@@ -252,8 +252,17 @@
               <button @click="addDate" class="w-full bg-black text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-[0.98]">Termin speichern</button>
             </div>
             <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-[250px]">
-              <div v-if="dates.length === 0" class="h-full flex items-center justify-center opacity-10 italic text-sm">Keine Termine</div>
+              <div v-if="dates.length === 0 && examDates.length === 0" class="h-full flex items-center justify-center opacity-10 italic text-sm">Keine Termine</div>
               <div v-else class="space-y-4">
+                <div v-for="(date, i) in examDates" :key="`exam-${i}`" class="flex justify-between items-center p-5 border border-zinc-100 rounded-[2rem] bg-zinc-50/30">
+                  <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-2">
+                      <span class="text-[13px] text-black uppercase tracking-widest opacity-40">{{ date.type }}</span>
+                      <span class="text-[9px] font-black uppercase tracking-widest bg-zinc-100 text-zinc-400 px-2 py-0.5 rounded-full">Auto</span>
+                    </div>
+                    <span class="font-bold text-lg text-black">{{ new Date(date.date).toLocaleDateString('de-DE') }}</span>
+                  </div>
+                </div>
                 <div v-for="(date, i) in dates" :key="i" class="group flex justify-between items-center p-5 border border-zinc-100 rounded-[2rem] bg-zinc-50/30">
                   <div class="flex flex-col gap-1">
                     <span class="text-[15px] text-black uppercase tracking-widest opacity-40">{{ date.type }}</span>
@@ -331,6 +340,9 @@ const isCourseDay = (day: number | null): boolean => {
 const eventColorMap: Record<string, string> = {
   Theorie: 'bg-amber-400',
   Praxis:  'bg-emerald-400',
+  'Voraussichtliche Grundwissensprüfung': 'bg-sky-400',
+  'Voraussichtliche Kursspezifische Theorieprüfung':      'bg-rose-400',
+  'Voraussichtliche Praxisprüfung':       'bg-violet-400',
 }
 
 const calendarLegend = computed(() => {
@@ -338,15 +350,18 @@ const calendarLegend = computed(() => {
   if (joinedCourse.value) items.push({ label: 'Kurs', color: 'bg-indigo-400' })
   if (dates.value.some(e => e.type === 'Theorie')) items.push({ label: 'Theorie', color: 'bg-amber-400' })
   if (dates.value.some(e => e.type === 'Praxis')) items.push({ label: 'Praxis', color: 'bg-emerald-400' })
+  if (examDates.value.some(e => e.type === 'Voraussichtliche Grundwissensprüfung')) items.push({ label: 'Grundwissen',    color: 'bg-sky-400'    })
+  if (examDates.value.some(e => e.type === 'Voraussichtliche Kursspezifische Theorieprüfung'))      items.push({ label: 'Theorie Prüfung', color: 'bg-rose-400'   })
+  if (examDates.value.some(e => e.type === 'Voraussichtliche Praxisprüfung'))       items.push({ label: 'Praxis Prüfung',  color: 'bg-violet-400' })
   return items
 })
 
-const eventsForDay = (day: number | null): typeof dates.value => {
+const eventsForDay = (day: number | null) => {
   if (!day) return []
   const m = String(calendarMonth.value + 1).padStart(2, '0')
   const d = String(day).padStart(2, '0')
   const dateStr = `${calendarYear.value}-${m}-${d}`
-  return dates.value.filter(e => e.date === dateStr)
+  return [...dates.value, ...examDates.value].filter(e => e.date === dateStr)
 }
 
 // KM-LOG LOGIC
@@ -527,19 +542,66 @@ const deleteCalendarEntry = () => { if (calendarSelectedDay.value) delete calend
 const prevMonth = () => { if (calendarMonth.value === 0) { calendarMonth.value = 11; calendarYear.value-- } else calendarMonth.value-- }
 const nextMonth = () => { if (calendarMonth.value === 11) { calendarMonth.value = 0; calendarYear.value++ } else calendarMonth.value++ }
 
+// EXAM DATE CALCULATION
+const examPaceMap: Record<string, { theorie: number; praxis: number }> = {
+  fast:    { theorie: 14,  praxis: 28  },
+  normal:  { theorie: 42,  praxis: 84  },
+  relaxed: { theorie: 90,  praxis: 180 },
+}
+
+function toNextWeekday(date: Date): Date {
+  const d = new Date(date)
+  const day = d.getDay()
+  if (day === 6) d.setDate(d.getDate() + 2)
+  if (day === 0) d.setDate(d.getDate() + 1)
+  return d
+}
+
+function recalculateExamDates(userId: string, course: any) {
+  const goal = localStorage.getItem(`goal_${userId}`)
+  const startDateStr = localStorage.getItem(`startDate_${userId}`)
+  if (!goal || !startDateStr) return
+
+  const pace = examPaceMap[goal]
+  if (!pace) return
+
+  const startDate = new Date(startDateStr)
+  const courseEndStr = course?.dateTo?.substring(0, 10)
+  const courseEnd = courseEndStr ? new Date(courseEndStr) : null
+  const base = courseEnd && courseEnd > startDate ? courseEnd : startDate
+
+  // Grundwissen: 30 days after course end
+  const grundwissenDate = toNextWeekday(new Date(base.getTime() + 30 * 86400000))
+
+  // License-specific theory: pace.theorie days after course end
+  const theorieDate = toNextWeekday(new Date(base.getTime() + pace.theorie * 86400000))
+
+  const praxisDate = toNextWeekday(new Date(base.getTime() + pace.praxis * 86400000))
+
+  const newExamDates = [
+    { type: 'Voraussichtliche Grundwissensprüfung', date: grundwissenDate.toISOString().split('T')[0], auto: true },
+    { type: 'Voraussichtliche Kursspezifische Theorieprüfung',      date: theorieDate.toISOString().split('T')[0],      auto: true },
+    { type: 'Voraussichtliche Praxisprüfung',        date: praxisDate.toISOString().split('T')[0],        auto: true },
+  ]
+  localStorage.setItem(`examDates_${userId}`, JSON.stringify(newExamDates))
+  examDates.value = newExamDates
+}
+
 // EVENTS LOGIC
 const typeInput = ref('')
 const dateInput = ref('')
 const dates = ref<any[]>([])
+const examDates = ref<any[]>([])
 const eventError = ref('')
 
 onMounted(async () => {
   if (authStore.user?.UserId) {
+    const userId = String(authStore.user.UserId)
     fetchKmLogs()
-    const raw = localStorage.getItem(`events_${authStore.user.UserId}`)
+    const raw = localStorage.getItem(`events_${userId}`)
     if (raw) dates.value = JSON.parse(raw)
 
-    const joinedRaw = localStorage.getItem(`joinedCourse_${authStore.user.UserId}`)
+    const joinedRaw = localStorage.getItem(`joinedCourse_${userId}`)
     if (joinedRaw) joinedCourse.value = JSON.parse(joinedRaw)
 
     if (joinedCourse.value?.id) {
@@ -557,12 +619,14 @@ onMounted(async () => {
               dateTo: fresh.DateTo,
               weekdays: fresh.Weekdays ? fresh.Weekdays.split(',') : joinedCourse.value.weekdays,
             }
-            localStorage.setItem(`joinedCourse_${authStore.user.UserId}`, JSON.stringify(updated))
+            localStorage.setItem(`joinedCourse_${userId}`, JSON.stringify(updated))
             joinedCourse.value = updated
           }
         }
       } catch {}
     }
+
+    recalculateExamDates(userId, joinedCourse.value)
   }
   loadCourseTimes()
 })

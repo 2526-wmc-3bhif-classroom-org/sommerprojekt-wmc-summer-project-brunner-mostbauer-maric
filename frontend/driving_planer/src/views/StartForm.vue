@@ -137,6 +137,8 @@ const submitForm = () => {
   if (authStore.user?.UserId) {
     localStorage.setItem(`enrolled_${authStore.user.UserId}`, 'true')
     localStorage.setItem(`licenseClass_${authStore.user.UserId}`, formData.licenseClass)
+    localStorage.setItem(`startDate_${authStore.user.UserId}`, formData.startDate)
+    localStorage.setItem(`goal_${authStore.user.UserId}`, formData.goal)
   }
   router.push('/manage')
 }
