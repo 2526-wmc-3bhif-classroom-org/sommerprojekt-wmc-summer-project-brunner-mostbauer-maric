@@ -193,6 +193,15 @@
             >
               Datei auswählen
             </button>
+
+            <button
+              v-if="avatarUrl"
+              @click="deleteAvatar"
+              style="margin-top: 20px;"
+              class="w-full py-4 bg-red-50 border border-red-100 rounded-2xl text-sm font-semibold text-red-500 hover:bg-red-100 transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <i class="pi pi-trash"></i> Foto entfernen
+            </button>
           </div>
         </div>
       </div>
@@ -410,6 +419,29 @@ const uploadAvatar = async (file: File) => {
     }
   } catch (e) {
     errors.image = 'Netzwerkfehler beim Upload'
+  }
+}
+
+const deleteAvatar = async () => {
+  try {
+    const response = await fetch(API_URL + `/users/${userId}/avatar`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
+      },
+    })
+
+    if (response.ok) {
+      console.log('Avatar erfolgreich gelöscht')
+      authStore.updateUser({ AvatarPath: null })
+      previewImage.value = null
+      closeImageModal()
+    } else {
+      const err = await response.json()
+      errors.image = err.error?.message || 'Löschen fehlgeschlagen'
+    }
+  } catch (e) {
+    errors.image = 'Netzwerkfehler beim Löschen'
   }
 }
 
