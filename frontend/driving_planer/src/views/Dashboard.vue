@@ -31,9 +31,9 @@
             <div class="flex flex-col gap-3" style="margin-bottom: 48px">
               <div class="grid grid-cols-2 gap-3">
                 <input v-model="kmStart" type="number" min="0" step="0.1" placeholder="Start KM"
-                       :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', kmError && (kmStart === null || kmStart < 0) ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
+                       :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', (kmError && (kmStart === null || kmStart < 0)) || (kmError === 'End KM muss größer als Start KM sein') ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
                 <input v-model="kmEnd" type="number" min="0" step="0.1" placeholder="End KM"
-                       :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', kmError && (kmEnd === null || kmEnd < 0) ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
+                       :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', (kmError && (kmEnd === null || kmEnd < 0)) || (kmError === 'End KM muss größer als Start KM sein') ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
               </div>
               <div class="grid grid-cols-2 gap-3">
                 <input v-model="locStart" type="text" placeholder="Start Ort"
@@ -42,6 +42,9 @@
                        :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', kmError && !locEnd ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
               </div>
 
+              <input v-model="conditions" type="text" placeholder="Fahrbedingungen (z.B. Regen, Nacht)"
+                     :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', kmError && !conditions ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
+
               <p v-if="kmError" class="text-[10px] font-bold uppercase text-red-500 tracking-widest ml-2">{{ kmError }}</p>
 
               <button @click="addKmEntry" class="w-full bg-black text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:opacity-80 transition-all active:scale-[0.98]">
@@ -49,17 +52,75 @@
               </button>
             </div>
 
+            <!-- Edit Modal Overlay -->
+            <transition name="slide-up">
+              <div v-if="editKmLogId !== null" class="absolute inset-0 bg-white z-40 rounded-[3rem] p-8 md:p-10 flex flex-col">
+                <div class="flex items-center justify-between mb-8">
+                  <div class="flex items-center gap-4">
+                    <div class="w-2 h-8 bg-black rounded-full"></div>
+                    <h2 class="font-black text-2xl text-black uppercase tracking-tight">Edit KM-Log</h2>
+                  </div>
+                  <button @click="cancelEdit" class="text-zinc-300 hover:text-black transition-all p-2">
+                    <i class="pi pi-times"></i>
+                  </button>
+                </div>
+
+                <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
+                  <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col gap-1.5">
+                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">Start KM</label>
+                      <input v-model="editData.startKm" type="number" step="0.1" class="p-4 rounded-2xl font-bold text-sm outline-none bg-zinc-50 border border-transparent focus:bg-white focus:border-black/5 text-black" />
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">End KM</label>
+                      <input v-model="editData.endKm" type="number" step="0.1" class="p-4 rounded-2xl font-bold text-sm outline-none bg-zinc-50 border border-transparent focus:bg-white focus:border-black/5 text-black" />
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col gap-1.5">
+                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">Start Ort</label>
+                      <input v-model="editData.startLocation" type="text" class="p-4 rounded-2xl font-bold text-sm outline-none bg-zinc-50 border border-transparent focus:bg-white focus:border-black/5 text-black" />
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">Ziel Ort</label>
+                      <input v-model="editData.endLocation" type="text" class="p-4 rounded-2xl font-bold text-sm outline-none bg-zinc-50 border border-transparent focus:bg-white focus:border-black/5 text-black" />
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">Fahrbedingungen</label>
+                    <input v-model="editData.conditions" type="text" class="p-4 rounded-2xl font-bold text-sm outline-none bg-zinc-50 border border-transparent focus:bg-white focus:border-black/5 text-black" />
+                  </div>
+
+                  <p v-if="editError" class="text-[10px] font-bold uppercase text-red-500 tracking-widest ml-2 mt-2">{{ editError }}</p>
+
+                  <button @click="saveEdit" class="w-full bg-black text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:opacity-80 transition-all active:scale-[0.98] mt-4">
+                    Änderungen speichern
+                  </button>
+                </div>
+              </div>
+            </transition>
+
             <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-[250px]">
               <div v-if="kmEntries.length === 0" class="h-full flex items-center justify-center opacity-10 italic text-sm">Keine Einträge</div>
               <div v-else class="space-y-4">
-                <div v-for="(entry, i) in kmEntries" :key="i" class="group flex justify-between items-center p-5 border border-zinc-100 rounded-[2rem] bg-zinc-50/30">
-                  <div class="flex flex-col gap-1">
-                    <span class="text-[15px] text-black uppercase tracking-widest opacity-40">{{ entry.startLoc }} → {{ entry.endLoc }}</span>
-                    <span class="text-xl font-black text-black">{{ entry.diff }} <span class="text-sm font-light opacity-50 uppercase tracking-normal">KM</span></span>
+                <div v-for="(entry, i) in kmEntries" :key="entry.KmLogId || i" class="group flex flex-col p-5 border border-zinc-100 rounded-[2rem] bg-zinc-50/30 transition-all">
+                  <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-1">
+                      <span class="text-[15px] text-black uppercase tracking-widest opacity-40">{{ entry.StartLocation }} → {{ entry.EndLocation }}</span>
+                      <div class="flex items-baseline gap-2">
+                        <span class="text-xl font-black text-black">{{ (entry.EndKm - entry.StartKm).toFixed(1) }} <span class="text-sm font-light opacity-50 uppercase tracking-normal">KM</span></span>
+                        <span v-if="entry.Conditions" class="text-[10px] font-bold text-black/30 uppercase tracking-widest">{{ entry.Conditions }}</span>
+                      </div>
+                    </div>
+                    <div class="flex gap-1">
+                      <button @click="startEdit(entry)" class="opacity-0 group-hover:opacity-100 text-zinc-300 hover:text-black transition-all p-2">
+                        <i class="pi pi-pencil text-xs"></i>
+                      </button>
+                      <button @click="removeKmEntry(entry.KmLogId)" class="opacity-0 group-hover:opacity-100 text-zinc-300 hover:text-red-500 transition-all p-2">
+                        <i class="pi pi-trash text-xs"></i>
+                      </button>
+                    </div>
                   </div>
-                  <button @click="removeKmEntry(i)" class="opacity-0 group-hover:opacity-100 text-zinc-300 hover:text-red-500 transition-all p-2">
-                    <i class="pi pi-trash text-xs"></i>
-                  </button>
                 </div>
               </div>
             </div>
@@ -223,7 +284,6 @@ import { useAuthStore } from '@/stores/authStore'
 const authStore = useAuthStore()
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
-const syncKmLog = () => {}
 const syncTasks = () => {}
 const syncCalendar = () => {}
 const syncEvents = () => {
@@ -294,29 +354,140 @@ const kmStart = ref<number | null>(null)
 const kmEnd = ref<number | null>(null)
 const locStart = ref('')
 const locEnd = ref('')
+const conditions = ref('')
 const kmEntries = ref<any[]>([])
 const kmError = ref('')
 
-watch([kmStart, kmEnd, locStart, locEnd], () => { kmError.value = '' })
+watch([kmStart, kmEnd, locStart, locEnd, conditions], () => { kmError.value = '' })
 
-const addKmEntry = () => {
-  if (kmStart.value === null || kmEnd.value === null || !locStart.value || !locEnd.value) {
-    kmError.value = "Felder unvollständig"
+const fetchKmLogs = async () => {
+  try {
+    const res = await fetch(`${API_URL}/kmlog`, {
+      headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+    })
+    if (res.ok) {
+      kmEntries.value = await res.json()
+    }
+  } catch (err) {
+    console.error("Failed to fetch KM logs:", err)
+  }
+}
+
+const addKmEntry = async () => {
+  if (kmStart.value === null || kmEnd.value === null || !locStart.value || !locEnd.value || !conditions.value.trim()) {
+    kmError.value = "Alle Felder müssen ausgefüllt werden"
     return
   }
-  const difference = parseFloat((kmEnd.value - kmStart.value).toFixed(2))
-  kmEntries.value.unshift({
-    startLoc: locStart.value,
-    endLoc: locEnd.value,
-    diff: difference
-  })
-  kmStart.value = kmEnd.value
-  kmEnd.value = null
-  locStart.value = locEnd.value
-  locEnd.value = ''
-  syncKmLog()
+
+  if (kmEnd.value < kmStart.value) {
+    kmError.value = "End KM muss größer als Start KM sein"
+    return
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/kmlog`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authStore.token ?? ''}`
+      },
+      body: JSON.stringify({
+        startKm: kmStart.value,
+        endKm: kmEnd.value,
+        startLocation: locStart.value,
+        endLocation: locEnd.value,
+        conditions: conditions.value
+      })
+    })
+
+    if (res.ok) {
+      await fetchKmLogs()
+      kmStart.value = kmEnd.value
+      kmEnd.value = null
+      locStart.value = locEnd.value
+      locEnd.value = ''
+      conditions.value = ''
+    } else {
+      const error = await res.json()
+      kmError.value = error.error?.message || "Fehler beim Speichern"
+    }
+  } catch (err) {
+    kmError.value = "Netzwerkfehler"
+  }
 }
-const removeKmEntry = (i: number) => { kmEntries.value.splice(i, 1); syncKmLog() }
+
+const removeKmEntry = async (id: number) => {
+  try {
+    const res = await fetch(`${API_URL}/kmlog/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+    })
+    if (res.ok) {
+      await fetchKmLogs()
+    }
+  } catch (err) {
+    console.error("Failed to delete KM entry:", err)
+  }
+}
+
+// EDIT KM-LOG LOGIC
+const editKmLogId = ref<number | null>(null)
+const editError = ref('')
+const editData = ref({
+  startKm: 0,
+  endKm: 0,
+  startLocation: '',
+  endLocation: '',
+  conditions: ''
+})
+
+const startEdit = (entry: any) => {
+  editKmLogId.value = entry.KmLogId
+  editData.value = {
+    startKm: entry.StartKm,
+    endKm: entry.EndKm,
+    startLocation: entry.StartLocation,
+    endLocation: entry.EndLocation,
+    conditions: entry.Conditions || ''
+  }
+  editError.value = ''
+}
+
+const cancelEdit = () => {
+  editKmLogId.value = null
+}
+
+const saveEdit = async () => {
+  if (!editData.value.startLocation || !editData.value.endLocation || !editData.value.conditions.trim()) {
+    editError.value = "Alle Felder müssen ausgefüllt werden"
+    return
+  }
+  if (editData.value.endKm < editData.value.startKm) {
+    editError.value = "End KM muss größer als Start KM sein"
+    return
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/kmlog/${editKmLogId.value}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authStore.token ?? ''}`
+      },
+      body: JSON.stringify(editData.value)
+    })
+
+    if (res.ok) {
+      await fetchKmLogs()
+      editKmLogId.value = null
+    } else {
+      const error = await res.json()
+      editError.value = error.error?.message || "Fehler beim Speichern"
+    }
+  } catch (err) {
+    editError.value = "Netzwerkfehler"
+  }
+}
 
 // TASKS LOGIC
 const checkInput = ref('')
@@ -364,6 +535,7 @@ const eventError = ref('')
 
 onMounted(async () => {
   if (authStore.user?.UserId) {
+    fetchKmLogs()
     const raw = localStorage.getItem(`events_${authStore.user.UserId}`)
     if (raw) dates.value = JSON.parse(raw)
 
