@@ -5,6 +5,8 @@ import { Unit } from "../unit.js";
 import { StatusCodes } from "http-status-codes";
 import { UserRole } from "../models/types.js";
 import bcrypt from "bcrypt";
+import fs from "fs";
+import path from "path";
 
 export interface ServiceResult<T = any> {
   status: number;
@@ -59,6 +61,15 @@ export class UserService {
     const unit = new Unit(false);
     let success = false;
     try {
+      // Also delete avatar if exists
+      const user = this.userRepo.getById(unit, userId);
+      if (user && user.AvatarPath) {
+        const fullPath = path.join(process.cwd(), user.AvatarPath);
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+        }
+      }
+
       const deleted = this.userRepo.delete(unit, userId);
       if (deleted) {
         success = true;
@@ -159,6 +170,15 @@ export class UserService {
     const unit = new Unit(false);
     let success = false;
     try {
+      // If updating with a new avatar, we should probably delete the old one
+      const user = this.userRepo.getById(unit, userId);
+      if (user && user.AvatarPath && avatarPath && user.AvatarPath !== avatarPath) {
+        const fullPath = path.join(process.cwd(), user.AvatarPath);
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+        }
+      }
+
       const updated = this.userRepo.updateAvatarPath(unit, userId, avatarPath);
       if (updated) {
         success = true;
@@ -170,6 +190,66 @@ export class UserService {
         return {
           status: StatusCodes.NOT_FOUND,
           error: { message: "User not found" },
+        };
+      }
+    } catch (e: any) {
+      return {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        error: { message: e.message },
+      };
+    } finally {
+      unit.complete(success);
+    }
+  }
+
+  public deleteUserAvatar(
+    userId: number,
+    requestUserId: number,
+    requestUserRole: UserRole
+  ): ServiceResult {
+    if (isNaN(userId)) {
+      return {
+        status: StatusCodes.BAD_REQUEST,
+        error: { message: "Invalid user ID" },
+      };
+    }
+
+    if (requestUserId !== userId && requestUserRole !== UserRole.ADMIN) {
+      return {
+        status: StatusCodes.FORBIDDEN,
+        error: { message: "You are not authorized to delete this user's avatar" },
+      };
+    }
+
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const user = this.userRepo.getById(unit, userId);
+      if (!user) {
+        return {
+          status: StatusCodes.NOT_FOUND,
+          error: { message: "User not found" },
+        };
+      }
+
+      if (user.AvatarPath) {
+        const fullPath = path.join(process.cwd(), user.AvatarPath);
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+        }
+      }
+
+      const updated = this.userRepo.updateAvatarPath(unit, userId, null);
+      if (updated) {
+        success = true;
+        return {
+          status: StatusCodes.OK,
+          data: { message: "Avatar deleted successfully" },
+        };
+      } else {
+        return {
+          status: StatusCodes.INTERNAL_SERVER_ERROR,
+          error: { message: "Failed to delete avatar" },
         };
       }
     } catch (e: any) {
