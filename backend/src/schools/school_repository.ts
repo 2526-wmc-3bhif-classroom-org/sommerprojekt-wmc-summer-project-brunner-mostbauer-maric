@@ -30,4 +30,18 @@ export class SchoolRepository {
       .get();
     return result?.count ?? 0;
   }
+
+  public update(unit: Unit, id: number, name: string, location?: string, owner?: string, email?: string, website?: string, phone?: string): boolean {
+    const result = unit
+      .prepare("UPDATE DrivingSchool SET Name = ?, Location = ?, Owner = ?, Email = ?, Website = ?, Phone = ? WHERE DrivingSchoolId = ?")
+      .run(name, location ?? null, owner ?? null, email ?? null, website ?? null, phone ?? null, id);
+    return result.changes > 0;
+  }
+
+  public create(unit: Unit, name: string, location?: string, owner?: string, email?: string, website?: string, phone?: string): number {
+    const result = unit
+      .prepare("INSERT INTO DrivingSchool (Name, Location, Owner, Email, Website, Phone) VALUES (?, ?, ?, ?, ?, ?)")
+      .run(name, location ?? null, owner ?? null, email ?? null, website ?? null, phone ?? null);
+    return result.lastInsertRowid as number;
+  }
 }

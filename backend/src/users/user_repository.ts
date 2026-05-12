@@ -8,6 +8,7 @@ export interface User {
   PasswordHash: string;
   Role: UserRole;
   AvatarPath?: string | null;
+  DrivingSchoolId?: number | null;
 }
 
 export class UserRepository {
@@ -61,6 +62,13 @@ export class UserRepository {
     const result = unit
       .prepare("UPDATE User SET UserName = ?, Email = ? WHERE UserId = ?")
       .run(userName, email, userId);
+    return result.changes > 0;
+  }
+
+  public linkDrivingSchool(unit: Unit, userId: number, drivingSchoolId: number): boolean {
+    const result = unit
+      .prepare("UPDATE User SET DrivingSchoolId = ? WHERE UserId = ?")
+      .run(drivingSchoolId, userId);
     return result.changes > 0;
   }
 

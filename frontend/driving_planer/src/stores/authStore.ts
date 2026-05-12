@@ -60,16 +60,23 @@ export const useAuthStore = defineStore('auth', () => {
     return data.user.Role as UserRole
   }
 
-  async function register(userData: { userName: string; email: string; password: string; isDrivingSchool: boolean }) {
+  async function register(userData: { userName: string; email: string; password: string; isDrivingSchool: boolean; location?: string; owner?: string; phone?: string; website?: string }) {
+    const body: Record<string, unknown> = {
+      userName: userData.userName,
+      email: userData.email,
+      password: userData.password,
+      isSchool: userData.isDrivingSchool
+    }
+    if (userData.isDrivingSchool) {
+      body.location = userData.location
+      body.owner = userData.owner
+      body.phone = userData.phone
+      body.website = userData.website
+    }
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        userName: userData.userName,
-        email: userData.email,
-        password: userData.password,
-        isSchool: userData.isDrivingSchool
-      })
+      body: JSON.stringify(body)
     })
 
     if (!response.ok) {

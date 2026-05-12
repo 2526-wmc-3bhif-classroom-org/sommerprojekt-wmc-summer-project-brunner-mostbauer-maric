@@ -56,6 +56,26 @@ export class SchoolService {
     }
   }
 
+  public updateSchool(id: number, name: string, location?: string, owner?: string, email?: string, website?: string, phone?: string): ServiceResult<void> {
+    if (isNaN(id)) {
+      return { status: StatusCodes.BAD_REQUEST, error: { message: "Invalid schoolId" } };
+    }
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const updated = this.schoolRepo.update(unit, id, name, location, owner, email, website, phone);
+      if (!updated) {
+        return { status: StatusCodes.NOT_FOUND, error: { message: "School not found" } };
+      }
+      success = true;
+      return { status: StatusCodes.OK };
+    } catch (e: any) {
+      return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
+    } finally {
+      unit.complete(success);
+    }
+  }
+
   public getSchoolCount(): number {
     const unit = Unit.createReadonly();
     try {

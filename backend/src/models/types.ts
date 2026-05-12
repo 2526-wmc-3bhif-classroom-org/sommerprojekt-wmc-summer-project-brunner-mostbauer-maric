@@ -13,6 +13,7 @@ export interface DrivingSchool {
   Owner?: string | null;
   Email?: string | null;
   Website?: string | null;
+  Phone?: string | null;
 }
 
 export interface DocType {

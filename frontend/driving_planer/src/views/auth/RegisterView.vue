@@ -10,10 +10,13 @@ const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const isDrivingSchool = ref(false)
+const location = ref('')
+const owner = ref('')
+const phone = ref('')
+const website = ref('')
 const error = ref('')
 const loading = ref(false)
 
-// Visibility for password fields
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
@@ -30,10 +33,23 @@ async function handleRegister() {
     error.value = 'Die Passwörter stimmen nicht überein.'
     return
   }
+  if (isDrivingSchool.value && !location.value) {
+    error.value = 'Bitte gib die Adresse deiner Fahrschule an.'
+    return
+  }
   error.value = ''
   loading.value = true
   try {
-    await authStore.register({ userName: userName.value, email: email.value, password: password.value, isDrivingSchool: isDrivingSchool.value })
+    await authStore.register({
+      userName: userName.value,
+      email: email.value,
+      password: password.value,
+      isDrivingSchool: isDrivingSchool.value,
+      location: location.value || undefined,
+      owner: owner.value || undefined,
+      phone: phone.value || undefined,
+      website: website.value || undefined
+    })
   } catch (e: any) {
     console.error('Registration error:', e)
     if (e.message.includes('User already exists')) {
@@ -132,6 +148,39 @@ async function handleRegister() {
             </div>
             <span class="text-sm">Ich bin eine Fahrschule</span>
           </label>
+
+          <div v-if="isDrivingSchool" class="flex flex-col gap-4">
+            <div class="border-t border-white/10" style="margin-top: 0.25rem;"></div>
+            <p class="text-white/40 text-xs uppercase tracking-widest font-bold">Fahrschuldaten</p>
+
+            <input
+              v-model="location"
+              type="text"
+              placeholder="Adresse (Pflichtfeld)"
+              class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-lime-500 transition-all rounded-xl hover:bg-white/10"
+            />
+
+            <input
+              v-model="owner"
+              type="text"
+              placeholder="Inhaber"
+              class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-lime-500 transition-all rounded-xl hover:bg-white/10"
+            />
+
+            <input
+              v-model="phone"
+              type="tel"
+              placeholder="Telefonnummer"
+              class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-lime-500 transition-all rounded-xl hover:bg-white/10"
+            />
+
+            <input
+              v-model="website"
+              type="url"
+              placeholder="Website (https://...)"
+              class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-lime-500 transition-all rounded-xl hover:bg-white/10"
+            />
+          </div>
 
           <p v-if="error" class="text-red-500 text-xs font-bold uppercase tracking-widest mt-2">
             {{ error }}

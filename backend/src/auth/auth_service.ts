@@ -4,11 +4,13 @@ import { StatusCodes } from "http-status-codes";
 import { Unit } from "../unit.js";
 import { UserRole } from "../models/types.js";
 import { UserRepository } from "../users/user_repository.js";
+import { SchoolRepository } from "../schools/school_repository.js";
 import { SECRET_KEY } from "../middleware/auth_handlers.js";
 
 export class AuthService {
   private static instance: AuthService | null = null;
   private repo = UserRepository.Instance;
+  private schoolRepo = SchoolRepository.Instance;
 
   public static get Instance() {
     if (this.instance === null) this.instance = new AuthService();
@@ -41,7 +43,8 @@ export class AuthService {
         Email: user.Email,
         Role: user.Role,
         IsSchool: user.Role === UserRole.SCHOOL,
-        AvatarPath: user.AvatarPath
+        AvatarPath: user.AvatarPath,
+        DrivingSchoolId: user.DrivingSchoolId ?? null
       };
 
       const token = jwt.sign({ user: userClaims }, SECRET_KEY, { expiresIn: "30m" });
@@ -62,22 +65,43 @@ export class AuthService {
     }
   }
 
-  public async register(userName: string, email: string, password: string, role: UserRole = UserRole.USER, isSchool: boolean = false) {
+  public async register(
+    userName: string,
+    email: string,
+    password: string,
+    role: UserRole = UserRole.USER,
+    isSchool: boolean = false,
+    schoolData?: { location?: string; owner?: string; phone?: string; website?: string }
+  ) {
     const unit = new Unit(false);
     let success = false;
     try {
       const existingUser = this.repo.getByEmail(unit, email);
       if (existingUser) {
         success = false;
-        return { 
-          status: StatusCodes.CONFLICT, 
-          error: { message: "User already exists" } 
+        return {
+          status: StatusCodes.CONFLICT,
+          error: { message: "User already exists" }
         };
       }
 
       const passwordHash = bcrypt.hashSync(password, 10);
       const finalRole = isSchool ? UserRole.SCHOOL : role;
       const userId = this.repo.create(unit, userName, email, passwordHash, finalRole);
+
+      let drivingSchoolId: number | null = null;
+      if (finalRole === UserRole.SCHOOL) {
+        drivingSchoolId = this.schoolRepo.create(
+          unit,
+          userName,
+          schoolData?.location,
+          schoolData?.owner,
+          email,
+          schoolData?.website,
+          schoolData?.phone
+        );
+        this.repo.linkDrivingSchool(unit, userId, drivingSchoolId);
+      }
 
       success = true;
       return {
@@ -87,7 +111,8 @@ export class AuthService {
           UserName: userName,
           Email: email,
           Role: finalRole,
-          IsSchool: finalRole === UserRole.SCHOOL
+          IsSchool: finalRole === UserRole.SCHOOL,
+          DrivingSchoolId: drivingSchoolId
         }
       };
     } catch (e: any) {
