@@ -294,6 +294,56 @@
           </div>
 
         </div>
+
+        <!-- FAHRSCHULE INFO CARD -->
+        <div v-if="joinedSchool" class="bg-white rounded-[3rem] p-8 md:p-10 shadow-[0_30px_60px_rgba(0,0,0,0.02)] border border-zinc-100" style="margin-top: 40px;" v-motion-slide-visible-bottom>
+          <div class="flex items-center gap-4" style="margin-bottom: 28px">
+            <div class="w-2 h-8 bg-black rounded-full"></div>
+            <div>
+              <h2 class="font-black text-2xl text-black uppercase tracking-tight">Meine Fahrschule</h2>
+              <p class="text-xs font-bold text-black/30 uppercase tracking-widest" style="margin-top: 4px">{{ joinedSchool.Name }}</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <a v-if="joinedSchool.Phone" :href="`tel:${joinedSchool.Phone}`" class="flex items-center gap-4 p-5 rounded-[1.5rem] bg-zinc-50/60 border border-zinc-100 hover:bg-zinc-100 transition-all">
+              <div class="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center flex-shrink-0">
+                <i class="pi pi-phone text-sm"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">Telefon</p>
+                <p class="font-bold text-sm text-black truncate">{{ joinedSchool.Phone }}</p>
+              </div>
+            </a>
+            <a v-if="joinedSchool.Email" :href="`mailto:${joinedSchool.Email}`" class="flex items-center gap-4 p-5 rounded-[1.5rem] bg-zinc-50/60 border border-zinc-100 hover:bg-zinc-100 transition-all">
+              <div class="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center flex-shrink-0">
+                <i class="pi pi-envelope text-sm"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">E-Mail</p>
+                <p class="font-bold text-sm text-black truncate">{{ joinedSchool.Email }}</p>
+              </div>
+            </a>
+            <a v-if="joinedSchool.Website" :href="joinedSchool.Website" target="_blank" rel="noopener" class="flex items-center gap-4 p-5 rounded-[1.5rem] bg-zinc-50/60 border border-zinc-100 hover:bg-zinc-100 transition-all">
+              <div class="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center flex-shrink-0">
+                <i class="pi pi-globe text-sm"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">Website</p>
+                <p class="font-bold text-sm text-black truncate">{{ joinedSchool.Website }}</p>
+              </div>
+            </a>
+            <div v-if="joinedSchool.Location" class="flex items-center gap-4 p-5 rounded-[1.5rem] bg-zinc-50/60 border border-zinc-100">
+              <div class="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center flex-shrink-0">
+                <i class="pi pi-map-marker text-sm"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">Adresse</p>
+                <p class="font-bold text-sm text-black truncate">{{ joinedSchool.Location }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <FooterCmp />
@@ -318,6 +368,7 @@ const syncEvents = () => {
 }
 
 const joinedCourse = ref<any>(null)
+const joinedSchool = ref<any>(null)
 
 const courseTimesCache = ref<Record<string, { timeFrom: string; timeTo: string }>>({})
 
@@ -713,6 +764,18 @@ onMounted(async () => {
     }
 
     recalculateExamDates(userId, joinedCourse.value)
+
+    if (joinedCourse.value?.drivingSchoolId) {
+      try {
+        const res = await fetch(`${API_URL}/schools/${joinedCourse.value.drivingSchoolId}`, {
+          headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+        })
+        if (res.ok) {
+          const json = await res.json()
+          joinedSchool.value = json
+        }
+      } catch {}
+    }
   }
   loadCourseTimes()
 })

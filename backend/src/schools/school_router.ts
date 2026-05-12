@@ -1,7 +1,7 @@
 import express from "express";
 import { StatusCodes } from "http-status-codes";
 import { SchoolService } from "./school_service.js";
-import { isAuthenticated, isAdmin } from "../middleware/auth_handlers.js";
+import { isAuthenticated, isAdmin, type AuthRequest } from "../middleware/auth_handlers.js";
 
 export const schoolRouter = express.Router();
 const schoolService: SchoolService = SchoolService.Instance;
@@ -133,6 +133,32 @@ schoolRouter.get("/:schoolId", isAuthenticated, (req, res) => {
       res.status(result.status).json({ error: result.error });
     } else {
       res.status(result.status).json(result.data);
+    }
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: { message: (error as Error).message } });
+  }
+});
+
+schoolRouter.put("/:schoolId", isAuthenticated, (req, res) => {
+  try {
+    const id = parseInt(req.params.schoolId);
+    const tokenUser = (req as AuthRequest).payload?.user as any;
+    if (tokenUser?.DrivingSchoolId !== id && tokenUser?.Role !== "admin") {
+      res.status(StatusCodes.FORBIDDEN).json({ error: { message: "Not authorized" } });
+      return;
+    }
+    const { name, location, owner, email, website, phone } = req.body;
+    if (!name) {
+      res.status(StatusCodes.BAD_REQUEST).json({ error: { message: "Name is required" } });
+      return;
+    }
+    const result = schoolService.updateSchool(id, name, location, owner, email, website, phone);
+    if (result.error) {
+      res.status(result.status).json({ error: result.error });
+    } else {
+      res.status(result.status).json({ data: { message: "School updated" } });
     }
   } catch (error) {
     res

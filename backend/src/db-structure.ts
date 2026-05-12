@@ -141,6 +141,9 @@ export const buildTables = (connection: Database) => {
         FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE
       );`,
       );
+    // migration: add DrivingSchoolId to User table for school users
+    try { connection.exec(`ALTER TABLE User ADD COLUMN DrivingSchoolId INTEGER REFERENCES DrivingSchool(DrivingSchoolId)`); } catch {}
+
     // migration: add IsDefault if table existed before this column was added
     try { connection.exec(`ALTER TABLE Task ADD COLUMN IsDefault INTEGER NOT NULL DEFAULT 0`); } catch {}
     // migration: mark existing default tasks correctly

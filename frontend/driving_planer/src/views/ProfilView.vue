@@ -97,6 +97,51 @@
               <p v-if="errors.email" class="text-red-500 text-xs mt-2 ml-1">{{ errors.email }}</p>
             </div>
 
+            <!-- Fahrschul-Felder -->
+            <template v-if="authStore.isSchool">
+              <div class="flex items-center gap-3" style="margin-top: 0.5rem;">
+                <div class="flex-1 h-px bg-black/10"></div>
+                <span class="text-xs text-black/30 font-medium">Fahrschuldaten</span>
+                <div class="flex-1 h-px bg-black/10"></div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">Adresse</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-map-marker text-sm"></i></span>
+                  <input v-model="schoolLocation" type="text" placeholder="Straße, PLZ Ort"
+                    class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">Inhaber</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-id-card text-sm"></i></span>
+                  <input v-model="schoolOwner" type="text" placeholder="Vor- und Nachname"
+                    class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">Telefon</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-phone text-sm"></i></span>
+                  <input v-model="schoolPhone" type="tel" placeholder="+43 ..."
+                    class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">Website</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-globe text-sm"></i></span>
+                  <input v-model="schoolWebsite" type="url" placeholder="https://..."
+                    class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
+                </div>
+              </div>
+            </template>
+
             <button
               @click="saveProfile"
               class="mt-6 w-full bg-black text-white text-sm font-semibold py-4 rounded-2xl cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/10"
@@ -379,12 +424,32 @@ const email = ref('')
 const displayName = ref(authStore.user.UserName)
 const displayEmail = ref(authStore.user.Email)
 
+const schoolLocation = ref('')
+const schoolOwner = ref('')
+const schoolPhone = ref('')
+const schoolWebsite = ref('')
+
 const passwords = reactive({ current: '', new: '', confirm: '' })
 const fileInput = ref<HTMLInputElement | null>(null)
 
-onMounted(() => {
+onMounted(async () => {
   userName.value = authStore.user.UserName
   email.value = authStore.user.Email
+
+  if (authStore.isSchool && authStore.user.DrivingSchoolId) {
+    try {
+      const res = await fetch(`${API_URL}/schools/${authStore.user.DrivingSchoolId}`, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      })
+      if (res.ok) {
+        const school = await res.json()
+        schoolLocation.value = school.Location ?? ''
+        schoolOwner.value = school.Owner ?? ''
+        schoolPhone.value = school.Phone ?? ''
+        schoolWebsite.value = school.Website ?? ''
+      }
+    } catch {}
+  }
 })
 
 const errors = reactive({
@@ -455,35 +520,46 @@ const saveProfile = async () => {
     errors.email = 'Bitte E-Mail angeben'
     valid = false
   }
-  if (valid) {
-    try {
-      const response = await fetch(API_URL + `/users/${userId}`, {
+  if (!valid) return
+
+  try {
+    const response = await fetch(API_URL + `/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userName: userName.value, email: email.value }),
+    })
+    if (!response.ok) throw new Error()
+
+    if (authStore.isSchool && authStore.user.DrivingSchoolId) {
+      await fetch(API_URL + `/schools/${authStore.user.DrivingSchoolId}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${authStore.token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userName: userName.value,
+          name: userName.value,
+          location: schoolLocation.value || undefined,
+          owner: schoolOwner.value || undefined,
           email: email.value,
+          website: schoolWebsite.value || undefined,
+          phone: schoolPhone.value || undefined,
         }),
       })
-      if (response.ok) {
-        console.log('Update Profile')
-      } else {
-        console.error('Failed update Profile')
-        throw new Error();
-      }
-      displayName.value = userName.value
-      displayEmail.value = email.value
-      const user: User = JSON.parse(<string>sessionStorage.getItem('user'))
-      user.UserName = displayName.value
-      user.Email = email.value
-      sessionStorage.setItem('user', JSON.stringify(user))
-    } catch (err) {
-      errors.userName = 'Netzwerkfehler beim Upload'
-      errors.email = 'Netzwerkfehler beim Upload'
     }
+
+    displayName.value = userName.value
+    displayEmail.value = email.value
+    const user: User = JSON.parse(<string>sessionStorage.getItem('user'))
+    user.UserName = displayName.value
+    user.Email = email.value
+    sessionStorage.setItem('user', JSON.stringify(user))
+  } catch (err) {
+    errors.userName = 'Netzwerkfehler beim Speichern'
+    errors.email = 'Netzwerkfehler beim Speichern'
   }
 }
 

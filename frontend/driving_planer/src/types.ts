@@ -6,6 +6,7 @@ export interface User {
   Email: string;
   Role: string;
   AvatarPath?: string;
+  DrivingSchoolId?: number | null;
 }
 
 export interface AuthResponse {

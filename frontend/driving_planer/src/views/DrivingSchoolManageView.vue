@@ -446,6 +446,7 @@ const LICENSE_ID_TO_NAME: Record<number, string> = Object.fromEntries(
 /* ── Types ── */
 interface Course {
   id: number
+  drivingSchoolId: number
   licenseType: string
   dateFrom: string
   dateTo: string
@@ -461,6 +462,7 @@ interface Course {
 function mapProgram(p: any): Course {
   return {
     id: p.LicenseProgramId,
+    drivingSchoolId: p.DrivingSchoolId,
     licenseType: LICENSE_ID_TO_NAME[p.LicenseTypeId] ?? String(p.LicenseTypeId),
     dateFrom: p.DateFrom,
     dateTo: p.DateTo,
@@ -744,7 +746,7 @@ async function saveCourse() {
         Authorization: `Bearer ${authStore.token ?? ''}`
       },
       body: JSON.stringify({
-        DrivingSchoolId: 1,
+        DrivingSchoolId: authStore.user?.DrivingSchoolId ?? 1,
         LicenseTypeId: LICENSE_TYPE_IDS[form.value.licenseType],
         DateFrom: form.value.dateFrom,
         DateTo: form.value.dateTo,
