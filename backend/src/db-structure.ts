@@ -130,6 +130,27 @@ export const buildTables = (connection: Database) => {
         FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE
       );`,
       );
+
+    connection.exec(
+        `CREATE TABLE IF NOT EXISTS Task (
+        TaskId INTEGER PRIMARY KEY AUTOINCREMENT,
+        UserId INTEGER NOT NULL,
+        Text TEXT NOT NULL,
+        Done INTEGER NOT NULL DEFAULT 0,
+        IsDefault INTEGER NOT NULL DEFAULT 0,
+        FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE
+      );`,
+      );
+    // migration: add IsDefault if table existed before this column was added
+    try { connection.exec(`ALTER TABLE Task ADD COLUMN IsDefault INTEGER NOT NULL DEFAULT 0`); } catch {}
+    // migration: mark existing default tasks correctly
+    connection.exec(`UPDATE Task SET IsDefault = 1 WHERE Text IN (
+      'Ärztliche/Augenuntersuchung',
+      'Erste-Hilfe-Kurs',
+      'Theorieprüfung anmelden',
+      'Praxisstunden absolvieren',
+      'Praxisprüfung anmelden'
+    ) AND IsDefault = 0`);
   } catch (err) {
     throw err;
   }

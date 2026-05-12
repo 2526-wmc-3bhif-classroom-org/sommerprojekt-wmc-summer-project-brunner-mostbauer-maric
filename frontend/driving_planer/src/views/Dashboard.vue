@@ -137,18 +137,32 @@
                      :class="['flex-1 p-4 rounded-2xl font-bold text-sm outline-none transition-all border', taskError && !checkInput.trim() ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
               <button @click="addCheck" class="bg-black text-white px-6 rounded-2xl hover:opacity-80 transition-all active:scale-90"><i class="pi pi-plus text-xs"></i></button>
             </div>
-            <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-[250px]">
-              <div v-for="(item, i) in checklist" :key="i" class="group flex items-center justify-between p-4 mb-3 border border-zinc-100 rounded-[1.5rem] bg-zinc-50/30 transition-all">
-                <label class="flex items-center gap-4 cursor-pointer flex-1">
-                  <div class="relative flex items-center justify-center">
-                    <input type="checkbox" v-model="item.done" @change="syncTasks" class="peer appearance-none w-6 h-6 rounded-full border-2 border-zinc-100 checked:bg-black checked:border-black transition-all cursor-pointer" />
-                    <i class="pi pi-check absolute text-[10px] text-white opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
+            <div class="overflow-y-auto pr-2 custom-scrollbar max-h-[380px]">
+              <div v-if="checklist.length === 0" class="flex flex-col items-center justify-center py-16 gap-2 opacity-20">
+                <i class="pi pi-check-square text-3xl"></i>
+                <p class="text-[10px] font-black uppercase tracking-wider">Noch keine Aufgaben</p>
+              </div>
+              <div v-else class="flex flex-col gap-3">
+                <div v-for="item in checklist" :key="item.id" class="group flex items-center justify-between p-4 border border-zinc-100 rounded-[1.5rem] bg-zinc-50/30 transition-all">
+                  <label class="flex items-center gap-4 cursor-pointer flex-1 min-w-0">
+                    <div class="relative flex items-center justify-center flex-shrink-0">
+                      <input type="checkbox" v-model="item.done" @change="toggleTask(item)" class="peer appearance-none w-6 h-6 rounded-full border-2 border-zinc-100 checked:bg-black checked:border-black transition-all cursor-pointer" />
+                      <i class="pi pi-check absolute text-[10px] text-white opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
+                    </div>
+                    <input v-if="editingId === item.id" v-model="editText" @keyup.enter="saveEditTask(item)" @blur="saveEditTask(item)" type="text" class="flex-1 bg-transparent outline-none font-bold text-base text-black min-w-0" />
+                    <span v-else :class="item.done ? 'line-through opacity-20 italic' : 'font-bold'" class="text-base text-black transition-all truncate">{{ item.text }}</span>
+                  </label>
+                  <div class="flex gap-1 flex-shrink-0">
+                    <button @click="!item.isDefault && startEditTask(item)"
+                      :class="['p-2 transition-all', item.isDefault ? 'invisible' : 'opacity-0 group-hover:opacity-100 text-zinc-300 hover:text-black']">
+                      <i class="pi pi-pencil text-xs"></i>
+                    </button>
+                    <button @click="removeCheck(item)"
+                      :class="['p-2 transition-all', item.isDefault && !item.done ? 'invisible' : 'opacity-0 group-hover:opacity-100 text-zinc-300 hover:text-red-500']">
+                      <i class="pi pi-trash text-xs"></i>
+                    </button>
                   </div>
-                  <span :class="item.done ? 'line-through opacity-20 italic' : 'font-bold'" class="text-base text-black transition-all">{{ item.text }}</span>
-                </label>
-                <button @click="removeCheck(i)" class="opacity-0 group-hover:opacity-100 text-zinc-300 hover:text-red-500 p-2 transition-all">
-                  <i class="pi pi-trash text-xs"></i>
-                </button>
+                </div>
               </div>
             </div>
           </div>
@@ -251,9 +265,12 @@
 
               <button @click="addDate" class="w-full bg-black text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-[0.98]">Termin speichern</button>
             </div>
-            <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-[250px]">
-              <div v-if="dates.length === 0 && examDates.length === 0" class="h-full flex items-center justify-center opacity-10 italic text-sm">Keine Termine</div>
-              <div v-else class="space-y-4">
+            <div class="overflow-y-auto pr-2 custom-scrollbar max-h-[380px]">
+              <div v-if="dates.length === 0 && examDates.length === 0" class="flex flex-col items-center justify-center py-16 gap-2 opacity-20">
+                <i class="pi pi-calendar text-3xl"></i>
+                <p class="text-[10px] font-black uppercase tracking-wider">Noch keine Termine</p>
+              </div>
+              <div v-else class="flex flex-col gap-4">
                 <div v-for="(date, i) in examDates" :key="`exam-${i}`" class="flex justify-between items-center p-5 border border-zinc-100 rounded-[2rem] bg-zinc-50/30">
                   <div class="flex flex-col gap-1">
                     <div class="flex items-center gap-2">
@@ -293,7 +310,6 @@ import { useAuthStore } from '@/stores/authStore'
 const authStore = useAuthStore()
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
-const syncTasks = () => {}
 const syncCalendar = () => {}
 const syncEvents = () => {
   if (authStore.user?.UserId) {
@@ -505,17 +521,86 @@ const saveEdit = async () => {
 }
 
 // TASKS LOGIC
+const DEFAULT_TASKS = [
+  'Ärztliche/Augenuntersuchung',
+  'Erste-Hilfe-Kurs',
+  'Theorieprüfung anmelden',
+  'Praxisstunden absolvieren',
+  'Praxisprüfung anmelden',
+]
+
 const checkInput = ref('')
 const taskError = ref(false)
 const checklist = ref<any[]>([])
+const editingId = ref<number | null>(null)
+const editText = ref('')
 watch(checkInput, () => { taskError.value = false })
-const addCheck = () => {
-  if (!checkInput.value.trim()) { taskError.value = true; return }
-  checklist.value.push({ text: checkInput.value, done: false });
-  checkInput.value = '';
-  syncTasks()
+
+const fetchTasks = async () => {
+  const res = await fetch(`${API_URL}/tasks`, {
+    headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+  })
+  if (res.ok) {
+    const data = await res.json()
+    checklist.value = data.map((t: any) => ({ id: t.TaskId, text: t.Text, done: t.Done === 1, isDefault: t.IsDefault === 1 }))
+    if (checklist.value.length === 0) {
+      for (const text of DEFAULT_TASKS) {
+        await fetch(`${API_URL}/tasks`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
+          body: JSON.stringify({ text, isDefault: true })
+        })
+      }
+      await fetchTasks()
+    }
+  }
 }
-const removeCheck = (i: number) => { checklist.value.splice(i, 1); syncTasks() }
+
+const addCheck = async () => {
+  if (!checkInput.value.trim()) { taskError.value = true; return }
+  const res = await fetch(`${API_URL}/tasks`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
+    body: JSON.stringify({ text: checkInput.value.trim(), isDefault: false })
+  })
+  if (res.ok) {
+    checkInput.value = ''
+    await fetchTasks()
+  }
+}
+
+const toggleTask = async (item: any) => {
+  await fetch(`${API_URL}/tasks/${item.id}/done`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
+    body: JSON.stringify({ done: item.done })
+  })
+}
+
+const startEditTask = (item: any) => {
+  editingId.value = item.id
+  editText.value = item.text
+}
+
+const saveEditTask = async (item: any) => {
+  if (editingId.value !== item.id) return
+  editingId.value = null
+  if (!editText.value.trim() || editText.value.trim() === item.text) return
+  await fetch(`${API_URL}/tasks/${item.id}/text`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
+    body: JSON.stringify({ text: editText.value.trim() })
+  })
+  item.text = editText.value.trim()
+}
+
+const removeCheck = async (item: any) => {
+  await fetch(`${API_URL}/tasks/${item.id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+  })
+  checklist.value = checklist.value.filter(t => t.id !== item.id)
+}
 
 // CALENDAR LOGIC
 const hoveredDay = ref<number | null>(null)
@@ -598,6 +683,7 @@ onMounted(async () => {
   if (authStore.user?.UserId) {
     const userId = String(authStore.user.UserId)
     fetchKmLogs()
+    fetchTasks()
     const raw = localStorage.getItem(`events_${userId}`)
     if (raw) dates.value = JSON.parse(raw)
 
@@ -644,4 +730,5 @@ const removeDate = (i: number) => { dates.value.splice(i, 1); syncEvents() }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
 .slide-up-enter-active, .slide-up-leave-active { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .slide-up-enter-from, .slide-up-leave-to { opacity: 0; transform: translateY(20px); }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: brightness(0); cursor: pointer; opacity: 0.7; }
 </style>

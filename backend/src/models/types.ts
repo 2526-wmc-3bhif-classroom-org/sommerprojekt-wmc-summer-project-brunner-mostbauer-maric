@@ -87,3 +87,11 @@ export interface KmLog {
   Conditions?: string | null;
   Timestamp?: string;
 }
+
+export interface Task {
+  TaskId: number;
+  UserId: number;
+  Text: string;
+  Done: number;
+  IsDefault: number;
+}
