@@ -1,20 +1,23 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import Background from "@/components/Background.vue"
 import FooterCmp from "@/components/FooterCmp.vue"
 import HeaderMain from "@/components/HeaderMain.vue"
+
+const { t } = useI18n()
 </script>
 
 <template>
   <Background>
     <section class="flex flex-col items-center justify-center md:py-24 pt-24 pb-10 px-6 text-center">
       <HeaderMain
-        title="Impressum"
+        :title="t('impressum.title')"
         desktopHeight="md:text-7xl"
         mobileHeight="text-3xl"
         :duration="400"
       />
       <p class="text-black/50 md:text-xl text-sm mt-4 max-w-2xl">
-        Angaben gemäß § 5 ECG (Österreich)
+        {{ t('impressum.subtitle') }}
       </p>
     </section>
 
@@ -24,7 +27,7 @@ import HeaderMain from "@/components/HeaderMain.vue"
         <div class="flex flex-col gap-2">
           <div class="flex items-center gap-2 text-black font-bold text-lg">
             <i class="pi pi-building"></i>
-            <span>Unternehmen</span>
+            <span>{{ t('impressum.company') }}</span>
           </div>
           <p class="text-black/70">Drivingplaner</p>
           <p class="text-black/70">Limesstraße 12–14</p>
@@ -36,7 +39,7 @@ import HeaderMain from "@/components/HeaderMain.vue"
         <div class="flex flex-col gap-2">
           <div class="flex items-center gap-2 text-black font-bold text-lg">
             <i class="pi pi-users"></i>
-            <span>Verantwortliche Personen</span>
+            <span>{{ t('impressum.responsible') }}</span>
           </div>
           <p class="text-black/70">Luka Marić</p>
           <p class="text-black/70">Jan Brunner</p>
@@ -48,7 +51,7 @@ import HeaderMain from "@/components/HeaderMain.vue"
         <div class="flex flex-col gap-2">
           <div class="flex items-center gap-2 text-black font-bold text-lg">
             <i class="pi pi-envelope"></i>
-            <span>Kontakt</span>
+            <span>{{ t('impressum.contact') }}</span>
           </div>
           <p class="text-black/70">E-Mail: contact@drivingplaner.at</p>
           <p class="text-black/70">Telefon: +43 732 67 92 0</p>
@@ -59,13 +62,10 @@ import HeaderMain from "@/components/HeaderMain.vue"
         <div class="flex flex-col gap-2">
           <div class="flex items-center gap-2 text-black font-bold text-lg">
             <i class="pi pi-info-circle"></i>
-            <span>Rechtliche Angaben</span>
+            <span>{{ t('impressum.legal') }}</span>
           </div>
           <p class="text-black/70">UID-Nr.: ATU00000000</p>
-          <p class="text-black/70">
-            Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links.
-            Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.
-          </p>
+          <p class="text-black/70">{{ t('impressum.disclaimer') }}</p>
         </div>
 
       </div>

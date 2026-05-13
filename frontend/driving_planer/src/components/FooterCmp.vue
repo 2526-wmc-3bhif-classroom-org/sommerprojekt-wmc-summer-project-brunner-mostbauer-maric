@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
 const router = useRouter()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -11,9 +14,7 @@ const router = useRouter()
       class="text-white/60 text-sm hover:text-white transition-colors duration-200 cursor-pointer"
       @click="router.push('/impressum')"
     >
-      Impressum
+      {{ t('footer.impressum') }}
     </button>
   </footer>
 </template>
-
-

@@ -1,0 +1,370 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "schools": "Driving Schools",
+    "dashboard": "Dashboard",
+    "manage": "Course Management",
+    "profile": "Profile ({name})",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "openMenu": "Open Menu",
+    "closeMenu": "Close Menu",
+    "openProfile": "Open Profile Menu",
+    "language": "Language"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "join": "Join",
+    "or": "or",
+    "auto": "Auto"
+  },
+  "home": {
+    "title": "Driving Planner",
+    "subtitle": "Your intelligent companion on the way to your driver's license",
+    "learnMore": "Learn more",
+    "ourAdvantages": "Our Advantages",
+    "readyToStart": "Ready to get started?",
+    "startNow": "Start Now",
+    "stats": {
+      "students": "Students",
+      "successRate": "Success Rate",
+      "schools": "Driving Schools"
+    },
+    "advantages": {
+      "individual": {
+        "title": "Individual",
+        "description": "Create your personal driving plan tailored to your needs."
+      },
+      "efficient": {
+        "title": "Efficient",
+        "description": "Optimize your learning process with our intelligent planning algorithm."
+      },
+      "motivating": {
+        "title": "Motivating",
+        "description": "Track your progress and stay motivated on your way to a driver's license."
+      }
+    },
+    "timeline": {
+      "register": { "title": "Registration", "description": "Sign up on our platform and create your profile." },
+      "chooseSchool": { "title": "Choose a school", "description": "Select your driving school from our extensive list." },
+      "getPlan": { "title": "Get your plan", "description": "Receive your personalized driving plan and start your preparation." },
+      "followPlan": { "title": "Follow the plan", "description": "Follow your driving plan to optimally prepare for your theory and practical exam." },
+      "celebrate": { "title": "Celebrate success", "description": "Pass your exams and celebrate your success with family and friends!" }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account yet?",
+      "registerNow": "Register now.",
+      "errors": {
+        "fillAll": "Please fill in all fields.",
+        "invalidEmail": "Please enter a valid email address.",
+        "noAccount": "This account does not exist. Please register first.",
+        "wrongPassword": "The password is incorrect. Please try again.",
+        "failed": "Login failed: {message}"
+      }
+    },
+    "register": {
+      "title": "Register",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "isDrivingSchool": "I am a driving school",
+      "schoolData": "Driving School Data",
+      "address": "Address (required)",
+      "owner": "Owner",
+      "phone": "Phone Number",
+      "website": "Website (https://...)",
+      "submit": "Register",
+      "hasAccount": "Already have an account?",
+      "loginHere": "Sign in here.",
+      "errors": {
+        "fillAll": "Please fill in all fields.",
+        "invalidEmail": "Please enter a valid email address.",
+        "passwordMismatch": "The passwords do not match.",
+        "schoolAddress": "Please provide the address of your driving school.",
+        "emailExists": "An account with this email already exists.",
+        "failed": "Registration failed: {message}"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Driving Management System",
+    "kmLog": {
+      "title": "KM-Log",
+      "startKm": "Start KM",
+      "endKm": "End KM",
+      "startLocation": "Start Location",
+      "endLocation": "Destination",
+      "conditions": "Conditions (e.g. Rain, Night)",
+      "conditionsLabel": "Conditions",
+      "save": "Save Trip",
+      "editTitle": "Edit KM-Log",
+      "saveChanges": "Save Changes",
+      "empty": "No entries",
+      "errors": {
+        "fillAll": "All fields must be filled in",
+        "endKmGreater": "End KM must be greater than Start KM",
+        "networkError": "Network error"
+      }
+    },
+    "tasks": {
+      "title": "Tasks",
+      "placeholder": "New task...",
+      "empty": "No tasks yet"
+    },
+    "calendar": {
+      "title": "Planner",
+      "save": "Save",
+      "notePlaceholder": "Enter note...",
+      "weekdays": ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+      "legend": {
+        "course": "Course",
+        "theory": "Theory",
+        "practice": "Practice",
+        "grundwissen": "Basic Knowledge",
+        "theoriePruefung": "Theory Exam",
+        "praxisPruefung": "Practice Exam"
+      }
+    },
+    "events": {
+      "title": "Events",
+      "typePlaceholder": "Select type",
+      "theorie": "Theory",
+      "praxis": "Practice",
+      "save": "Save Appointment",
+      "empty": "No appointments yet",
+      "errors": {
+        "incomplete": "Fields incomplete"
+      }
+    },
+    "school": {
+      "title": "My Driving School",
+      "phone": "Phone",
+      "email": "E-Mail",
+      "website": "Website",
+      "address": "Address"
+    }
+  },
+  "start": {
+    "title": "Your Start",
+    "subtitle": "Configure your personal driving plan for success",
+    "licenseClass": "License Class",
+    "startDate": "Planned Start",
+    "pace": "Your Learning Pace *",
+    "paceGoal": "Choose a goal...",
+    "paceFast": "🏎️ As fast as possible (Intensive)",
+    "paceNormal": "🚗 Normal pace",
+    "paceRelaxed": "🛵 Completely relaxed",
+    "submit": "Create Driving Plan",
+    "errors": {
+      "noCourse": "No courses available for class {cls} from this date.",
+      "invalidDate": "The date format is incorrect. (Date must be in the future).",
+      "noPace": "Please select a learning pace."
+    }
+  },
+  "schools": {
+    "badge": "Driving School Directory",
+    "title": "Driving Schools Nearby",
+    "subtitle": "Compare driving schools and find the right one for you.",
+    "stats": {
+      "schools": "Driving Schools",
+      "schoolsDesc": "{count} driving schools available",
+      "withWebsite": "With Website",
+      "withWebsiteDesc": "{count} with website",
+      "locations": "Locations",
+      "locationsDesc": "{count} locations available"
+    },
+    "overview": "Overview",
+    "entries": "{count} entries",
+    "search": "Search...",
+    "tableHeaders": {
+      "nr": "#",
+      "school": "Driving School",
+      "location": "Location",
+      "owner": "Owner",
+      "rating": "Rating",
+      "website": "Website"
+    },
+    "notes": "Notes",
+    "notePlaceholder": "Your note...",
+    "loadError": "Data could not be loaded",
+    "loading": "Loading driving schools...",
+    "empty": {
+      "title": "No driving schools found",
+      "subtitle": "Try a different search query."
+    }
+  },
+  "manage": {
+    "badge": "School Portal",
+    "title": "My Courses",
+    "subtitleStudent": "Choose your courses – join a course and get started.",
+    "subtitleSchool": "Manage your driving school courses – create, edit and keep track.",
+    "overview": "Course Overview",
+    "coursesCount": "0 courses created | {n} course created | {n} courses created",
+    "allClasses": "All Classes",
+    "class": "Class {cls}",
+    "newCourse": "New Course",
+    "freeSpots": "{count} spots available",
+    "coursePrice": "Course Price",
+    "participants": "Participants",
+    "schnellkurs": "Intensive Course",
+    "status": {
+      "full": "Fully booked",
+      "almostFull": "Almost full",
+      "available": "Available"
+    },
+    "modal": {
+      "editTitle": "Edit Course",
+      "createTitle": "Create New Course",
+      "fillAll": "Please fill in all required fields.",
+      "licenseClass": "License Class *",
+      "coursePeriod": "Course Period *",
+      "from": "From",
+      "to": "To",
+      "time": "Time *",
+      "weekdays": "Weekdays",
+      "courseType": "Course Type",
+      "price": "Price (€) *",
+      "maxParticipants": "Max. Participants *",
+      "currentParticipants": "Current Participants",
+      "saveChanges": "Save Changes",
+      "createCourse": "Create Course",
+      "errors": {
+        "licenseType": "Please select a class.",
+        "weekdays": "Please select at least one weekday.",
+        "dateFrom": "Please provide a start date.",
+        "datePast": "Start date cannot be in the past.",
+        "dateTo": "Please provide an end date.",
+        "dateToAfter": "End date must be after the start date.",
+        "timeFrom": "Please provide a start time.",
+        "timeFromInvalid": "Invalid time – format: HH:MM (e.g. 08:30).",
+        "timeTo": "Please provide an end time.",
+        "timeToInvalid": "Invalid time – format: HH:MM (e.g. 16:00).",
+        "timeToAfter": "End time must be after start time.",
+        "price": "Price must be greater than 0.",
+        "maxParticipants": "At least 1 participant required.",
+        "currentParticipantsNeg": "Current participants cannot be negative.",
+        "currentParticipantsMax": "Current participants cannot exceed the maximum ({max}).",
+        "saveError": "Changes could not be saved.",
+        "createError": "Course could not be created."
+      }
+    },
+    "delete": {
+      "title": "Really delete course?",
+      "description": "This action cannot be undone. All participant data will be lost."
+    },
+    "join": {
+      "title": "Join Course?",
+      "description": "The course days will be shown in your calendar."
+    },
+    "empty": {
+      "title": "No courses yet",
+      "noClass": "No courses found for class {cls}.",
+      "noCoursesYet": "Create your first course and get started.",
+      "createFirst": "Create First Course"
+    }
+  },
+  "about": {
+    "title": "Who are we?",
+    "subtitle": "We are a team of passionate developers who have set out to revolutionize driving school education.",
+    "whatDrivesUs": "What drives us",
+    "joinUs": "Join us!",
+    "joinSubtitle": "Start now and experience how easy the path to a driver's license can be.",
+    "joinButton": "Start now",
+    "cards": {
+      "mission": { "title": "Our Mission", "description": "We want to make it easier for driving students to complete their driver's license." },
+      "vision": { "title": "Our Vision", "description": "A world where everyone can easily and stress-free get their driver's license." },
+      "team": { "title": "Our Team", "description": "We are a young team of passionate developers who were/are driving students themselves." },
+      "values": { "title": "Our Values", "description": "Simplicity, transparency and quality are our top priorities." }
+    }
+  },
+  "profile": {
+    "name": "Name",
+    "email": "E-Mail",
+    "namePlaceholder": "Enter your name",
+    "emailPlaceholder": "Enter your email",
+    "schoolData": "Driving School Data",
+    "address": "Address",
+    "owner": "Owner",
+    "phone": "Phone",
+    "website": "Website",
+    "addressPlaceholder": "Street, ZIP City",
+    "ownerPlaceholder": "First and Last Name",
+    "phonePlaceholder": "+43 ...",
+    "websitePlaceholder": "https://...",
+    "saveChanges": "Save Changes",
+    "or": "or",
+    "changePassword": "Change Password",
+    "deleteAccount": "Delete Account",
+    "photo": {
+      "title": "Update Photo",
+      "drag": "Drag image here",
+      "select": "Select File",
+      "remove": "Remove Photo"
+    },
+    "password": {
+      "title": "Change Password",
+      "current": "Current Password",
+      "new": "New Password",
+      "confirm": "Confirm New Password",
+      "update": "Update Password"
+    },
+    "deleteModal": {
+      "title": "Really delete account?",
+      "description": "This action is irreversible. Your account and all associated data will be permanently deleted."
+    },
+    "errors": {
+      "userName": "Please provide a name",
+      "email": "Please provide an email",
+      "imageType": "Only images allowed (JPG, PNG, GIF, WebP)",
+      "imageSize": "File too large (max. 5MB)",
+      "currentPass": "Current password missing",
+      "newPass": "New password missing",
+      "passMismatch": "Passwords do not match",
+      "passWrong": "Password is incorrect",
+      "networkSave": "Network error while saving",
+      "networkDelete": "Network error while deleting",
+      "uploadFailed": "Upload failed",
+      "networkUpload": "Network error during upload",
+      "deleteFailed": "Delete failed"
+    }
+  },
+  "impressum": {
+    "title": "Imprint",
+    "subtitle": "Information according to § 5 ECG (Austria)",
+    "company": "Company",
+    "responsible": "Responsible Persons",
+    "contact": "Contact",
+    "legal": "Legal Information",
+    "disclaimer": "Despite careful content control, we assume no liability for the contents of external links. The operators of linked pages are solely responsible for their content."
+  },
+  "footer": {
+    "impressum": "Imprint"
+  },
+  "defaultTasks": {
+    "medicalExam": "Medical/Eye Examination",
+    "firstAid": "First Aid Course",
+    "theoryExam": "Register for Theory Exam",
+    "practiceHours": "Complete Practice Hours",
+    "practicalExam": "Register for Practical Exam"
+  },
+  "eventTypes": {
+    "Theorie": "Theory",
+    "Praxis": "Practice",
+    "Voraussichtliche Grundwissensprüfung": "Estimated Basic Knowledge Exam",
+    "Voraussichtliche Kursspezifische Theorieprüfung": "Estimated Course-Specific Theory Exam",
+    "Voraussichtliche Praxisprüfung": "Estimated Practical Exam"
+  }
+}
