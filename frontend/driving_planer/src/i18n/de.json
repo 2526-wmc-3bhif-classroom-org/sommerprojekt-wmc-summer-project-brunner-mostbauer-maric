@@ -277,12 +277,24 @@
     }
   },
   "about": {
+    "badge": "Über uns",
     "title": "Wer sind wir?",
     "subtitle": "Wir sind ein Team von leidenschaftlichen Entwicklern, die es sich zum Ziel gesetzt haben, die Fahrschulausbildung zu revolutionieren.",
+    "learnMore": "Mehr erfahren",
     "whatDrivesUs": "Was uns antreibt",
     "joinUs": "Mach mit!",
     "joinSubtitle": "Starte jetzt und erlebe wie einfach der Weg zum Führerschein sein kann.",
     "joinButton": "Jetzt starten",
+    "stats": {
+      "developers": "Entwickler",
+      "schools": "Fahrschulen",
+      "goal": "Gemeinsames Ziel"
+    },
+    "team": {
+      "title": "Das Team",
+      "subtitle": "Drei Entwickler, eine Mission",
+      "role": "Full-Stack Entwickler"
+    },
     "cards": {
       "mission": { "title": "Unsere Mission", "description": "Wir wollen es Fahrschülerinnen und Fahrschüler erleichtern ihren Führerschein abzuschließen." },
       "vision": { "title": "Unsere Vision", "description": "Eine Welt in der jeder einfach und stressfrei seinen Führerschein machen kann." },

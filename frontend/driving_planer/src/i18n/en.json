@@ -277,12 +277,24 @@
     }
   },
   "about": {
+    "badge": "About us",
     "title": "Who are we?",
     "subtitle": "We are a team of passionate developers who have set out to revolutionize driving school education.",
+    "learnMore": "Learn more",
     "whatDrivesUs": "What drives us",
     "joinUs": "Join us!",
     "joinSubtitle": "Start now and experience how easy the path to a driver's license can be.",
     "joinButton": "Start now",
+    "stats": {
+      "developers": "Developers",
+      "schools": "Driving Schools",
+      "goal": "Shared Goal"
+    },
+    "team": {
+      "title": "The Team",
+      "subtitle": "Three developers, one mission",
+      "role": "Full-Stack Developer"
+    },
     "cards": {
       "mission": { "title": "Our Mission", "description": "We want to make it easier for driving students to complete their driver's license." },
       "vision": { "title": "Our Vision", "description": "A world where everyone can easily and stress-free get their driver's license." },
