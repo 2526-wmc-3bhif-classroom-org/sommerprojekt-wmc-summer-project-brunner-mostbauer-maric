@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "about": "About Us",
+    "contact": "Contact",
     "schools": "Driving Schools",
     "dashboard": "Dashboard",
     "manage": "Course Management",
@@ -378,5 +379,30 @@
     "Voraussichtliche Grundwissensprüfung": "Estimated Basic Knowledge Exam",
     "Voraussichtliche Kursspezifische Theorieprüfung": "Estimated Course-Specific Theory Exam",
     "Voraussichtliche Praxisprüfung": "Estimated Practical Exam"
+  },
+  "contact": {
+    "badge": "Contact",
+    "title": "Write to us",
+    "subtitle": "Have questions or feedback? We'd love to hear from you.",
+    "infoTitle": "Contact Info",
+    "emailLabel": "Email",
+    "addressLabel": "Address",
+    "teamLabel": "Team",
+    "formTitle": "Send a message",
+    "success": "Message sent successfully! We'll get back to you soon.",
+    "error": "Failed to send message. Please try again.",
+    "form": {
+      "email": "Your Email",
+      "emailPlaceholder": "Enter your email address",
+      "emailError": "Please enter a valid email address.",
+      "subject": "Subject",
+      "subjectPlaceholder": "What is it about?",
+      "subjectError": "Please enter a subject.",
+      "message": "Message",
+      "messagePlaceholder": "Your message...",
+      "messageError": "Please enter a message.",
+      "send": "Send message",
+      "sending": "Sending..."
+    }
   }
 }

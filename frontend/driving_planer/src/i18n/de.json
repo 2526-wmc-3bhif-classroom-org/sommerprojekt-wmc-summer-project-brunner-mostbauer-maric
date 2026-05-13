@@ -2,6 +2,7 @@
   "nav": {
     "home": "Zuhause",
     "about": "Über uns",
+    "contact": "Kontakt",
     "schools": "Fahrschulen",
     "dashboard": "Dashboard",
     "manage": "Kursverwaltung",
@@ -378,5 +379,30 @@
     "Voraussichtliche Grundwissensprüfung": "Voraussichtliche Grundwissensprüfung",
     "Voraussichtliche Kursspezifische Theorieprüfung": "Voraussichtliche Kursspezifische Theorieprüfung",
     "Voraussichtliche Praxisprüfung": "Voraussichtliche Praxisprüfung"
+  },
+  "contact": {
+    "badge": "Kontakt",
+    "title": "Schreib uns",
+    "subtitle": "Hast du Fragen oder Feedback? Wir freuen uns über deine Nachricht.",
+    "infoTitle": "Kontaktdaten",
+    "emailLabel": "E-Mail",
+    "addressLabel": "Adresse",
+    "teamLabel": "Team",
+    "formTitle": "Nachricht senden",
+    "success": "Nachricht erfolgreich gesendet! Wir melden uns bald bei dir.",
+    "error": "Fehler beim Senden. Bitte versuche es erneut.",
+    "form": {
+      "email": "Deine E-Mail",
+      "emailPlaceholder": "E-Mail Adresse eingeben",
+      "emailError": "Bitte gib eine gültige E-Mail-Adresse ein.",
+      "subject": "Betreff",
+      "subjectPlaceholder": "Worum geht es?",
+      "subjectError": "Bitte gib einen Betreff ein.",
+      "message": "Nachricht",
+      "messagePlaceholder": "Deine Nachricht...",
+      "messageError": "Bitte gib eine Nachricht ein.",
+      "send": "Nachricht senden",
+      "sending": "Wird gesendet..."
+    }
   }
 }
