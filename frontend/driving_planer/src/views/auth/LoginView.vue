@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/authStore.ts'
 import Background from "@/components/Background.vue";
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 
 const email = ref('')
@@ -13,11 +15,11 @@ const showPassword = ref(false)
 
 async function handleLogin() {
   if (!email.value || !password.value) {
-    error.value = 'Bitte fülle alle Felder aus.'
+    error.value = t('auth.login.errors.fillAll')
     return
   }
   if (!email.value.includes('@')) {
-    error.value = 'Bitte gib eine gültige Email-Adresse ein.'
+    error.value = t('auth.login.errors.invalidEmail')
     return
   }
   error.value = ''
@@ -27,11 +29,11 @@ async function handleLogin() {
   } catch (e: any) {
     console.error('Login error:', e)
     if (e.message.includes('User does not exist')) {
-      error.value = 'Dieses Konto existiert nicht. Bitte registriere dich zuerst.'
+      error.value = t('auth.login.errors.noAccount')
     } else if (e.message.includes('Wrong password') || e.message.toLowerCase().includes('unauthorized')) {
-      error.value = 'Das Passwort ist falsch. Bitte versuche es erneut.'
+      error.value = t('auth.login.errors.wrongPassword')
     } else {
-      error.value = 'Anmeldung fehlgeschlagen: ' + e.message
+      error.value = t('auth.login.errors.failed', { message: e.message })
     }
   } finally {
     loading.value = false
@@ -54,16 +56,16 @@ async function handleLogin() {
           :enter="{ opacity: 1, y: 0, transition: { delay: 200, duration: 800, type: 'spring' } }"
         >
           <h1 class="text-5xl font-black text-white tracking-tight">
-            Login
+            {{ t('auth.login.title') }}
           </h1>
-          </div>
+        </div>
 
         <form @submit.prevent="handleLogin" class="flex flex-col gap-5">
           <div class="w-full relative">
             <input
               v-model="email"
               type="email"
-              placeholder="Email"
+              :placeholder="t('auth.login.email')"
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl hover:bg-white/10"
             />
           </div>
@@ -72,7 +74,7 @@ async function handleLogin() {
             <input
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
-              placeholder="Password"
+              :placeholder="t('auth.login.password')"
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl pr-12 hover:bg-white/10"
             />
 
@@ -94,15 +96,15 @@ async function handleLogin() {
             :disabled="loading"
             class="w-full bg-lime-500 text-xl text-white font-black py-4 mt-6 rounded-xl shadow-[0_10px_30px_rgba(132,204,22,0.3)] hover:bg-lime-400 hover:scale-[1.03] active:scale-95 transition-all duration-300 uppercase tracking-widest"
           >
-            <span v-if="!loading">Anmelden</span>
+            <span v-if="!loading">{{ t('auth.login.submit') }}</span>
             <i v-else class="pi pi-spin pi-spinner"></i>
           </button>
         </form>
 
         <div class="pt-8 text-gray-500 text-sm text-center">
-          Sie haben noch kein Konto?
+          {{ t('auth.login.noAccount') }}
           <router-link to="register" class="text-white font-bold hover:text-lime-500 transition-colors underline decoration-lime-500/30 underline-offset-4">
-            Registrieren Sie sich jetzt.
+            {{ t('auth.login.registerNow') }}
           </router-link>
         </div>
       </div>

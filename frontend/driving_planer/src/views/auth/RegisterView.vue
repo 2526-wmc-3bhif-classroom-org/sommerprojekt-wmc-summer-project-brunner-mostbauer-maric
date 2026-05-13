@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/authStore.ts'
 import Background from "@/components/Background.vue";
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 
 const userName = ref('')
@@ -22,19 +24,19 @@ const showConfirmPassword = ref(false)
 
 async function handleRegister() {
   if (!userName.value || !email.value || !password.value || !confirmPassword.value) {
-    error.value = 'Bitte fülle alle Felder aus.'
+    error.value = t('auth.register.errors.fillAll')
     return
   }
   if (!email.value.includes('@')) {
-    error.value = 'Bitte gib eine gültige Email-Adresse ein.'
+    error.value = t('auth.register.errors.invalidEmail')
     return
   }
   if (password.value !== confirmPassword.value) {
-    error.value = 'Die Passwörter stimmen nicht überein.'
+    error.value = t('auth.register.errors.passwordMismatch')
     return
   }
   if (isDrivingSchool.value && !location.value) {
-    error.value = 'Bitte gib die Adresse deiner Fahrschule an.'
+    error.value = t('auth.register.errors.schoolAddress')
     return
   }
   error.value = ''
@@ -53,9 +55,9 @@ async function handleRegister() {
   } catch (e: any) {
     console.error('Registration error:', e)
     if (e.message.includes('User already exists')) {
-      error.value = 'Ein Konto mit dieser Email existiert bereits.'
+      error.value = t('auth.register.errors.emailExists')
     } else {
-      error.value = 'Registrierung fehlgeschlagen: ' + e.message
+      error.value = t('auth.register.errors.failed', { message: e.message })
     }
   } finally {
     loading.value = false
@@ -78,7 +80,7 @@ async function handleRegister() {
           :enter="{ opacity: 1, y: 0, transition: { delay: 200, duration: 800, type: 'spring' } }"
         >
           <h1 class="text-5xl font-black text-white tracking-tight">
-            Registrieren
+            {{ t('auth.register.title') }}
           </h1>
         </div>
 
@@ -86,7 +88,7 @@ async function handleRegister() {
           <input
             v-model="userName"
             type="text"
-            placeholder="Benutzername"
+            :placeholder="t('auth.register.username')"
             class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl hover:bg-white/10"
             required
           />
@@ -94,7 +96,7 @@ async function handleRegister() {
           <input
             v-model="email"
             type="email"
-            placeholder="Email"
+            :placeholder="t('auth.register.email')"
             class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl hover:bg-white/10"
             required
           />
@@ -103,7 +105,7 @@ async function handleRegister() {
             <input
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
-              placeholder="Passwort"
+              :placeholder="t('auth.register.password')"
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl pr-12 hover:bg-white/10"
               required
             />
@@ -120,7 +122,7 @@ async function handleRegister() {
             <input
               v-model="confirmPassword"
               :type="showConfirmPassword ? 'text' : 'password'"
-              placeholder="Passwort bestätigen"
+              :placeholder="t('auth.register.confirmPassword')"
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-white transition-all rounded-xl pr-12 hover:bg-white/10"
               required
             />
@@ -146,38 +148,38 @@ async function handleRegister() {
                 class="w-5 h-5 rounded border-2 border-white/20 bg-white/5 text-lime-500 focus:ring-lime-500 focus:ring-offset-0 cursor-pointer accent-lime-500"
               />
             </div>
-            <span class="text-sm">Ich bin eine Fahrschule</span>
+            <span class="text-sm">{{ t('auth.register.isDrivingSchool') }}</span>
           </label>
 
           <div v-if="isDrivingSchool" class="flex flex-col gap-4">
             <div class="border-t border-white/10" style="margin-top: 0.25rem;"></div>
-            <p class="text-white/40 text-xs uppercase tracking-widest font-bold">Fahrschuldaten</p>
+            <p class="text-white/40 text-xs uppercase tracking-widest font-bold">{{ t('auth.register.schoolData') }}</p>
 
             <input
               v-model="location"
               type="text"
-              placeholder="Adresse (Pflichtfeld)"
+              :placeholder="t('auth.register.address')"
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-lime-500 transition-all rounded-xl hover:bg-white/10"
             />
 
             <input
               v-model="owner"
               type="text"
-              placeholder="Inhaber"
+              :placeholder="t('auth.register.owner')"
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-lime-500 transition-all rounded-xl hover:bg-white/10"
             />
 
             <input
               v-model="phone"
               type="tel"
-              placeholder="Telefonnummer"
+              :placeholder="t('auth.register.phone')"
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-lime-500 transition-all rounded-xl hover:bg-white/10"
             />
 
             <input
               v-model="website"
               type="url"
-              placeholder="Website (https://...)"
+              :placeholder="t('auth.register.website')"
               class="w-full p-4 border-2 border-white/10 bg-white/5 text-white focus:outline-none focus:border-lime-500 transition-all rounded-xl hover:bg-white/10"
             />
           </div>
@@ -191,15 +193,15 @@ async function handleRegister() {
             :disabled="loading"
             class="w-full bg-lime-500 text-xl text-white font-black py-4 mt-6 rounded-xl shadow-[0_10px_30px_rgba(132,204,22,0.3)] hover:bg-lime-400 hover:scale-[1.03] active:scale-95 transition-all duration-300 uppercase tracking-widest"
           >
-            <span v-if="!loading">Registrieren</span>
+            <span v-if="!loading">{{ t('auth.register.submit') }}</span>
             <i v-else class="pi pi-spin pi-spinner"></i>
           </button>
         </form>
 
         <div class="pt-8 text-gray-500 text-sm text-center">
-          Bereits ein Konto vorhanden?
+          {{ t('auth.register.hasAccount') }}
           <router-link to="/login" class="text-white font-bold hover:text-lime-500 transition-colors underline decoration-lime-500/30 underline-offset-4">
-            Hier anmelden.
+            {{ t('auth.register.loginHere') }}
           </router-link>
         </div>
       </div>

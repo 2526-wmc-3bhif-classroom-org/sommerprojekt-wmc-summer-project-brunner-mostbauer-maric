@@ -1,0 +1,370 @@
+{
+  "nav": {
+    "home": "Zuhause",
+    "about": "Über uns",
+    "schools": "Fahrschulen",
+    "dashboard": "Dashboard",
+    "manage": "Kursverwaltung",
+    "profile": "Profil ({name})",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
+    "openProfile": "Profilmenü öffnen",
+    "language": "Sprache"
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "join": "Beitreten",
+    "or": "oder",
+    "auto": "Auto"
+  },
+  "home": {
+    "title": "Fahrschulplaner",
+    "subtitle": "Dein intelligenter Begleiter auf dem Weg zum Führerschein",
+    "learnMore": "Mehr erfahren",
+    "ourAdvantages": "Unsere Vorteile",
+    "readyToStart": "Bereit loszulegen?",
+    "startNow": "Jetzt direkt Starten",
+    "stats": {
+      "students": "Fahrschüler",
+      "successRate": "Erfolgsquote",
+      "schools": "Fahrschulen"
+    },
+    "advantages": {
+      "individual": {
+        "title": "Individuell",
+        "description": "Erstellen Sie Ihren persönlichen Fahrplan, der auf Ihre Bedürfnisse zugeschnitten ist."
+      },
+      "efficient": {
+        "title": "Effizient",
+        "description": "Optimieren Sie Ihren Lernprozess mit unserem intelligenten Planungsalgorithmus."
+      },
+      "motivating": {
+        "title": "Motivierend",
+        "description": "Verfolgen Sie Ihren Fortschritt und bleiben Sie motiviert auf dem Weg zum Führerschein."
+      }
+    },
+    "timeline": {
+      "register": { "title": "Anmeldung", "description": "Registrieren Sie sich auf unserer Plattform und erstellen Sie Ihr Profil." },
+      "chooseSchool": { "title": "Fahrschule auswählen", "description": "Wählen Sie Ihre Fahrschule aus unserer umfangreichen Liste aus." },
+      "getPlan": { "title": "Fahrplan erhalten", "description": "Erhalten Sie Ihren maßgeschneiderten Fahrplan und starten Sie Ihre Vorbereitung auf den Führerschein." },
+      "followPlan": { "title": "Plan durchführen", "description": "Folgen Sie Ihrem Fahrplan, um sich optimal auf die theoretische und praktische Prüfung vorzubereiten." },
+      "celebrate": { "title": "Erfolg feiern", "description": "Bestehen Sie Ihre Prüfungen und feiern Sie Ihren Erfolg mit Familie und Freunden!" }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "noAccount": "Sie haben noch kein Konto?",
+      "registerNow": "Registrieren Sie sich jetzt.",
+      "errors": {
+        "fillAll": "Bitte fülle alle Felder aus.",
+        "invalidEmail": "Bitte gib eine gültige Email-Adresse ein.",
+        "noAccount": "Dieses Konto existiert nicht. Bitte registriere dich zuerst.",
+        "wrongPassword": "Das Passwort ist falsch. Bitte versuche es erneut.",
+        "failed": "Anmeldung fehlgeschlagen: {message}"
+      }
+    },
+    "register": {
+      "title": "Registrieren",
+      "username": "Benutzername",
+      "email": "Email",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "isDrivingSchool": "Ich bin eine Fahrschule",
+      "schoolData": "Fahrschuldaten",
+      "address": "Adresse (Pflichtfeld)",
+      "owner": "Inhaber",
+      "phone": "Telefonnummer",
+      "website": "Website (https://...)",
+      "submit": "Registrieren",
+      "hasAccount": "Bereits ein Konto vorhanden?",
+      "loginHere": "Hier anmelden.",
+      "errors": {
+        "fillAll": "Bitte fülle alle Felder aus.",
+        "invalidEmail": "Bitte gib eine gültige Email-Adresse ein.",
+        "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+        "schoolAddress": "Bitte gib die Adresse deiner Fahrschule an.",
+        "emailExists": "Ein Konto mit dieser Email existiert bereits.",
+        "failed": "Registrierung fehlgeschlagen: {message}"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Driving Management System",
+    "kmLog": {
+      "title": "KM-Log",
+      "startKm": "Start KM",
+      "endKm": "End KM",
+      "startLocation": "Start Ort",
+      "endLocation": "Ziel Ort",
+      "conditions": "Fahrbedingungen (z.B. Regen, Nacht)",
+      "conditionsLabel": "Fahrbedingungen",
+      "save": "Fahrt speichern",
+      "editTitle": "Edit KM-Log",
+      "saveChanges": "Änderungen speichern",
+      "empty": "Keine Einträge",
+      "errors": {
+        "fillAll": "Alle Felder müssen ausgefüllt werden",
+        "endKmGreater": "End KM muss größer als Start KM sein",
+        "networkError": "Netzwerkfehler"
+      }
+    },
+    "tasks": {
+      "title": "Tasks",
+      "placeholder": "Neue Aufgabe...",
+      "empty": "Noch keine Aufgaben"
+    },
+    "calendar": {
+      "title": "Planer",
+      "save": "Speichern",
+      "notePlaceholder": "Notiz eingeben...",
+      "weekdays": ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+      "legend": {
+        "course": "Kurs",
+        "theory": "Theorie",
+        "practice": "Praxis",
+        "grundwissen": "Grundwissen",
+        "theoriePruefung": "Theorie Prüfung",
+        "praxisPruefung": "Praxis Prüfung"
+      }
+    },
+    "events": {
+      "title": "Events",
+      "typePlaceholder": "Typ wählen",
+      "theorie": "Theorie",
+      "praxis": "Praxis",
+      "save": "Termin speichern",
+      "empty": "Noch keine Termine",
+      "errors": {
+        "incomplete": "Felder unvollständig"
+      }
+    },
+    "school": {
+      "title": "Meine Fahrschule",
+      "phone": "Telefon",
+      "email": "E-Mail",
+      "website": "Website",
+      "address": "Adresse"
+    }
+  },
+  "start": {
+    "title": "Dein Start",
+    "subtitle": "Konfiguriere deinen persönlichen Fahrplan zum Erfolg",
+    "licenseClass": "Führerscheinklasse",
+    "startDate": "Geplanter Start",
+    "pace": "Dein Lerntempo *",
+    "paceGoal": "Wähle ein Ziel...",
+    "paceFast": "🏎️ Schnellstmöglich (Intensiv)",
+    "paceNormal": "🚗 Normales Tempo",
+    "paceRelaxed": "🛵 Ganz entspannt",
+    "submit": "Fahrplan erstellen",
+    "errors": {
+      "noCourse": "Für Klasse {cls} sind ab diesem Datum keine Kurse verfügbar.",
+      "invalidDate": "Das Datumsformat ist nicht korrekt. (Datum muss in der Zukunft sein).",
+      "noPace": "Bitte ein Lerntempo wählen."
+    }
+  },
+  "schools": {
+    "badge": "Fahrschul-Verzeichnis",
+    "title": "Fahrschulen in der Nähe",
+    "subtitle": "Vergleiche Fahrschulen und finde die passende für dich.",
+    "stats": {
+      "schools": "Fahrschulen",
+      "schoolsDesc": "{count} Fahrschulen verfügbar",
+      "withWebsite": "Mit Website",
+      "withWebsiteDesc": "{count} mit Website",
+      "locations": "Standorte",
+      "locationsDesc": "{count} Orte verfügbar"
+    },
+    "overview": "Übersicht",
+    "entries": "{count} Einträge",
+    "search": "Suchen...",
+    "tableHeaders": {
+      "nr": "#",
+      "school": "Fahrschule",
+      "location": "Ort",
+      "owner": "Inhaber",
+      "rating": "Bewertung",
+      "website": "Website"
+    },
+    "notes": "Notizen",
+    "notePlaceholder": "Deine Notiz...",
+    "loadError": "Daten konnten nicht geladen werden",
+    "loading": "Fahrschulen werden geladen...",
+    "empty": {
+      "title": "Keine Fahrschulen gefunden",
+      "subtitle": "Versuche eine andere Suchanfrage."
+    }
+  },
+  "manage": {
+    "badge": "Fahrschulportal",
+    "title": "Meine Kurse",
+    "subtitleStudent": "Wähle deine Kurse – tritt einem Kurs bei und starte durch.",
+    "subtitleSchool": "Verwalte deine Fahrschulkurse – erstelle, bearbeite und behalte den Überblick.",
+    "overview": "Kursübersicht",
+    "coursesCount": "0 Kurse angelegt | {n} Kurs angelegt | {n} Kurse angelegt",
+    "allClasses": "Alle Klassen",
+    "class": "Klasse {cls}",
+    "newCourse": "Neuer Kurs",
+    "freeSpots": "{count} freie Plätze",
+    "coursePrice": "Kurspreis",
+    "participants": "Teilnehmer",
+    "schnellkurs": "Schnellkurs",
+    "status": {
+      "full": "Ausgebucht",
+      "almostFull": "Fast voll",
+      "available": "Verfügbar"
+    },
+    "modal": {
+      "editTitle": "Kurs bearbeiten",
+      "createTitle": "Neuen Kurs erstellen",
+      "fillAll": "Füll alle Pflichtfelder aus.",
+      "licenseClass": "Führerscheinklasse *",
+      "coursePeriod": "Kurszeitraum *",
+      "from": "Von",
+      "to": "Bis",
+      "time": "Uhrzeit *",
+      "weekdays": "Wochentage",
+      "courseType": "Kursart",
+      "price": "Preis (€) *",
+      "maxParticipants": "Max. Teilnehmer *",
+      "currentParticipants": "Aktuelle Teilnehmeranzahl",
+      "saveChanges": "Änderungen speichern",
+      "createCourse": "Kurs erstellen",
+      "errors": {
+        "licenseType": "Bitte eine Klasse auswählen.",
+        "weekdays": "Bitte mindestens einen Wochentag auswählen.",
+        "dateFrom": "Bitte ein Startdatum angeben.",
+        "datePast": "Startdatum darf nicht in der Vergangenheit liegen.",
+        "dateTo": "Bitte ein Enddatum angeben.",
+        "dateToAfter": "Enddatum muss nach dem Startdatum liegen.",
+        "timeFrom": "Bitte eine Startzeit angeben.",
+        "timeFromInvalid": "Ungültige Zeit – Format: HH:MM (z. B. 08:30).",
+        "timeTo": "Bitte eine Endzeit angeben.",
+        "timeToInvalid": "Ungültige Zeit – Format: HH:MM (z. B. 16:00).",
+        "timeToAfter": "Endzeit muss nach der Startzeit liegen.",
+        "price": "Preis muss größer als 0 sein.",
+        "maxParticipants": "Mindestens 1 Teilnehmer erforderlich.",
+        "currentParticipantsNeg": "Aktuelle Teilnehmeranzahl darf nicht negativ sein.",
+        "currentParticipantsMax": "Aktuelle Teilnehmeranzahl darf nicht größer als die maximale Teilnehmeranzahl ({max}) sein.",
+        "saveError": "Änderungen konnten nicht gespeichert werden.",
+        "createError": "Kurs konnte nicht erstellt werden."
+      }
+    },
+    "delete": {
+      "title": "Kurs wirklich löschen?",
+      "description": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Teilnehmerdaten gehen verloren."
+    },
+    "join": {
+      "title": "Kurs beitreten?",
+      "description": "Die Kurstage werden in deinem Kalender angezeigt."
+    },
+    "empty": {
+      "title": "Noch keine Kurse",
+      "noClass": "Keine Kurse für Klasse {cls} gefunden.",
+      "noCoursesYet": "Erstelle deinen ersten Kurs und starte durch.",
+      "createFirst": "Ersten Kurs erstellen"
+    }
+  },
+  "about": {
+    "title": "Wer sind wir?",
+    "subtitle": "Wir sind ein Team von leidenschaftlichen Entwicklern, die es sich zum Ziel gesetzt haben, die Fahrschulausbildung zu revolutionieren.",
+    "whatDrivesUs": "Was uns antreibt",
+    "joinUs": "Mach mit!",
+    "joinSubtitle": "Starte jetzt und erlebe wie einfach der Weg zum Führerschein sein kann.",
+    "joinButton": "Jetzt starten",
+    "cards": {
+      "mission": { "title": "Unsere Mission", "description": "Wir wollen es Fahrschülerinnen und Fahrschüler erleichtern ihren Führerschein abzuschließen." },
+      "vision": { "title": "Unsere Vision", "description": "Eine Welt in der jeder einfach und stressfrei seinen Führerschein machen kann." },
+      "team": { "title": "Unser Team", "description": "Wir sind ein junges Team aus leidenschaftlichen Entwicklern die selbst Fahrschüler waren/sind." },
+      "values": { "title": "Unsere Werte", "description": "Einfachheit, Transparenz und Qualität stehen bei uns an erster Stelle." }
+    }
+  },
+  "profile": {
+    "name": "Name",
+    "email": "E-Mail",
+    "namePlaceholder": "Deinen Namen eingeben",
+    "emailPlaceholder": "Deine E-Mail eingeben",
+    "schoolData": "Fahrschuldaten",
+    "address": "Adresse",
+    "owner": "Inhaber",
+    "phone": "Telefon",
+    "website": "Website",
+    "addressPlaceholder": "Straße, PLZ Ort",
+    "ownerPlaceholder": "Vor- und Nachname",
+    "phonePlaceholder": "+43 ...",
+    "websitePlaceholder": "https://...",
+    "saveChanges": "Änderungen speichern",
+    "or": "oder",
+    "changePassword": "Passwort ändern",
+    "deleteAccount": "Account löschen",
+    "photo": {
+      "title": "Foto aktualisieren",
+      "drag": "Bild hierher ziehen",
+      "select": "Datei auswählen",
+      "remove": "Foto entfernen"
+    },
+    "password": {
+      "title": "Passwort ändern",
+      "current": "Aktuelles Passwort",
+      "new": "Neues Passwort",
+      "confirm": "Neues Passwort bestätigen",
+      "update": "Passwort aktualisieren"
+    },
+    "deleteModal": {
+      "title": "Account wirklich löschen?",
+      "description": "Diese Aktion ist unwiderruflich. Dein Account und alle zugehörigen Daten werden dauerhaft gelöscht."
+    },
+    "errors": {
+      "userName": "Bitte Name angeben",
+      "email": "Bitte E-Mail angeben",
+      "imageType": "Nur Bilder erlaubt (JPG, PNG, GIF, WebP)",
+      "imageSize": "Datei zu groß (max. 5MB)",
+      "currentPass": "Aktuelles Passwort fehlt",
+      "newPass": "Neues Passwort fehlt",
+      "passMismatch": "Passwörter nicht identisch",
+      "passWrong": "Passwort passt nicht",
+      "networkSave": "Netzwerkfehler beim Speichern",
+      "networkDelete": "Netzwerkfehler beim Löschen",
+      "uploadFailed": "Upload fehlgeschlagen",
+      "networkUpload": "Netzwerkfehler beim Upload",
+      "deleteFailed": "Löschen fehlgeschlagen"
+    }
+  },
+  "impressum": {
+    "title": "Impressum",
+    "subtitle": "Angaben gemäß § 5 ECG (Österreich)",
+    "company": "Unternehmen",
+    "responsible": "Verantwortliche Personen",
+    "contact": "Kontakt",
+    "legal": "Rechtliche Angaben",
+    "disclaimer": "Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich."
+  },
+  "footer": {
+    "impressum": "Impressum"
+  },
+  "defaultTasks": {
+    "medicalExam": "Ärztliche/Augenuntersuchung",
+    "firstAid": "Erste-Hilfe-Kurs",
+    "theoryExam": "Theorieprüfung anmelden",
+    "practiceHours": "Praxisstunden absolvieren",
+    "practicalExam": "Praxisprüfung anmelden"
+  },
+  "eventTypes": {
+    "Theorie": "Theorie",
+    "Praxis": "Praxis",
+    "Voraussichtliche Grundwissensprüfung": "Voraussichtliche Grundwissensprüfung",
+    "Voraussichtliche Kursspezifische Theorieprüfung": "Voraussichtliche Kursspezifische Theorieprüfung",
+    "Voraussichtliche Praxisprüfung": "Voraussichtliche Praxisprüfung"
+  }
+}

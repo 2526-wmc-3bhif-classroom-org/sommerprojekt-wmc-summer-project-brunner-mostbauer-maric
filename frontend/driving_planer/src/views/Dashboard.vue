@@ -6,14 +6,14 @@
 
         <div class="text-center">
           <HeaderMain
-            title="Dashboard"
+            :title="t('dashboard.title')"
             desktopHeight="md:text-7xl"
             mobileHeight="text-5xl"
             class="pb-0 text-black leading-none"
             :duration="500"
           />
           <p class="text-black font-black text-[10px] md:text-[12px] tracking-[0.3em] uppercase opacity-30 mt-6">
-            Driving Management System
+            {{ t('dashboard.subtitle') }}
           </p>
         </div>
 
@@ -25,30 +25,30 @@
           <div class="bg-white rounded-[3rem] p-8 md:p-10 shadow-[0_30px_60px_rgba(0,0,0,0.02)] flex flex-col h-full border border-zinc-100" v-motion-slide-visible-bottom>
             <div class="flex items-center gap-4" style="margin-bottom: 40px">
               <div class="w-2 h-8 bg-black rounded-full"></div>
-              <h2 class="font-black text-2xl text-black uppercase tracking-tight">KM-Log</h2>
+              <h2 class="font-black text-2xl text-black uppercase tracking-tight">{{ t('dashboard.kmLog.title') }}</h2>
             </div>
 
             <div class="flex flex-col gap-3" style="margin-bottom: 48px">
               <div class="grid grid-cols-2 gap-3">
-                <input v-model="kmStart" type="number" min="0" step="0.1" placeholder="Start KM"
-                       :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', (kmError && (kmStart === null || kmStart < 0)) || (kmError === 'End KM muss größer als Start KM sein') ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
-                <input v-model="kmEnd" type="number" min="0" step="0.1" placeholder="End KM"
-                       :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', (kmError && (kmEnd === null || kmEnd < 0)) || (kmError === 'End KM muss größer als Start KM sein') ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
+                <input v-model="kmStart" type="number" min="0" step="0.1" :placeholder="t('dashboard.kmLog.startKm')"
+                       :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', (kmError && (kmStart === null || kmStart < 0)) || kmErrorCode === 'endKmGreater' ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
+                <input v-model="kmEnd" type="number" min="0" step="0.1" :placeholder="t('dashboard.kmLog.endKm')"
+                       :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', (kmError && (kmEnd === null || kmEnd < 0)) || kmErrorCode === 'endKmGreater' ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
               </div>
               <div class="grid grid-cols-2 gap-3">
-                <input v-model="locStart" type="text" placeholder="Start Ort"
+                <input v-model="locStart" type="text" :placeholder="t('dashboard.kmLog.startLocation')"
                        :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', kmError && !locStart ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
-                <input v-model="locEnd" type="text" placeholder="Ziel Ort"
+                <input v-model="locEnd" type="text" :placeholder="t('dashboard.kmLog.endLocation')"
                        :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', kmError && !locEnd ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
               </div>
 
-              <input v-model="conditions" type="text" placeholder="Fahrbedingungen (z.B. Regen, Nacht)"
+              <input v-model="conditions" type="text" :placeholder="t('dashboard.kmLog.conditions')"
                      :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all w-full border', kmError && !conditions ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
 
               <p v-if="kmError" class="text-[10px] font-bold uppercase text-red-500 tracking-widest ml-2">{{ kmError }}</p>
 
               <button @click="addKmEntry" class="w-full bg-black text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:opacity-80 transition-all active:scale-[0.98]">
-                Fahrt speichern
+                {{ t('dashboard.kmLog.save') }}
               </button>
             </div>
 
@@ -58,7 +58,7 @@
                 <div class="flex items-center justify-between mb-8">
                   <div class="flex items-center gap-4">
                     <div class="w-2 h-8 bg-black rounded-full"></div>
-                    <h2 class="font-black text-2xl text-black uppercase tracking-tight">Edit KM-Log</h2>
+                    <h2 class="font-black text-2xl text-black uppercase tracking-tight">{{ t('dashboard.kmLog.editTitle') }}</h2>
                   </div>
                   <button @click="cancelEdit" class="text-zinc-300 hover:text-black transition-all p-2">
                     <i class="pi pi-times"></i>
@@ -68,40 +68,40 @@
                 <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
                   <div class="grid grid-cols-2 gap-3">
                     <div class="flex flex-col gap-1.5">
-                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">Start KM</label>
+                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">{{ t('dashboard.kmLog.startKm') }}</label>
                       <input v-model="editData.startKm" type="number" step="0.1" class="p-4 rounded-2xl font-bold text-sm outline-none bg-zinc-50 border border-transparent focus:bg-white focus:border-black/5 text-black" />
                     </div>
                     <div class="flex flex-col gap-1.5">
-                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">End KM</label>
+                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">{{ t('dashboard.kmLog.endKm') }}</label>
                       <input v-model="editData.endKm" type="number" step="0.1" class="p-4 rounded-2xl font-bold text-sm outline-none bg-zinc-50 border border-transparent focus:bg-white focus:border-black/5 text-black" />
                     </div>
                   </div>
                   <div class="grid grid-cols-2 gap-3">
                     <div class="flex flex-col gap-1.5">
-                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">Start Ort</label>
+                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">{{ t('dashboard.kmLog.startLocation') }}</label>
                       <input v-model="editData.startLocation" type="text" class="p-4 rounded-2xl font-bold text-sm outline-none bg-zinc-50 border border-transparent focus:bg-white focus:border-black/5 text-black" />
                     </div>
                     <div class="flex flex-col gap-1.5">
-                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">Ziel Ort</label>
+                      <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">{{ t('dashboard.kmLog.endLocation') }}</label>
                       <input v-model="editData.endLocation" type="text" class="p-4 rounded-2xl font-bold text-sm outline-none bg-zinc-50 border border-transparent focus:bg-white focus:border-black/5 text-black" />
                     </div>
                   </div>
                   <div class="flex flex-col gap-1.5">
-                    <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">Fahrbedingungen</label>
+                    <label class="text-[10px] font-black uppercase text-black/30 tracking-widest ml-1">{{ t('dashboard.kmLog.conditionsLabel') }}</label>
                     <input v-model="editData.conditions" type="text" class="p-4 rounded-2xl font-bold text-sm outline-none bg-zinc-50 border border-transparent focus:bg-white focus:border-black/5 text-black" />
                   </div>
 
                   <p v-if="editError" class="text-[10px] font-bold uppercase text-red-500 tracking-widest ml-2 mt-2">{{ editError }}</p>
 
                   <button @click="saveEdit" class="w-full bg-black text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:opacity-80 transition-all active:scale-[0.98] mt-4">
-                    Änderungen speichern
+                    {{ t('dashboard.kmLog.saveChanges') }}
                   </button>
                 </div>
               </div>
             </transition>
 
             <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-[250px]">
-              <div v-if="kmEntries.length === 0" class="h-full flex items-center justify-center opacity-10 italic text-sm">Keine Einträge</div>
+              <div v-if="kmEntries.length === 0" class="h-full flex items-center justify-center opacity-10 italic text-sm">{{ t('dashboard.kmLog.empty') }}</div>
               <div v-else class="space-y-4">
                 <div v-for="(entry, i) in kmEntries" :key="entry.KmLogId || i" class="group flex flex-col p-5 border border-zinc-100 rounded-[2rem] bg-zinc-50/30 transition-all">
                   <div class="flex justify-between items-start">
@@ -130,17 +130,17 @@
           <div class="bg-white rounded-[3rem] p-8 md:p-10 shadow-[0_30px_60px_rgba(0,0,0,0.02)] flex flex-col h-full border border-zinc-100" v-motion-slide-visible-bottom>
             <div class="flex items-center gap-4" style="margin-bottom: 40px">
               <div class="w-2 h-8 bg-black rounded-full"></div>
-              <h2 class="font-black text-2xl text-black uppercase tracking-tight">Tasks</h2>
+              <h2 class="font-black text-2xl text-black uppercase tracking-tight">{{ t('dashboard.tasks.title') }}</h2>
             </div>
             <div class="flex gap-3" style="margin-bottom: 48px">
-              <input v-model="checkInput" @keyup.enter="addCheck" type="text" placeholder="Neue Aufgabe..."
+              <input v-model="checkInput" @keyup.enter="addCheck" type="text" :placeholder="t('dashboard.tasks.placeholder')"
                      :class="['flex-1 p-4 rounded-2xl font-bold text-sm outline-none transition-all border', taskError && !checkInput.trim() ? 'bg-red-50 border-red-200 text-red-900 placeholder:text-red-300' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']" />
               <button @click="addCheck" class="bg-black text-white px-6 rounded-2xl hover:opacity-80 transition-all active:scale-90"><i class="pi pi-plus text-xs"></i></button>
             </div>
             <div class="overflow-y-auto pr-2 custom-scrollbar max-h-[380px]">
               <div v-if="checklist.length === 0" class="flex flex-col items-center justify-center py-16 gap-2 opacity-20">
                 <i class="pi pi-check-square text-3xl"></i>
-                <p class="text-[10px] font-black uppercase tracking-wider">Noch keine Aufgaben</p>
+                <p class="text-[10px] font-black uppercase tracking-wider">{{ t('dashboard.tasks.empty') }}</p>
               </div>
               <div v-else class="flex flex-col gap-3">
                 <div v-for="item in checklist" :key="item.id" class="group flex items-center justify-between p-4 border border-zinc-100 rounded-[1.5rem] bg-zinc-50/30 transition-all">
@@ -150,7 +150,7 @@
                       <i class="pi pi-check absolute text-[10px] text-white opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
                     </div>
                     <input v-if="editingId === item.id" v-model="editText" @keyup.enter="saveEditTask(item)" @blur="saveEditTask(item)" type="text" class="flex-1 bg-transparent outline-none font-bold text-base text-black min-w-0" />
-                    <span v-else :class="item.done ? 'line-through opacity-20 italic' : 'font-bold'" class="text-base text-black transition-all truncate">{{ item.text }}</span>
+                    <span v-else :class="item.done ? 'line-through opacity-20 italic' : 'font-bold'" class="text-base text-black transition-all truncate">{{ item.isDefault && defaultTaskKeys[item.text] ? t(defaultTaskKeys[item.text]) : item.text }}</span>
                   </label>
                   <div class="flex gap-1 flex-shrink-0">
                     <button @click="!item.isDefault && startEditTask(item)"
@@ -173,7 +173,7 @@
               <div class="flex items-center gap-4">
                 <div class="w-2 h-8 bg-black rounded-full"></div>
                 <div>
-                  <h2 class="font-black text-2xl text-black uppercase tracking-tight">Planer</h2>
+                  <h2 class="font-black text-2xl text-black uppercase tracking-tight">{{ t('dashboard.calendar.title') }}</h2>
                   <p class="text-xs font-bold text-black/40 uppercase tracking-widest" style="margin-top: 4px">{{ calendarMonthLabel }}</p>
                 </div>
               </div>
@@ -189,7 +189,7 @@
               </div>
             </div>
             <div class="grid grid-cols-7 gap-2 mb-4 flex-1">
-              <div v-for="(dayName, i) in ['Mo','Di','Mi','Do','Fr','Sa','So']" :key="i" class="text-center text-xs font-black text-black/50">{{ dayName }}</div>
+              <div v-for="(dayName, i) in calendarWeekdays" :key="i" class="text-center text-xs font-black text-black/50">{{ dayName }}</div>
               <div v-for="(day, i) in calendarDays" :key="i" class="flex flex-col items-center justify-start" style="padding-top: 4px; min-height: 3.5rem">
                 <div class="relative">
                   <button v-if="day" @click="openCalendarEntry(day)"
@@ -225,16 +225,14 @@
                   <button @click="calendarModalOpen = false" class="text-black/20 hover:text-black p-2"><i class="pi pi-times"></i></button>
                 </div>
 
-                <!-- Margin zw. Header und Textfield -->
-                <textarea v-model="calendarEntryText" class="flex-1 bg-zinc-50 rounded-2xl p-5 text-black font-bold outline-none resize-none border border-transparent focus:border-black/5" style="margin-bottom: 24px" placeholder="Notiz eingeben..." />
+                <textarea v-model="calendarEntryText" class="flex-1 bg-zinc-50 rounded-2xl p-5 text-black font-bold outline-none resize-none border border-transparent focus:border-black/5" style="margin-bottom: 24px" :placeholder="t('dashboard.calendar.notePlaceholder')" />
 
-                <!-- Action Buttons -->
                 <div class="flex gap-3">
                   <button v-if="hasEntry(calendarSelectedDay)" @click="deleteCalendarEntry" class="bg-red-50 text-red-500 px-6 rounded-2xl hover:bg-red-100 transition-all">
                     <i class="pi pi-trash"></i>
                   </button>
                   <button @click="saveCalendarEntry" class="flex-1 bg-black text-white p-5 rounded-2xl font-black uppercase text-xs tracking-widest active:scale-95">
-                    Speichern
+                    {{ t('dashboard.calendar.save') }}
                   </button>
                 </div>
               </div>
@@ -245,16 +243,16 @@
           <div class="bg-white rounded-[3rem] p-8 md:p-10 shadow-[0_30px_60px_rgba(0,0,0,0.02)] flex flex-col h-full border border-zinc-100" v-motion-slide-visible-bottom>
             <div class="flex items-center gap-4" style="margin-bottom: 40px">
               <div class="w-2 h-8 bg-black rounded-full"></div>
-              <h2 class="font-black text-2xl text-black uppercase tracking-tight">Events</h2>
+              <h2 class="font-black text-2xl text-black uppercase tracking-tight">{{ t('dashboard.events.title') }}</h2>
             </div>
             <div class="flex flex-col gap-3" style="margin-bottom: 48px">
               <div class="grid grid-cols-2 gap-3">
                 <select v-model="typeInput"
                         :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all border appearance-none cursor-pointer',
                   eventError && !typeInput ? 'bg-red-50 border-red-200 text-red-900' : 'bg-zinc-50 border-transparent focus:bg-white focus:border-black/5 text-black']">
-                  <option value="" disabled selected>Typ wählen</option>
-                  <option value="Theorie">Theorie</option>
-                  <option value="Praxis">Praxis</option>
+                  <option value="" disabled selected>{{ t('dashboard.events.typePlaceholder') }}</option>
+                  <option value="Theorie">{{ t('dashboard.events.theorie') }}</option>
+                  <option value="Praxis">{{ t('dashboard.events.praxis') }}</option>
                 </select>
                 <input v-model="dateInput" type="date"
                        :class="['p-4 rounded-2xl font-bold text-sm outline-none transition-all border',
@@ -263,27 +261,27 @@
 
               <p v-if="eventError" class="text-[10px] font-bold uppercase text-red-500 tracking-widest ml-2">{{ eventError }}</p>
 
-              <button @click="addDate" class="w-full bg-black text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-[0.98]">Termin speichern</button>
+              <button @click="addDate" class="w-full bg-black text-white p-5 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-[0.98]">{{ t('dashboard.events.save') }}</button>
             </div>
             <div class="overflow-y-auto pr-2 custom-scrollbar max-h-[380px]">
               <div v-if="dates.length === 0 && examDates.length === 0" class="flex flex-col items-center justify-center py-16 gap-2 opacity-20">
                 <i class="pi pi-calendar text-3xl"></i>
-                <p class="text-[10px] font-black uppercase tracking-wider">Noch keine Termine</p>
+                <p class="text-[10px] font-black uppercase tracking-wider">{{ t('dashboard.events.empty') }}</p>
               </div>
               <div v-else class="flex flex-col gap-4">
                 <div v-for="(date, i) in examDates" :key="`exam-${i}`" class="flex justify-between items-center p-5 border border-zinc-100 rounded-[2rem] bg-zinc-50/30">
                   <div class="flex flex-col gap-1">
                     <div class="flex items-center gap-2">
-                      <span class="text-[13px] text-black uppercase tracking-widest opacity-40">{{ date.type }}</span>
-                      <span class="text-[9px] font-black uppercase tracking-widest bg-zinc-100 text-zinc-400 px-2 py-0.5 rounded-full">Auto</span>
+                      <span class="text-[13px] text-black uppercase tracking-widest opacity-40">{{ t('eventTypes.' + date.type, date.type) }}</span>
+                      <span class="text-[9px] font-black uppercase tracking-widest bg-zinc-100 text-zinc-400 px-2 py-0.5 rounded-full">{{ t('common.auto') }}</span>
                     </div>
-                    <span class="font-bold text-lg text-black">{{ new Date(date.date).toLocaleDateString('de-DE') }}</span>
+                    <span class="font-bold text-lg text-black">{{ new Date(date.date).toLocaleDateString(dateLocale) }}</span>
                   </div>
                 </div>
                 <div v-for="(date, i) in dates" :key="i" class="group flex justify-between items-center p-5 border border-zinc-100 rounded-[2rem] bg-zinc-50/30">
                   <div class="flex flex-col gap-1">
-                    <span class="text-[15px] text-black uppercase tracking-widest opacity-40">{{ date.type }}</span>
-                    <span class="font-bold text-lg text-black">{{ new Date(date.date).toLocaleDateString('de-DE') }}</span>
+                    <span class="text-[15px] text-black uppercase tracking-widest opacity-40">{{ t('eventTypes.' + date.type, date.type) }}</span>
+                    <span class="font-bold text-lg text-black">{{ new Date(date.date).toLocaleDateString(dateLocale) }}</span>
                   </div>
                   <button @click="removeDate(i)" class="opacity-0 group-hover:opacity-100 text-zinc-200 hover:text-red-500 transition-all p-2">
                     <i class="pi pi-trash text-xs"></i>
@@ -300,7 +298,7 @@
           <div class="flex items-center gap-4" style="margin-bottom: 28px">
             <div class="w-2 h-8 bg-black rounded-full"></div>
             <div>
-              <h2 class="font-black text-2xl text-black uppercase tracking-tight">Meine Fahrschule</h2>
+              <h2 class="font-black text-2xl text-black uppercase tracking-tight">{{ t('dashboard.school.title') }}</h2>
               <p class="text-xs font-bold text-black/30 uppercase tracking-widest" style="margin-top: 4px">{{ joinedSchool.Name }}</p>
             </div>
           </div>
@@ -310,7 +308,7 @@
                 <i class="pi pi-phone text-sm"></i>
               </div>
               <div class="min-w-0">
-                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">Telefon</p>
+                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">{{ t('dashboard.school.phone') }}</p>
                 <p class="font-bold text-sm text-black truncate">{{ joinedSchool.Phone }}</p>
               </div>
             </a>
@@ -319,7 +317,7 @@
                 <i class="pi pi-envelope text-sm"></i>
               </div>
               <div class="min-w-0">
-                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">E-Mail</p>
+                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">{{ t('dashboard.school.email') }}</p>
                 <p class="font-bold text-sm text-black truncate">{{ joinedSchool.Email }}</p>
               </div>
             </a>
@@ -328,7 +326,7 @@
                 <i class="pi pi-globe text-sm"></i>
               </div>
               <div class="min-w-0">
-                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">Website</p>
+                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">{{ t('dashboard.school.website') }}</p>
                 <p class="font-bold text-sm text-black truncate">{{ joinedSchool.Website }}</p>
               </div>
             </a>
@@ -337,7 +335,7 @@
                 <i class="pi pi-map-marker text-sm"></i>
               </div>
               <div class="min-w-0">
-                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">Adresse</p>
+                <p class="text-[9px] font-black uppercase tracking-widest text-black/30" style="margin-bottom: 2px">{{ t('dashboard.school.address') }}</p>
                 <p class="font-bold text-sm text-black truncate">{{ joinedSchool.Location }}</p>
               </div>
             </div>
@@ -352,13 +350,18 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Background from '@/components/Background.vue'
 import HeaderMain from '@/components/HeaderMain.vue'
 import FooterCmp from '@/components/FooterCmp.vue'
 import { useAuthStore } from '@/stores/authStore'
 
+const { t, locale, tm } = useI18n()
 const authStore = useAuthStore()
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+
+const dateLocale = computed(() => locale.value === 'de' ? 'de-DE' : 'en-US')
+const calendarWeekdays = computed(() => tm('dashboard.calendar.weekdays') as string[])
 
 const syncCalendar = () => {}
 const syncEvents = () => {
@@ -414,12 +417,12 @@ const eventColorMap: Record<string, string> = {
 
 const calendarLegend = computed(() => {
   const items: { label: string; color: string }[] = []
-  if (joinedCourse.value) items.push({ label: 'Kurs', color: 'bg-indigo-400' })
-  if (dates.value.some(e => e.type === 'Theorie')) items.push({ label: 'Theorie', color: 'bg-amber-400' })
-  if (dates.value.some(e => e.type === 'Praxis')) items.push({ label: 'Praxis', color: 'bg-emerald-400' })
-  if (examDates.value.some(e => e.type === 'Voraussichtliche Grundwissensprüfung')) items.push({ label: 'Grundwissen',    color: 'bg-sky-400'    })
-  if (examDates.value.some(e => e.type === 'Voraussichtliche Kursspezifische Theorieprüfung'))      items.push({ label: 'Theorie Prüfung', color: 'bg-rose-400'   })
-  if (examDates.value.some(e => e.type === 'Voraussichtliche Praxisprüfung'))       items.push({ label: 'Praxis Prüfung',  color: 'bg-violet-400' })
+  if (joinedCourse.value) items.push({ label: t('dashboard.calendar.legend.course'), color: 'bg-indigo-400' })
+  if (dates.value.some(e => e.type === 'Theorie')) items.push({ label: t('dashboard.calendar.legend.theory'), color: 'bg-amber-400' })
+  if (dates.value.some(e => e.type === 'Praxis')) items.push({ label: t('dashboard.calendar.legend.practice'), color: 'bg-emerald-400' })
+  if (examDates.value.some(e => e.type === 'Voraussichtliche Grundwissensprüfung')) items.push({ label: t('dashboard.calendar.legend.grundwissen'), color: 'bg-sky-400' })
+  if (examDates.value.some(e => e.type === 'Voraussichtliche Kursspezifische Theorieprüfung')) items.push({ label: t('dashboard.calendar.legend.theoriePruefung'), color: 'bg-rose-400' })
+  if (examDates.value.some(e => e.type === 'Voraussichtliche Praxisprüfung')) items.push({ label: t('dashboard.calendar.legend.praxisPruefung'), color: 'bg-violet-400' })
   return items
 })
 
@@ -439,8 +442,9 @@ const locEnd = ref('')
 const conditions = ref('')
 const kmEntries = ref<any[]>([])
 const kmError = ref('')
+const kmErrorCode = ref('')
 
-watch([kmStart, kmEnd, locStart, locEnd, conditions], () => { kmError.value = '' })
+watch([kmStart, kmEnd, locStart, locEnd, conditions], () => { kmError.value = ''; kmErrorCode.value = '' })
 
 const fetchKmLogs = async () => {
   try {
@@ -457,12 +461,14 @@ const fetchKmLogs = async () => {
 
 const addKmEntry = async () => {
   if (kmStart.value === null || kmEnd.value === null || !locStart.value || !locEnd.value || !conditions.value.trim()) {
-    kmError.value = "Alle Felder müssen ausgefüllt werden"
+    kmErrorCode.value = 'fillAll'
+    kmError.value = t('dashboard.kmLog.errors.fillAll')
     return
   }
 
   if (kmEnd.value < kmStart.value) {
-    kmError.value = "End KM muss größer als Start KM sein"
+    kmErrorCode.value = 'endKmGreater'
+    kmError.value = t('dashboard.kmLog.errors.endKmGreater')
     return
   }
 
@@ -491,10 +497,12 @@ const addKmEntry = async () => {
       conditions.value = ''
     } else {
       const error = await res.json()
-      kmError.value = error.error?.message || "Fehler beim Speichern"
+      kmErrorCode.value = 'networkError'
+      kmError.value = error.error?.message || t('dashboard.kmLog.errors.networkError')
     }
   } catch (err) {
-    kmError.value = "Netzwerkfehler"
+    kmErrorCode.value = 'networkError'
+    kmError.value = t('dashboard.kmLog.errors.networkError')
   }
 }
 
@@ -541,11 +549,11 @@ const cancelEdit = () => {
 
 const saveEdit = async () => {
   if (!editData.value.startLocation || !editData.value.endLocation || !editData.value.conditions.trim()) {
-    editError.value = "Alle Felder müssen ausgefüllt werden"
+    editError.value = t('dashboard.kmLog.errors.fillAll')
     return
   }
   if (editData.value.endKm < editData.value.startKm) {
-    editError.value = "End KM muss größer als Start KM sein"
+    editError.value = t('dashboard.kmLog.errors.endKmGreater')
     return
   }
 
@@ -564,14 +572,22 @@ const saveEdit = async () => {
       editKmLogId.value = null
     } else {
       const error = await res.json()
-      editError.value = error.error?.message || "Fehler beim Speichern"
+      editError.value = error.error?.message || t('dashboard.kmLog.errors.networkError')
     }
   } catch (err) {
-    editError.value = "Netzwerkfehler"
+    editError.value = t('dashboard.kmLog.errors.networkError')
   }
 }
 
 // TASKS LOGIC
+const defaultTaskKeys: Record<string, string> = {
+  'Ärztliche/Augenuntersuchung': 'defaultTasks.medicalExam',
+  'Erste-Hilfe-Kurs': 'defaultTasks.firstAid',
+  'Theorieprüfung anmelden': 'defaultTasks.theoryExam',
+  'Praxisstunden absolvieren': 'defaultTasks.practiceHours',
+  'Praxisprüfung anmelden': 'defaultTasks.practicalExam',
+}
+
 const DEFAULT_TASKS = [
   'Ärztliche/Augenuntersuchung',
   'Erste-Hilfe-Kurs',
@@ -661,8 +677,17 @@ const calendarEntries = ref<Record<string, string>>({})
 const calendarModalOpen = ref(false)
 const calendarSelectedDay = ref<number | null>(null)
 const calendarEntryText = ref('')
-const calendarMonthLabel = computed(() => new Date(calendarYear.value, calendarMonth.value).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }))
-const calendarSelectedLabel = computed(() => calendarSelectedDay.value ? `${calendarSelectedDay.value}. ${calendarMonthLabel.value}` : '')
+const calendarMonthLabel = computed(() =>
+  new Date(calendarYear.value, calendarMonth.value).toLocaleDateString(
+    locale.value === 'de' ? 'de-DE' : 'en-US',
+    { month: 'long', year: 'numeric' }
+  )
+)
+const calendarSelectedLabel = computed(() => {
+  if (!calendarSelectedDay.value) return ''
+  return new Date(calendarYear.value, calendarMonth.value, calendarSelectedDay.value)
+    .toLocaleDateString(locale.value === 'de' ? 'de-DE' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+})
 const calendarDays = computed(() => {
   const firstDow = (new Date(calendarYear.value, calendarMonth.value, 1).getDay() + 6) % 7
   const daysInMonth = new Date(calendarYear.value, calendarMonth.value + 1, 0).getDate()
@@ -706,18 +731,14 @@ function recalculateExamDates(userId: string, course: any) {
   const courseEnd = courseEndStr ? new Date(courseEndStr) : null
   const base = courseEnd && courseEnd > startDate ? courseEnd : startDate
 
-  // Grundwissen: 30 days after course end
   const grundwissenDate = toNextWeekday(new Date(base.getTime() + 30 * 86400000))
-
-  // License-specific theory: pace.theorie days after course end
   const theorieDate = toNextWeekday(new Date(base.getTime() + pace.theorie * 86400000))
-
   const praxisDate = toNextWeekday(new Date(base.getTime() + pace.praxis * 86400000))
 
   const newExamDates = [
     { type: 'Voraussichtliche Grundwissensprüfung', date: grundwissenDate.toISOString().split('T')[0], auto: true },
-    { type: 'Voraussichtliche Kursspezifische Theorieprüfung',      date: theorieDate.toISOString().split('T')[0],      auto: true },
-    { type: 'Voraussichtliche Praxisprüfung',        date: praxisDate.toISOString().split('T')[0],        auto: true },
+    { type: 'Voraussichtliche Kursspezifische Theorieprüfung', date: theorieDate.toISOString().split('T')[0], auto: true },
+    { type: 'Voraussichtliche Praxisprüfung', date: praxisDate.toISOString().split('T')[0], auto: true },
   ]
   localStorage.setItem(`examDates_${userId}`, JSON.stringify(newExamDates))
   examDates.value = newExamDates
@@ -781,7 +802,7 @@ onMounted(async () => {
 })
 watch([typeInput, dateInput], () => { eventError.value = '' })
 const addDate = () => {
-  if (!typeInput.value || !dateInput.value) { eventError.value = "Felder unvollständig"; return }
+  if (!typeInput.value || !dateInput.value) { eventError.value = t('dashboard.events.errors.incomplete'); return }
   dates.value.push({ type: typeInput.value, date: dateInput.value })
   typeInput.value = ''; dateInput.value = ''; syncEvents()
 }

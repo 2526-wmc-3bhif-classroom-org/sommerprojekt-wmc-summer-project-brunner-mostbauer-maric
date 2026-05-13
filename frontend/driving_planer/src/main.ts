@@ -4,6 +4,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import {MotionPlugin} from '@vueuse/motion'
 import {Ripple} from "primevue";
+import { i18n } from './i18n'
 
 import Tooltip from 'primevue/tooltip'
 import PrimeVue from 'primevue/config'
@@ -20,6 +21,7 @@ app.directive('tooltip', Tooltip)
 app.directive('ripple', Ripple)
 app.use(MotionPlugin)
 app.use(createPinia())
+app.use(i18n)
 app.use(PrimeVue, {
   theme: {
     preset: Aura,
