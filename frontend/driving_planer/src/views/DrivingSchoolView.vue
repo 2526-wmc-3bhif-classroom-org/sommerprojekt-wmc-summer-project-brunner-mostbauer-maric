@@ -133,20 +133,6 @@
                     </div>
                   </div>
 
-                  <div v-if="school.isExpanded" class="mt-4 pt-4 border-t border-slate-50">
-                    <div class="bg-slate-50 rounded-xl p-3 border border-blue-50" @click.stop>
-                      <div class="flex items-center gap-2 mb-2">
-                        <i class="pi pi-pencil text-blue-400 text-[10px]"></i>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">{{ t('schools.notes') }}</span>
-                      </div>
-                      <textarea
-                        v-model="school.comment"
-                        :placeholder="t('schools.notePlaceholder')"
-                        class="w-full p-2 bg-white border border-slate-100 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-100 resize-none"
-                        rows="2"
-                      ></textarea>
-                    </div>
-                  </div>
                 </div>
               </div>
 

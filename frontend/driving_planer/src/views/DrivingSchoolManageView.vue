@@ -322,7 +322,7 @@
       <div v-if="joinTargetId !== null" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="joinTargetId = null"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 z-10 text-center">
-          <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div class="w-14 h-14 bg-emerald-50 rounded-2xl inline-flex items-center justify-center mb-4">
             <i class="pi pi-user-plus text-emerald-400 text-2xl"></i>
           </div>
           <h3 class="text-lg font-black text-slate-900 mb-2">{{ t('manage.join.title') }}</h3>

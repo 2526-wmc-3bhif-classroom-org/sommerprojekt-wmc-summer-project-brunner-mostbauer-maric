@@ -6,7 +6,6 @@
       :initial="{ opacity: 0, y: -20 }"
       :visible-once="{ opacity: 1, y: 0, transition: { duration: 500 } }"
       class="hover:bg-white hover:shadow-xl hover:shadow-blue-900/5 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer group relative z-0 hover:z-10"
-      @click="isExpanded = !isExpanded"
     >
       <td class="px-6 py-4 text-sm font-medium text-slate-400 group-hover:text-blue-400 transition-colors">
         {{ index + 1 }}
@@ -57,36 +56,10 @@
           >
             <i class="pi pi-external-link text-xs"></i>
           </a>
-          <i
-            class="pi pi-chevron-down text-[10px] text-slate-300 transition-transform duration-300"
-            :class="isExpanded ? 'rotate-180' : ''"
-          ></i>
         </div>
       </td>
     </tr>
 
-    <!-- Expand row -->
-    <tr v-if="isExpanded" class="bg-slate-50/50">
-      <td colspan="6" class="px-6 py-0">
-        <div class="py-4 px-10">
-          <div class="bg-white border border-blue-100 rounded-2xl p-4 shadow-sm hover:border-blue-200 hover:shadow-md transition-all duration-300 group/note">
-            <div class="flex items-center gap-2 mb-2">
-              <i class="pi pi-pencil text-blue-400 text-xs group-hover/note:rotate-12 transition-transform"></i>
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter group-hover/note:text-blue-400 transition-colors">
-                Deine Notizen
-              </span>
-            </div>
-            <textarea
-              v-model="comment"
-              @click.stop
-              placeholder="Schreibe hier etwas rein..."
-              class="w-full p-3 bg-slate-50 border-none rounded-xl text-sm text-slate-700 placeholder-slate-300 focus:ring-2 focus:ring-blue-100 resize-none"
-              rows="2"
-            ></textarea>
-          </div>
-        </div>
-      </td>
-    </tr>
 
 </template>
 
@@ -99,7 +72,5 @@ defineProps<{
   index: number
 }>()
 
-const isExpanded = ref(false)
 const rating = ref(0)
-const comment = ref('')
 </script>
