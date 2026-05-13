@@ -1,6 +1,4 @@
 <template>
-
-    <!-- Main row -->
     <tr
       v-motion
       :initial="{ opacity: 0, y: -20 }"
@@ -32,16 +30,21 @@
       </td>
 
       <td class="px-6 py-4">
-        <div class="flex justify-center gap-1">
-          <i
-            v-for="star in 5"
-            :key="star"
-            @click.stop="rating = star"
-            class="pi cursor-pointer text-sm"
-            :class="[
-              star <= rating ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200'
-            ]"
-          ></i>
+        <div class="flex flex-col items-center gap-1">
+          <div class="flex gap-1">
+            <i
+              v-for="star in 5"
+              :key="star"
+              @mouseenter="hoveredStar = star"
+              @mouseleave="hoveredStar = 0"
+              @click.stop="setRating(star)"
+              class="pi cursor-pointer text-sm transition-colors"
+              :class="[
+                star <= (hoveredStar || Math.round(averageRating)) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200'
+              ]"
+            ></i>
+          </div>
+          <span v-if="averageRating > 0" class="text-[10px] text-slate-400">{{ averageRating.toFixed(1) }} / 5</span>
         </div>
       </td>
 
@@ -59,18 +62,50 @@
         </div>
       </td>
     </tr>
-
-
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import type {DrivingSchool} from "@/types.ts";
+import { ref, computed, onMounted } from 'vue'
+import type { DrivingSchool } from "@/types.ts"
 
-defineProps<{
+const props = defineProps<{
   school: DrivingSchool
   index: number
 }>()
 
-const rating = ref(0)
+const STORAGE_KEY = 'schoolRatings'
+const hoveredStar = ref(0)
+const allRatings = ref<Record<number, Record<number, number>>>({})
+
+function getCurrentUserId(): number | null {
+  const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || 'null')
+  return user?.UserId ?? null
+}
+
+const userRating = computed(() => {
+  const userId = getCurrentUserId()
+  if (!userId) return 0
+  return allRatings.value[props.school.DrivingSchoolId]?.[userId] ?? 0
+})
+
+const averageRating = computed(() => {
+  const schoolRatings = allRatings.value[props.school.DrivingSchoolId] || {}
+  const values = Object.values(schoolRatings) as number[]
+  if (values.length === 0) return 0
+  return values.reduce((a, b) => a + b, 0) / values.length
+})
+
+onMounted(() => {
+  allRatings.value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
+})
+
+function setRating(stars: number) {
+  const userId = getCurrentUserId()
+  if (!userId) return
+  const updated = { ...allRatings.value }
+  if (!updated[props.school.DrivingSchoolId]) updated[props.school.DrivingSchoolId] = {}
+  updated[props.school.DrivingSchoolId] = { ...updated[props.school.DrivingSchoolId], [userId]: stars }
+  allRatings.value = updated
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(allRatings.value))
+}
 </script>

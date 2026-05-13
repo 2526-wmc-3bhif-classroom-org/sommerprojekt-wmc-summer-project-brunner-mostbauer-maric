@@ -122,14 +122,17 @@
 
                   <div class="flex items-center justify-between mt-4">
                     <span class="text-xs text-slate-400 italic">{{ school.Owner }}</span>
-                    <div class="flex gap-1">
-                      <i
-                        v-for="star in 5"
-                        :key="star"
-                        @click.stop="school.rating = star"
-                        class="pi text-sm"
-                        :class="[star <= (school.rating || 0) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200']"
-                      ></i>
+                    <div class="flex flex-col items-end gap-0.5">
+                      <div class="flex gap-1">
+                        <i
+                          v-for="star in 5"
+                          :key="star"
+                          @click.stop="setMobileRating(school, star)"
+                          class="pi text-sm cursor-pointer"
+                          :class="[star <= Math.round(getMobileAvg(school)) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200']"
+                        ></i>
+                      </div>
+                      <span v-if="getMobileAvg(school) > 0" class="text-[10px] text-slate-400">{{ getMobileAvg(school).toFixed(1) }} / 5</span>
                     </div>
                   </div>
 
@@ -163,9 +166,38 @@ const { t } = useI18n()
 const schoolStore = useSchoolStore();
 
 interface WebsiteDrivingSchool extends DrivingSchool {
-  rating?: number
-  comment?: string
   isExpanded?: boolean
+}
+
+const RATING_KEY = 'schoolRatings'
+const ratingsCache = ref<Record<number, Record<number, number>>>({})
+
+function getCurrentUserId(): number | null {
+  const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || 'null')
+  return user?.UserId ?? null
+}
+
+function getMobileRating(school: WebsiteDrivingSchool): number {
+  const userId = getCurrentUserId()
+  if (!userId) return 0
+  return ratingsCache.value[school.DrivingSchoolId]?.[userId] ?? 0
+}
+
+function getMobileAvg(school: WebsiteDrivingSchool): number {
+  const schoolRatings = ratingsCache.value[school.DrivingSchoolId] || {}
+  const values = Object.values(schoolRatings) as number[]
+  if (values.length === 0) return 0
+  return values.reduce((a, b) => a + b, 0) / values.length
+}
+
+function setMobileRating(school: WebsiteDrivingSchool, stars: number) {
+  const userId = getCurrentUserId()
+  if (!userId) return
+  const updated = { ...ratingsCache.value }
+  if (!updated[school.DrivingSchoolId]) updated[school.DrivingSchoolId] = {}
+  updated[school.DrivingSchoolId] = { ...updated[school.DrivingSchoolId], [userId]: stars }
+  ratingsCache.value = updated
+  localStorage.setItem(RATING_KEY, JSON.stringify(ratingsCache.value))
 }
 
 const schools = ref<WebsiteDrivingSchool[]>([]);
@@ -192,6 +224,7 @@ const uniqueOrte = computed(() =>
 )
 
 onMounted(async () => {
+  ratingsCache.value = JSON.parse(localStorage.getItem(RATING_KEY) || '{}')
   isLoading.value = true
   await schoolStore.fetchSchools()
   syncSchools()
