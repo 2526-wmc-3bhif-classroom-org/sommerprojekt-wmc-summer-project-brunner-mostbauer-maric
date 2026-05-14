@@ -203,7 +203,7 @@ const links = computed(() => {
     { to: '/',          title: t('nav.home'),       icon: 'pi-home',        show: true },
     { to: '/about',     title: t('nav.about'),      icon: 'pi-info-circle', show: true },
     { to: '/contact',   title: t('nav.contact'),    icon: 'pi-envelope',    show: true },
-    { to: '/schools',   title: t('nav.schools'),    icon: 'pi-book',        show: true },
+    { to: '/schools',   title: t('nav.schools'),    icon: 'pi-book',        show: authStore.isAdmin || authStore.isSchool || authStore.isStudent },
     { to: '/dashboard', title: t('nav.dashboard'),  icon: 'pi-chart-bar',   show: authStore.isAdmin || authStore.isStudent },
     { to: '/manage',    title: t('nav.manage'),     icon: 'pi-building',    show: authStore.isAdmin || authStore.isSchool },
   ]
