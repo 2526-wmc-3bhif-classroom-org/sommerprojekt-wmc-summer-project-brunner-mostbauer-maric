@@ -132,7 +132,9 @@
                           :class="[star <= Math.round(getMobileAvg(school)) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200']"
                         ></i>
                       </div>
-                      <span v-if="getMobileAvg(school) > 0" class="text-[10px] text-slate-400">{{ getMobileAvg(school).toFixed(1) }} / 5</span>
+                      <span class="text-[10px] text-slate-400">
+                        {{ getMobileAvg(school) > 0 ? getMobileAvg(school).toFixed(1) + ' / 5' : t('schools.noRating') }}
+                      </span>
                     </div>
                   </div>
 
@@ -160,44 +162,31 @@ import FooterCmp from '@/components/FooterCmp.vue';
 import HeaderMain from '@/components/HeaderMain.vue';
 import InfoStatsCard from "@/components/InfoStatsCard.vue";
 import {useSchoolStore} from "@/stores/schoolStore.ts";
+import {useAuthStore} from "@/stores/authStore.ts";
 import type {DrivingSchool} from "@/types.ts";
 
 const { t } = useI18n()
 const schoolStore = useSchoolStore();
+const authStore = useAuthStore();
 
 interface WebsiteDrivingSchool extends DrivingSchool {
   isExpanded?: boolean
 }
 
-const RATING_KEY = 'schoolRatings'
-const ratingsCache = ref<Record<number, Record<number, number>>>({})
-
-function getCurrentUserId(): number | null {
-  const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || 'null')
-  return user?.UserId ?? null
-}
-
-function getMobileRating(school: WebsiteDrivingSchool): number {
-  const userId = getCurrentUserId()
-  if (!userId) return 0
-  return ratingsCache.value[school.DrivingSchoolId]?.[userId] ?? 0
-}
-
 function getMobileAvg(school: WebsiteDrivingSchool): number {
-  const schoolRatings = ratingsCache.value[school.DrivingSchoolId] || {}
-  const values = Object.values(schoolRatings) as number[]
-  if (values.length === 0) return 0
-  return values.reduce((a, b) => a + b, 0) / values.length
+  const schoolRatings = schoolStore.ratings.filter(r => r.DrivingSchoolId === school.DrivingSchoolId)
+  if (schoolRatings.length === 0) return 0
+  return schoolRatings.reduce((a, b) => a + b.Stars, 0) / schoolRatings.length
 }
 
-function setMobileRating(school: WebsiteDrivingSchool, stars: number) {
-  const userId = getCurrentUserId()
+async function setMobileRating(school: WebsiteDrivingSchool, stars: number) {
+  const userId = authStore.user?.UserId
   if (!userId) return
-  const updated = { ...ratingsCache.value }
-  if (!updated[school.DrivingSchoolId]) updated[school.DrivingSchoolId] = {}
-  updated[school.DrivingSchoolId] = { ...updated[school.DrivingSchoolId], [userId]: stars }
-  ratingsCache.value = updated
-  localStorage.setItem(RATING_KEY, JSON.stringify(ratingsCache.value))
+  
+  const currentRating = schoolStore.ratings.find(r => r.DrivingSchoolId === school.DrivingSchoolId && r.UserId === userId)?.Stars ?? 0
+  const newRating = currentRating === stars ? 0 : stars
+
+  await schoolStore.setRating(school.DrivingSchoolId, newRating)
 }
 
 const schools = ref<WebsiteDrivingSchool[]>([]);
@@ -224,9 +213,11 @@ const uniqueOrte = computed(() =>
 )
 
 onMounted(async () => {
-  ratingsCache.value = JSON.parse(localStorage.getItem(RATING_KEY) || '{}')
   isLoading.value = true
-  await schoolStore.fetchSchools()
+  await Promise.all([
+    schoolStore.fetchSchools(),
+    schoolStore.fetchRatings()
+  ])
   syncSchools()
   isLoading.value = false
   if (schoolStore.error) {

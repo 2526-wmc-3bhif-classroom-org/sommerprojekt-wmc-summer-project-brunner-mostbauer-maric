@@ -198,6 +198,7 @@
       "rating": "Bewertung",
       "website": "Website"
     },
+    "noRating": "noch nicht bewertet",
     "notes": "Notizen",
     "notePlaceholder": "Deine Notiz...",
     "loadError": "Daten konnten nicht geladen werden",

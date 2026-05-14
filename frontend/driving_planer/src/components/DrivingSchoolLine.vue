@@ -44,7 +44,9 @@
               ]"
             ></i>
           </div>
-          <span v-if="averageRating > 0" class="text-[10px] text-slate-400">{{ averageRating.toFixed(1) }} / 5</span>
+          <span class="text-[10px] text-slate-400">
+            {{ averageRating > 0 ? averageRating.toFixed(1) + ' / 5' : t('schools.noRating') }}
+          </span>
         </div>
       </td>
 
@@ -65,47 +67,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { DrivingSchool } from "@/types.ts"
+import { useSchoolStore } from "@/stores/schoolStore.ts"
+import { useAuthStore } from "@/stores/authStore.ts"
+
+const { t } = useI18n()
+const schoolStore = useSchoolStore()
+const authStore = useAuthStore()
 
 const props = defineProps<{
   school: DrivingSchool
   index: number
 }>()
 
-const STORAGE_KEY = 'schoolRatings'
 const hoveredStar = ref(0)
-const allRatings = ref<Record<number, Record<number, number>>>({})
-
-function getCurrentUserId(): number | null {
-  const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || 'null')
-  return user?.UserId ?? null
-}
 
 const userRating = computed(() => {
-  const userId = getCurrentUserId()
+  const userId = authStore.user?.UserId
   if (!userId) return 0
-  return allRatings.value[props.school.DrivingSchoolId]?.[userId] ?? 0
+  const rating = schoolStore.ratings.find(r => r.DrivingSchoolId === props.school.DrivingSchoolId && r.UserId === userId)
+  return rating?.Stars ?? 0
 })
 
 const averageRating = computed(() => {
-  const schoolRatings = allRatings.value[props.school.DrivingSchoolId] || {}
-  const values = Object.values(schoolRatings) as number[]
-  if (values.length === 0) return 0
-  return values.reduce((a, b) => a + b, 0) / values.length
+  const schoolRatings = schoolStore.ratings.filter(r => r.DrivingSchoolId === props.school.DrivingSchoolId)
+  if (schoolRatings.length === 0) return 0
+  return schoolRatings.reduce((a, b) => a + b.Stars, 0) / schoolRatings.length
 })
 
-onMounted(() => {
-  allRatings.value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
-})
-
-function setRating(stars: number) {
-  const userId = getCurrentUserId()
-  if (!userId) return
-  const updated = { ...allRatings.value }
-  if (!updated[props.school.DrivingSchoolId]) updated[props.school.DrivingSchoolId] = {}
-  updated[props.school.DrivingSchoolId] = { ...updated[props.school.DrivingSchoolId], [userId]: stars }
-  allRatings.value = updated
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(allRatings.value))
+async function setRating(stars: number) {
+  const currentRating = userRating.value
+  const newRating = currentRating === stars ? 0 : stars
+  await schoolStore.setRating(props.school.DrivingSchoolId, newRating)
 }
 </script>

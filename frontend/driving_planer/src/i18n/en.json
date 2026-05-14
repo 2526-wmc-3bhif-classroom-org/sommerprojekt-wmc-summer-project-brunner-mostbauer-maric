@@ -198,6 +198,7 @@
       "rating": "Rating",
       "website": "Website"
     },
+    "noRating": "not yet rated",
     "notes": "Notes",
     "notePlaceholder": "Your note...",
     "loadError": "Data could not be loaded",
