@@ -22,6 +22,10 @@ const teamMembers = computed(() => [
   { name: 'Jan Brunner', initials: 'JB', role: t('about.team.role'), bg: 'bg-violet-500' },
   { name: 'Julian Mostbauer', initials: 'JM', role: t('about.team.role'), bg: 'bg-emerald-500' },
 ])
+
+function scrollTo(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+}
 </script>
 
 <template>
@@ -39,19 +43,31 @@ const teamMembers = computed(() => [
           <p class="text-black/50 md:text-lg text-sm max-w-2xl leading-relaxed" v-motion-fade-visible>
             {{ t('about.subtitle') }}
           </p>
-          <div class="flex gap-3 mt-2 flex-wrap justify-center">
-            <button
-              class="bg-black text-white px-6 py-3 rounded-2xl font-semibold hover:scale-105 active:scale-95 transition-transform shadow-lg text-sm"
-              @click="router.push('/register')"
+          <div class="flex gap-4 mt-2 flex-wrap justify-center py-12 px-4 md:px-0">
+            <div
+              v-motion
+              :initial="{ opacity: 0, x: -50 }"
+              :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
             >
-              {{ t('about.joinButton') }}
-            </button>
-            <button
-              class="bg-white border border-gray-200 text-slate-700 px-6 py-3 rounded-2xl font-semibold hover:scale-105 active:scale-95 transition-transform shadow-sm text-sm"
-              @click="() => document.getElementById('mission')?.scrollIntoView({ behavior: 'smooth' })"
+              <button
+                class="bg-black text-white text-center text-xl md:p-6 p-4 rounded-3xl md:m-5 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
+                @click="router.push('/register')"
+              >
+                {{ t('about.joinButton') }}
+              </button>
+            </div>
+            <div
+              v-motion
+              :initial="{ opacity: 0, x: 50 }"
+              :visible-once="{ opacity: 1, x: 0, transition: { duration: 900, ease: 'linear' }}"
             >
-              {{ t('about.learnMore') }}
-            </button>
+              <button
+                class="bg-white border border-gray-200 text-slate-700 text-center text-xl md:p-6 p-4 rounded-3xl md:m-5 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
+                @click="scrollTo('mission')"
+              >
+                {{ t('about.learnMore') }}
+              </button>
+            </div>
           </div>
         </div>
 
