@@ -18,9 +18,9 @@ const featureCards = computed(() => [
 ])
 
 const teamMembers = computed(() => [
-  { name: 'Luka Marić', initials: 'LM', role: t('about.team.role'), bg: 'bg-blue-500', skills: ['Vue', 'TypeScript', 'Spring Boot'] },
-  { name: 'Jan Brunner', initials: 'JB', role: t('about.team.role'), bg: 'bg-violet-500', skills: ['Vue', 'TypeScript', 'Spring Boot'] },
-  { name: 'Julian Mostbauer', initials: 'JM', role: t('about.team.role'), bg: 'bg-emerald-500', skills: ['Vue', 'TypeScript', 'Spring Boot'] },
+  { name: 'Luka Marić', initials: 'LM', role: t('about.team.role'), bg: 'bg-blue-500'},
+  { name: 'Jan Brunner', initials: 'JB', role: t('about.team.role'), bg: 'bg-violet-500' },
+  { name: 'Julian Mostbauer', initials: 'JM', role: t('about.team.role'), bg: 'bg-emerald-500' },
 ])
 </script>
 
@@ -126,13 +126,7 @@ const teamMembers = computed(() => [
                 <p class="font-bold text-slate-900 text-base">{{ member.name }}</p>
                 <p class="text-sm text-slate-400 mt-0.5">{{ member.role }}</p>
               </div>
-              <div class="flex gap-1.5 flex-wrap justify-center">
-                <span
-                  v-for="skill in member.skills"
-                  :key="skill"
-                  class="px-2 py-0.5 bg-white border border-slate-100 rounded-full text-[10px] text-slate-500 font-medium"
-                >{{ skill }}</span>
-              </div>
+
             </div>
           </div>
         </div>
