@@ -43,45 +43,29 @@ defineProps<{
 }
 
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-4px) scale(1.10);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 /* Icon container */
 .icon-wrap {
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .card:hover .icon-wrap {
-  transform: scale(1.3) rotate(12deg);
-  background-color: #cbd5e1; /* slate-300 */
+  background-color: #e2e8f0; /* slate-200 */
 }
 
-/* Icon itself */
-.card-icon {
-  transition: font-size 0.3s ease;
-}
-
-.card:hover .card-icon {
-  font-size: 1.5rem;
-}
-
-/* Title */
-.card-title {
-  transition: font-size 0.3s ease, color 0.3s ease;
+/* Text and Icon colors */
+.card-title, .card-desc, .card-icon {
+  transition: color 0.3s ease;
 }
 
 .card:hover .card-title {
-  font-size: 1.25rem;
   color: #0f172a; /* slate-950 */
 }
 
-/* Description */
-.card-desc {
-  transition: font-size 0.3s ease, color 0.3s ease;
-}
-
 .card:hover .card-desc {
-  font-size: 0.9375rem;
   color: #334155; /* slate-700 */
 }
 </style>
