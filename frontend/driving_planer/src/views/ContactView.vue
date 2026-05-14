@@ -86,7 +86,21 @@ async function sendEmail() {
 
           <!-- Info column -->
           <div class="flex flex-col gap-4">
-            <div class="bg-white border border-gray-100 rounded-3xl shadow-sm p-6 flex flex-col gap-5">
+            <div
+              v-motion
+              :initial="{ opacity: 0, scale: 0.9 }"
+              :visible-once="{
+                opacity: 1,
+                scale: 1,
+                transition: {
+                  duration: 800,
+                  type: 'spring',
+                  stiffness: 100,
+                  damping: 15
+                }
+              }"
+              class="bg-white border border-gray-100 rounded-3xl shadow-sm p-6 flex flex-col gap-5"
+            >
               <h3 class="font-bold text-slate-900 text-base">{{ t('contact.infoTitle') }}</h3>
 
               <div class="flex items-start gap-3">
@@ -122,7 +136,22 @@ async function sendEmail() {
           </div>
 
           <!-- Form -->
-          <div class="md:col-span-2 bg-white border border-gray-100 rounded-3xl shadow-sm p-6 flex flex-col gap-5">
+          <div
+            v-motion
+            :initial="{ opacity: 0, scale: 0.9 }"
+            :visible-once="{
+              opacity: 1,
+              scale: 1,
+              transition: {
+                duration: 800,
+                type: 'spring',
+                stiffness: 100,
+                damping: 15,
+                delay: 200
+              }
+            }"
+            class="md:col-span-2 bg-white border border-gray-100 rounded-3xl shadow-sm p-6 flex flex-col gap-5"
+          >
             <h3 class="font-bold text-slate-900 text-base">{{ t('contact.formTitle') }}</h3>
 
             <!-- Success -->
