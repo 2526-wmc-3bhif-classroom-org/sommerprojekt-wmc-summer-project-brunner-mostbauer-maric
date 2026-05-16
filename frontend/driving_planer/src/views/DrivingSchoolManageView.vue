@@ -398,30 +398,10 @@ const isLoading = ref(false)
 const authStore = useAuthStore()
 const router = useRouter()
 
-function schoolCoursesKey() { return `schoolCourseIds_${authStore.user?.UserId ?? 0}` }
-function getOwnCourseIds(): number[] { const raw = localStorage.getItem(schoolCoursesKey()); return raw ? JSON.parse(raw) : [] }
-function addOwnCourseId(id: number) { const ids = getOwnCourseIds(); if (!ids.includes(id)) localStorage.setItem(schoolCoursesKey(), JSON.stringify([...ids, id])) }
-function removeOwnCourseId(id: number) { const ids = getOwnCourseIds().filter(i => i !== id); localStorage.setItem(schoolCoursesKey(), JSON.stringify(ids)) }
-
 function courseEditsKey() { return `schoolCourseEdits_${authStore.user?.UserId ?? 0}` }
 function getCourseEdits(): Record<number, Partial<Course>> { const raw = localStorage.getItem(courseEditsKey()); return raw ? JSON.parse(raw) : {} }
 function saveCourseEdit(id: number, data: Partial<Course>) { const edits = getCourseEdits(); edits[id] = data; localStorage.setItem(courseEditsKey(), JSON.stringify(edits)) }
 function removeCourseEdit(id: number) { const edits = getCourseEdits(); delete edits[id]; localStorage.setItem(courseEditsKey(), JSON.stringify(edits)) }
-
-function courseTimesKey() { return 'courseTimes' }
-function getCourseTimes(): Record<number, { timeFrom: string; timeTo: string }> {
-  const merged: Record<number, { timeFrom: string; timeTo: string }> = {}
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i)
-    if (key === 'courseTimes' || key?.startsWith('courseTimes_')) {
-      const raw = localStorage.getItem(key)
-      if (raw) Object.assign(merged, JSON.parse(raw))
-    }
-  }
-  return merged
-}
-function saveCourseTime(id: number, timeFrom: string, timeTo: string) { const times = getCourseTimes(); times[id] = { timeFrom, timeTo }; localStorage.setItem(courseTimesKey(), JSON.stringify(times)) }
-function removeCourseTime(id: number) { const times = getCourseTimes(); delete times[id]; localStorage.setItem(courseTimesKey(), JSON.stringify(times)) }
 
 const filterLicense = ref('')
 const filteredCourses = computed(() => filterLicense.value ? courses.value.filter(c => c.licenseType === filterLicense.value) : courses.value)
@@ -430,19 +410,19 @@ const usedLicenses = computed(() => [...new Set(courses.value.map(c => c.license
 async function fetchCourses() {
   isLoading.value = true
   try {
-    const res = await fetch(`${API_URL}/programs`, {
-      headers: { 'Content-Type': 'application/json', ...(authStore.token ? { Authorization: `Bearer ${authStore.token}` } : {}) }
-    })
-    if (res.ok) {
-      const json = await res.json()
-      const times = getCourseTimes()
-      const all: Course[] = (json.data ?? []).map((p: any) => { const base = mapProgram(p); return { ...base, ...(times[base.id] ?? {}) } })
-      if (authStore.isSchool) {
-        const ownIds = getOwnCourseIds()
+    const headers = { 'Content-Type': 'application/json', ...(authStore.token ? { Authorization: `Bearer ${authStore.token}` } : {}) }
+    if (authStore.isSchool && authStore.user?.DrivingSchoolId) {
+      const res = await fetch(`${API_URL}/programs/school/${authStore.user.DrivingSchoolId}`, { headers })
+      if (res.ok) {
+        const json = await res.json()
         const edits = getCourseEdits()
-        courses.value = all.filter(c => ownIds.includes(c.id)).map(c => ({ ...c, ...edits[c.id] }))
-      } else {
-        courses.value = all
+        courses.value = (json.data ?? []).map((p: any) => ({ ...mapProgram(p), ...edits[p.LicenseProgramId] }))
+      }
+    } else {
+      const res = await fetch(`${API_URL}/programs`, { headers })
+      if (res.ok) {
+        const json = await res.json()
+        courses.value = (json.data ?? []).map((p: any) => mapProgram(p))
       }
     }
   } finally {
@@ -525,7 +505,7 @@ async function saveCourse() {
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
       body: JSON.stringify({ LicenseTypeId: LICENSE_TYPE_IDS[form.value.licenseType], DateFrom: form.value.dateFrom, DateTo: form.value.dateTo, TimeFrom: form.value.timeFrom, TimeTo: form.value.timeTo, Weekdays: form.value.weekdays.join(','), IsSchnellkurs: form.value.isSchnellkurs ? 1 : 0, Price: form.value.price, MaxParticipants: form.value.maxParticipants })
     })
-    if (res.ok) { saveCourseTime(editingId.value, form.value.timeFrom, form.value.timeTo); removeCourseEdit(editingId.value); closeModal(); await fetchCourses() }
+    if (res.ok) { removeCourseEdit(editingId.value); closeModal(); await fetchCourses() }
     else { const json = await res.json().catch(() => ({})); saveError.value = json?.error?.message ?? t('manage.modal.errors.saveError') }
   } else {
     const res = await fetch(`${API_URL}/programs`, {
@@ -533,7 +513,7 @@ async function saveCourse() {
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
       body: JSON.stringify({ DrivingSchoolId: authStore.user?.DrivingSchoolId ?? 1, LicenseTypeId: LICENSE_TYPE_IDS[form.value.licenseType], DateFrom: form.value.dateFrom, DateTo: form.value.dateTo, TimeFrom: form.value.timeFrom, TimeTo: form.value.timeTo, Weekdays: form.value.weekdays.join(','), IsSchnellkurs: form.value.isSchnellkurs ? 1 : 0, Price: form.value.price, MaxParticipants: form.value.maxParticipants })
     })
-    if (res.ok) { const json = await res.json(); const newId = json.data.id; addOwnCourseId(newId); saveCourseTime(newId, form.value.timeFrom, form.value.timeTo); closeModal(); await fetchCourses() }
+    if (res.ok) { closeModal(); await fetchCourses() }
     else { const json = await res.json().catch(() => ({})); saveError.value = json?.error?.message ?? t('manage.modal.errors.createError') }
   }
 }
@@ -544,7 +524,7 @@ async function deleteCourse() {
   if (deleteTargetId.value === null) return
   const id = deleteTargetId.value
   const res = await fetch(`${API_URL}/programs/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${authStore.token ?? ''}` } })
-  if (res.ok) { removeOwnCourseId(id); removeCourseEdit(id); removeCourseTime(id); courses.value = courses.value.filter(c => c.id !== id) }
+  if (res.ok) { removeCourseEdit(id); courses.value = courses.value.filter(c => c.id !== id) }
   deleteTargetId.value = null
 }
 
@@ -552,13 +532,16 @@ const joinTargetId = ref<number | null>(null)
 const joinTargetCourse = computed(() => joinTargetId.value !== null ? courses.value.find(c => c.id === joinTargetId.value) : null)
 function openJoinModal(id: number) { joinTargetId.value = id }
 async function confirmJoin() {
-  if (!joinTargetCourse.value) return
+  if (!joinTargetCourse.value || !authStore.user) return
+  const goal = localStorage.getItem(`goal_${authStore.user.UserId}`) ?? undefined
+  const plannerStartDate = localStorage.getItem(`startDate_${authStore.user.UserId}`) ?? undefined
   const res = await fetch(`${API_URL}/programs/${joinTargetId.value}/enroll`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` }
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
+    body: JSON.stringify({ goal, plannerStartDate })
   })
   if (res.ok) {
-    if (authStore.user) localStorage.setItem(`joinedCourse_${authStore.user.UserId}`, JSON.stringify(joinTargetCourse.value))
+    localStorage.setItem(`joinedCourse_${authStore.user.UserId}`, JSON.stringify(joinTargetCourse.value))
     joinTargetId.value = null
     router.push('/dashboard')
   }

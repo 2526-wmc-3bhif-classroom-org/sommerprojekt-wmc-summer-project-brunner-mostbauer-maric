@@ -160,7 +160,25 @@ router.post("/:id/enroll", isAuthenticated, async (req: AuthRequest, res: Respon
     return;
   }
 
-  const result = ProgramService.Instance.enrollUser(programId, targetUserId, requestUserId, requestUserRole);
+  const goal = req.body?.goal ?? undefined;
+  const plannerStartDate = req.body?.plannerStartDate ?? undefined;
+
+  const result = ProgramService.Instance.enrollUser(programId, targetUserId, requestUserId, requestUserRole, goal, plannerStartDate);
+  if (result.error) {
+    res.status(result.status).json({ error: result.error });
+  } else {
+    res.status(result.status).json({ data: result.data });
+  }
+});
+
+router.patch("/:id/enroll/planner", isAuthenticated, async (req: AuthRequest, res: Response) => {
+  const programId = parseInt(req.params.id);
+  if (isNaN(programId)) {
+    res.status(StatusCodes.BAD_REQUEST).json({ error: { message: "Invalid program ID" } });
+    return;
+  }
+  const { goal, plannerStartDate } = req.body;
+  const result = ProgramService.Instance.updateEnrollmentPlanner(programId, req.payload!.user.UserId, goal, plannerStartDate);
   if (result.error) {
     res.status(result.status).json({ error: result.error });
   } else {

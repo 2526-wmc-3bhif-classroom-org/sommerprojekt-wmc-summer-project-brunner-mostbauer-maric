@@ -5,9 +5,9 @@ export class ProgramRepository {
   public static create(unit: Unit, program: Omit<LicenseProgram, "LicenseProgramId">): number {
     const stmt = unit.prepare(`
       INSERT INTO LicenseProgram (
-        DrivingSchoolId, LicenseTypeId, DateFrom, DateTo, Weekdays, 
-        IsSchnellkurs, Price, MaxParticipants, CurrentParticipants
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        DrivingSchoolId, LicenseTypeId, DateFrom, DateTo, Weekdays,
+        IsSchnellkurs, Price, MaxParticipants, CurrentParticipants, TimeFrom, TimeTo
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     stmt.run(
@@ -19,7 +19,9 @@ export class ProgramRepository {
       program.IsSchnellkurs ?? 0,
       program.Price,
       program.MaxParticipants,
-      program.CurrentParticipants ?? 0
+      program.CurrentParticipants ?? 0,
+      program.TimeFrom ?? null,
+      program.TimeTo ?? null
     );
 
     return unit.getLastRowId();
@@ -44,13 +46,21 @@ export class ProgramRepository {
     return stmt.all();
   }
 
-  public static enrollUser(unit: Unit, userId: number, programId: number): number {
+  public static enrollUser(unit: Unit, userId: number, programId: number, goal?: string, plannerStartDate?: string): number {
     const stmt = unit.prepare(`
-      INSERT INTO Enrollment (UserId, LicenseProgramId, Status)
-      VALUES (?, ?, 'active')
+      INSERT INTO Enrollment (UserId, LicenseProgramId, Status, Goal, PlannerStartDate)
+      VALUES (?, ?, 'active', ?, ?)
     `);
-    stmt.run(userId, programId);
+    stmt.run(userId, programId, goal ?? null, plannerStartDate ?? null);
     return unit.getLastRowId();
+  }
+
+  public static updateEnrollmentPlanner(unit: Unit, userId: number, programId: number, goal: string, plannerStartDate: string): boolean {
+    const result = unit.prepare(`
+      UPDATE Enrollment SET Goal = ?, PlannerStartDate = ?
+      WHERE UserId = ? AND LicenseProgramId = ?
+    `).run(goal, plannerStartDate, userId, programId);
+    return result.changes > 0;
   }
 
   public static unenrollUser(unit: Unit, userId: number, programId: number): void {
@@ -73,7 +83,7 @@ export class ProgramRepository {
     const stmt = unit.prepare(`
       UPDATE LicenseProgram
       SET LicenseTypeId = ?, DateFrom = ?, DateTo = ?, Weekdays = ?,
-          IsSchnellkurs = ?, Price = ?, MaxParticipants = ?
+          IsSchnellkurs = ?, Price = ?, MaxParticipants = ?, TimeFrom = ?, TimeTo = ?
       WHERE LicenseProgramId = ?
     `);
     const result = stmt.run(
@@ -84,6 +94,8 @@ export class ProgramRepository {
       data.IsSchnellkurs ?? 0,
       data.Price,
       data.MaxParticipants,
+      data.TimeFrom ?? null,
+      data.TimeTo ?? null,
       programId
     );
     return (result.changes as number) > 0;
