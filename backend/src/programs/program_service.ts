@@ -124,7 +124,7 @@ export class ProgramService {
     }
   }
 
-  public enrollUser(programId: number, targetUserId: number, requestUserId: number, requestUserRole: UserRole): ServiceResult {
+  public enrollUser(programId: number, targetUserId: number, requestUserId: number, requestUserRole: UserRole, goal?: string, plannerStartDate?: string): ServiceResult {
     if (requestUserRole !== "admin" && requestUserId !== targetUserId) {
       return {
         status: StatusCodes.FORBIDDEN,
@@ -149,7 +149,7 @@ export class ProgramService {
         return { status: StatusCodes.BAD_REQUEST, error: { message: "User is already enrolled in this program" } };
       }
 
-      const enrollmentId = ProgramRepository.enrollUser(unit, targetUserId, programId);
+      const enrollmentId = ProgramRepository.enrollUser(unit, targetUserId, programId, goal, plannerStartDate);
       ProgramRepository.updateCurrentParticipants(unit, programId, 1);
       
       success = true;
@@ -187,12 +187,32 @@ export class ProgramService {
 
       ProgramRepository.unenrollUser(unit, targetUserId, programId);
       ProgramRepository.updateCurrentParticipants(unit, programId, -1);
-      
+
       success = true;
       return {
         status: StatusCodes.OK,
         data: { message: "Successfully unenrolled" },
       };
+    } catch (e: any) {
+      return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
+    } finally {
+      unit.complete(success);
+    }
+  }
+
+  public updateEnrollmentPlanner(programId: number, userId: number, goal: string, plannerStartDate: string): ServiceResult {
+    if (!goal || !plannerStartDate) {
+      return { status: StatusCodes.BAD_REQUEST, error: { message: "Goal und PlannerStartDate sind erforderlich" } };
+    }
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const updated = ProgramRepository.updateEnrollmentPlanner(unit, userId, programId, goal, plannerStartDate);
+      if (updated) {
+        success = true;
+        return { status: StatusCodes.OK, data: { message: "Planner-Daten aktualisiert" } };
+      }
+      return { status: StatusCodes.NOT_FOUND, error: { message: "Enrollment nicht gefunden" } };
     } catch (e: any) {
       return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
     } finally {

@@ -34,6 +34,8 @@ export interface LicenseProgram {
   DateTo: string;
   Weekdays?: string | null;
   IsSchnellkurs?: number | null;
+  TimeFrom?: string | null;
+  TimeTo?: string | null;
   Price: number;
   MaxParticipants: number;
   CurrentParticipants: number;

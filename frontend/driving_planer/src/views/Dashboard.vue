@@ -364,34 +364,22 @@ const dateLocale = computed(() => locale.value === 'de' ? 'de-DE' : 'en-US')
 const calendarWeekdays = computed(() => tm('dashboard.calendar.weekdays') as string[])
 
 const syncCalendar = () => {}
-const syncEvents = () => {
-  if (authStore.user?.UserId) {
-    localStorage.setItem(`events_${authStore.user.UserId}`, JSON.stringify(dates.value))
-  }
+async function fetchEvents() {
+  try {
+    const res = await fetch(`${API_URL}/events`, {
+      headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+    })
+    if (res.ok) {
+      const data = await res.json()
+      dates.value = (data ?? []).map((e: any) => ({ id: e.EventId, type: e.Type, date: e.Date }))
+    }
+  } catch {}
 }
 
 const joinedCourse = ref<any>(null)
 const joinedSchool = ref<any>(null)
 
-const courseTimesCache = ref<Record<string, { timeFrom: string; timeTo: string }>>({})
-
-function loadCourseTimes() {
-  const merged: Record<string, { timeFrom: string; timeTo: string }> = {}
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i)
-    if (key === 'courseTimes' || key?.startsWith('courseTimes_')) {
-      const raw = localStorage.getItem(key)
-      if (raw) Object.assign(merged, JSON.parse(raw))
-    }
-  }
-  courseTimesCache.value = merged
-}
-
-const joinedCourseWithTimes = computed(() => {
-  const course = joinedCourse.value
-  if (!course) return null
-  return { ...course, ...(courseTimesCache.value[String(course.id)] ?? courseTimesCache.value[course.id] ?? {}) }
-})
+const joinedCourseWithTimes = computed(() => joinedCourse.value ?? null)
 
 const weekdayToJS: Record<string, number> = { Mo: 1, Di: 2, Mi: 3, Do: 4, Fr: 5, Sa: 6, So: 0 }
 
@@ -740,7 +728,6 @@ function recalculateExamDates(userId: string, course: any) {
     { type: 'Voraussichtliche Kursspezifische Theorieprüfung', date: theorieDate.toISOString().split('T')[0], auto: true },
     { type: 'Voraussichtliche Praxisprüfung', date: praxisDate.toISOString().split('T')[0], auto: true },
   ]
-  localStorage.setItem(`examDates_${userId}`, JSON.stringify(newExamDates))
   examDates.value = newExamDates
 }
 
@@ -756,8 +743,7 @@ onMounted(async () => {
     const userId = String(authStore.user.UserId)
     fetchKmLogs()
     fetchTasks()
-    const raw = localStorage.getItem(`events_${userId}`)
-    if (raw) dates.value = JSON.parse(raw)
+    fetchEvents()
 
     const joinedRaw = localStorage.getItem(`joinedCourse_${userId}`)
     if (joinedRaw) joinedCourse.value = JSON.parse(joinedRaw)
@@ -798,15 +784,34 @@ onMounted(async () => {
       } catch {}
     }
   }
-  loadCourseTimes()
 })
 watch([typeInput, dateInput], () => { eventError.value = '' })
-const addDate = () => {
+const addDate = async () => {
   if (!typeInput.value || !dateInput.value) { eventError.value = t('dashboard.events.errors.incomplete'); return }
-  dates.value.push({ type: typeInput.value, date: dateInput.value })
-  typeInput.value = ''; dateInput.value = ''; syncEvents()
+  try {
+    const res = await fetch(`${API_URL}/events`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
+      body: JSON.stringify({ type: typeInput.value, date: dateInput.value })
+    })
+    if (res.ok) {
+      const data = await res.json()
+      dates.value.push({ id: data.EventId, type: typeInput.value, date: dateInput.value })
+      typeInput.value = ''; dateInput.value = ''
+    }
+  } catch {}
 }
-const removeDate = (i: number) => { dates.value.splice(i, 1); syncEvents() }
+const removeDate = async (i: number) => {
+  const event = dates.value[i]
+  if (!event?.id) { dates.value.splice(i, 1); return }
+  try {
+    const res = await fetch(`${API_URL}/events/${event.id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+    })
+    if (res.ok) dates.value.splice(i, 1)
+  } catch {}
+}
 </script>
 
 <style scoped>

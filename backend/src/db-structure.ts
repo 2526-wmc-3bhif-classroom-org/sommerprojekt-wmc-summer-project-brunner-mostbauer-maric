@@ -141,11 +141,29 @@ export const buildTables = (connection: Database) => {
         FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE
       );`,
       );
+    connection.exec(
+        `CREATE TABLE IF NOT EXISTS UserEvent (
+        EventId INTEGER PRIMARY KEY AUTOINCREMENT,
+        UserId INTEGER NOT NULL,
+        Type TEXT NOT NULL,
+        Date TEXT NOT NULL,
+        FOREIGN KEY (UserId) REFERENCES User(UserId) ON DELETE CASCADE
+      );`,
+      );
+
     // migration: add DrivingSchoolId to User table for school users
     try { connection.exec(`ALTER TABLE User ADD COLUMN DrivingSchoolId INTEGER REFERENCES DrivingSchool(DrivingSchoolId)`); } catch {}
 
     // migration: add IsDefault if table existed before this column was added
     try { connection.exec(`ALTER TABLE Task ADD COLUMN IsDefault INTEGER NOT NULL DEFAULT 0`); } catch {}
+
+    // migration: add planner fields to Enrollment for exam date calculation
+    try { connection.exec(`ALTER TABLE Enrollment ADD COLUMN Goal TEXT`); } catch {}
+    try { connection.exec(`ALTER TABLE Enrollment ADD COLUMN PlannerStartDate TEXT`); } catch {}
+
+    // migration: add TimeFrom/TimeTo to LicenseProgram
+    try { connection.exec(`ALTER TABLE LicenseProgram ADD COLUMN TimeFrom TEXT`); } catch {}
+    try { connection.exec(`ALTER TABLE LicenseProgram ADD COLUMN TimeTo TEXT`); } catch {}
     // migration: mark existing default tasks correctly
     connection.exec(`UPDATE Task SET IsDefault = 1 WHERE Text IN (
       'Ärztliche/Augenuntersuchung',
