@@ -8,7 +8,10 @@ const { t } = useI18n()
 
 <template>
   <footer class="flex justify-center items-center gap-6 py-6 px-5 bg-black">
-    <p class="text-white text-sm">© 2026 Driving Planer</p>
+    <div class="flex items-center gap-2">
+      <img src="@/assets/tmp_logo.png" alt="Driving Planer Logo" class="h-10 w-auto object-contain" />
+      <p class="text-white text-sm">© 2026 Driving Planer</p>
+    </div>
     <span class="text-white/30 text-sm">|</span>
     <button
       class="text-white/60 text-sm hover:text-white transition-colors duration-200 cursor-pointer"
