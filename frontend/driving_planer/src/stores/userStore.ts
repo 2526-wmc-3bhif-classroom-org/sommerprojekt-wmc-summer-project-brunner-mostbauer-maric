@@ -1,29 +1,44 @@
 import {defineStore} from "pinia";
 import {ref} from "vue";
-import {useAuthStore} from "@/stores/authStore.ts";
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+import { apiClient } from "@/api/client.js";
+import { cacheManager } from "@/api/cache.js";
+
+class UserDataService {
+  private userCountCacheKey = 'users:count'
+  private userCountCacheTTL = 10 * 60 * 1000 // 10 minutes
+
+  async fetchUsersCount(force = false): Promise<number> {
+    if (!force && cacheManager.has(this.userCountCacheKey)) {
+      return cacheManager.get<number>(this.userCountCacheKey) || 0
+    }
+
+    const response = await apiClient.get<{ count: number }>('/users/count')
+    const count = response.count
+    cacheManager.set(this.userCountCacheKey, count, this.userCountCacheTTL)
+    return count
+  }
+
+  invalidate(): void {
+    cacheManager.invalidate(this.userCountCacheKey)
+  }
+}
+
+const userService = new UserDataService()
 
 export const useUserStore = defineStore('users', () => {
   const countOfTotalUsers = ref<number>(0)
+  const isLoadingCount = ref(false)
 
-  async function fetchUsersCount() {
-    const authStore = useAuthStore()
-    const headers: HeadersInit = { 'Content-Type': 'application/json' }
-    if (authStore.token) {
-      headers['Authorization'] = `Bearer ${authStore.token}`
-    }
-
+  async function fetchUsersCount(force = false) {
+    isLoadingCount.value = true
     try {
-      const response = await fetch(`${API_URL}/users/count`, { headers })
-      if (response.status === 401) {
-        authStore.logout()
-        return
-      }
-      const val: { count: number } = await response.json()
-      countOfTotalUsers.value = val.count
+      countOfTotalUsers.value = await userService.fetchUsersCount(force)
     } catch (e) {
       console.error('Failed to fetch users count:', e)
+    } finally {
+      isLoadingCount.value = false
     }
   }
-  return { countOfTotalUsers, fetchUsersCount }
+
+  return { countOfTotalUsers, isLoadingCount, fetchUsersCount }
 })
