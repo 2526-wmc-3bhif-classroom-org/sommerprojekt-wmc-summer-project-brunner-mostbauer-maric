@@ -60,13 +60,13 @@
              <i class="pi pi-arrow-right"></i>
            </button>
 
-           <button
-             type="button"
-             @click="skipEnrollment"
-             class="mt-2 bg-white/20 text-white p-4 rounded-2xl font-bold text-base hover:bg-white/30 active:scale-[0.98] transition-all uppercase tracking-widest border-2 border-white/30 hover:border-white/50"
-           >
-             {{ t('start.skip') }}
-           </button>
+            <button
+              type="button"
+              @click="skipEnrollment"
+              class="mt-2 bg-gray-100 text-black p-4 rounded-2xl font-bold text-base hover:bg-gray-200 active:scale-[0.98] transition-all uppercase tracking-widest border-2 border-gray-300 hover:border-gray-400"
+            >
+              {{ t('start.skip') }}
+            </button>
          </form>
        </div>
      </div>
