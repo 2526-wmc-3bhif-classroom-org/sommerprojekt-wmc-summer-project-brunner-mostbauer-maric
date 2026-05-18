@@ -169,6 +169,7 @@
     "paceNormal": "🚗 Normales Tempo",
     "paceRelaxed": "🛵 Ganz entspannt",
     "submit": "Fahrplan erstellen",
+    "skip": "Später eintragen",
     "errors": {
       "noCourse": "Für Klasse {cls} sind ab diesem Datum keine Kurse verfügbar.",
       "invalidDate": "Das Datumsformat ist nicht korrekt. (Datum muss in der Zukunft sein).",
