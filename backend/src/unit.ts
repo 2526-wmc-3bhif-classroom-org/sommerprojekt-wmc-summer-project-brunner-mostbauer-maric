@@ -254,20 +254,24 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
     inserted = true;
   }
 
+  /*
   if (!schoolsAlreadyPresent()) {
     insertSchools();
     inserted = true;
   }
+  */
 
   if (!licenseTypesAlreadyPresent()) {
     insertLicenseTypes();
     inserted = true;
   }
 
+  /*
   if (!programsAlreadyPresent()) {
     insertPrograms();
     inserted = true;
   }
+  */
 
   return inserted ? "inserted" : "skipped";
 }

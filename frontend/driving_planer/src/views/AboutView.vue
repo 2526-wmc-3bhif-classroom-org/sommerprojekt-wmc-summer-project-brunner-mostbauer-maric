@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import HeaderMain from "@/components/HeaderMain.vue"
 import InfoStatsCard from "@/components/InfoStatsCard.vue"
@@ -9,6 +9,23 @@ import { useRouter } from 'vue-router'
 
 const { t } = useI18n()
 const router = useRouter()
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+
+const schoolCount = ref('60+')
+
+onMounted(async () => {
+  try {
+    const response = await fetch(`${API_URL}/schools/count`)
+    const data = await response.json()
+    if (data && data.count !== undefined) {
+      schoolCount.value = String(data.count)
+    }
+  } catch (error) {
+    console.error('Failed to fetch school count', error)
+  }
+})
+
 
 const featureCards = computed(() => [
   { icon: 'pi pi-lightbulb', iconColor: 'text-yellow-500', title: t('about.cards.mission.title'), description: t('about.cards.mission.description') },
@@ -83,7 +100,7 @@ function scrollTo(id: string) {
           />
           <InfoStatsCard
             :index="1"
-            :title="'60+'"
+            :title="schoolCount"
             :description="t('about.stats.schools')"
             icon="pi pi-car"
             iconColor="text-violet-500"

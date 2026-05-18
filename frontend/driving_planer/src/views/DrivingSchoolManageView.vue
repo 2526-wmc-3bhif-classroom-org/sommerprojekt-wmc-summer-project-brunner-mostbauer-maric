@@ -184,6 +184,15 @@
           </div>
 
           <div class="flex flex-col gap-5">
+            <div v-if="authStore.isAdmin && editingId === null">
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Fahrschule *</label>
+              <select v-model="selectedSchoolId" class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all">
+                <option :value="null" disabled>Fahrschule wählen...</option>
+                <option v-for="school in schools" :key="school.DrivingSchoolId" :value="school.DrivingSchoolId">{{ school.Name }}</option>
+              </select>
+              <p v-if="errors.selectedSchoolId" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.selectedSchoolId }}</p>
+            </div>
+
             <div>
               <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{{ t('manage.modal.licenseClass') }}</label>
               <div class="grid grid-cols-4 gap-2">
@@ -221,11 +230,11 @@
               <div class="grid grid-cols-2 gap-3">
                 <div>
                   <label class="block text-[10px] text-slate-400 font-semibold mb-1">{{ t('manage.modal.from') }}</label>
-                  <input v-model="form.timeFrom" type="text" placeholder="08:00" maxlength="5" class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all" />
+                  <input v-model="form.timeFrom" type="time" class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all" />
                 </div>
                 <div>
                   <label class="block text-[10px] text-slate-400 font-semibold mb-1">{{ t('manage.modal.to') }}</label>
-                  <input v-model="form.timeTo" type="text" placeholder="16:00" maxlength="5" class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all" />
+                  <input v-model="form.timeTo" type="time" class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all" />
                 </div>
               </div>
               <p v-if="errors.timeFrom" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.timeFrom }}</p>
@@ -456,6 +465,8 @@ function statusPill(c: Course) { const r = c.currentParticipants / c.maxParticip
 const showModal = ref(false)
 const editingId = ref<number | null>(null)
 const saveError = ref('')
+const schools = ref<{ DrivingSchoolId: number; Name: string }[]>([])
+const selectedSchoolId = ref<number | null>(null)
 const emptyForm = () => ({ licenseType: '', dateFrom: '', dateTo: '', timeFrom: '', timeTo: '', weekdays: [] as string[], isSchnellkurs: false, price: undefined as unknown as number, maxParticipants: 20, currentParticipants: 0 })
 
 function toggleWeekday(day: string) { const idx = form.value.weekdays.indexOf(day); if (idx === -1) form.value.weekdays.push(day); else form.value.weekdays.splice(idx, 1) }
@@ -471,6 +482,7 @@ function isValidTime(t: string): boolean {
 
 function validate() {
   const e: Record<string, string> = {}
+  if (authStore.isAdmin && editingId.value === null && !selectedSchoolId.value) e.selectedSchoolId = 'Bitte eine Fahrschule wählen'
   if (!form.value.licenseType) e.licenseType = t('manage.modal.errors.licenseType')
   if (form.value.weekdays.length === 0) e.weekdays = t('manage.modal.errors.weekdays')
   if (!form.value.dateFrom) e.dateFrom = t('manage.modal.errors.dateFrom')
@@ -490,7 +502,14 @@ function validate() {
   return Object.keys(e).length === 0
 }
 
-function openCreateModal() { form.value = emptyForm(); editingId.value = null; errors.value = {}; saveError.value = ''; showModal.value = true }
+async function openCreateModal() {
+  form.value = emptyForm(); editingId.value = null; errors.value = {}; saveError.value = ''; selectedSchoolId.value = null
+  if (authStore.isAdmin && schools.value.length === 0) {
+    const res = await fetch(`${API_URL}/schools`, { headers: { Authorization: `Bearer ${authStore.token ?? ''}` } })
+    if (res.ok) { const json = await res.json(); schools.value = json.data ?? json }
+  }
+  showModal.value = true
+}
 function openEditModal(c: Course) { form.value = { ...c }; editingId.value = c.id; errors.value = {}; saveError.value = ''; showModal.value = true }
 function closeModal() { showModal.value = false }
 
@@ -509,7 +528,7 @@ async function saveCourse() {
     const res = await fetch(`${API_URL}/programs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
-      body: JSON.stringify({ DrivingSchoolId: authStore.user?.DrivingSchoolId ?? 1, LicenseTypeId: LICENSE_TYPE_IDS[form.value.licenseType], DateFrom: form.value.dateFrom, DateTo: form.value.dateTo, TimeFrom: form.value.timeFrom, TimeTo: form.value.timeTo, Weekdays: form.value.weekdays.join(','), IsSchnellkurs: form.value.isSchnellkurs ? 1 : 0, Price: form.value.price, MaxParticipants: form.value.maxParticipants })
+      body: JSON.stringify({ DrivingSchoolId: authStore.isAdmin ? selectedSchoolId.value : authStore.user?.DrivingSchoolId, LicenseTypeId: LICENSE_TYPE_IDS[form.value.licenseType], DateFrom: form.value.dateFrom, DateTo: form.value.dateTo, TimeFrom: form.value.timeFrom, TimeTo: form.value.timeTo, Weekdays: form.value.weekdays.join(','), IsSchnellkurs: form.value.isSchnellkurs ? 1 : 0, Price: form.value.price, MaxParticipants: form.value.maxParticipants })
     })
     if (res.ok) { closeModal(); await fetchCourses() }
     else { const json = await res.json().catch(() => ({})); saveError.value = json?.error?.message ?? t('manage.modal.errors.createError') }
@@ -550,5 +569,7 @@ async function confirmJoin() {
 <style scoped>
 .modal-enter-active, .modal-leave-active { transition: opacity 0.2s ease; }
 .modal-enter-from, .modal-leave-to { opacity: 0; }
-input[type="date"]::-webkit-calendar-picker-indicator { filter: brightness(0); cursor: pointer; opacity: 0.7; }
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator { filter: brightness(0); cursor: pointer; opacity: 0.7; }
+input[type="time"]::-webkit-datetime-edit-ampm-field { display: none; }
 </style>
