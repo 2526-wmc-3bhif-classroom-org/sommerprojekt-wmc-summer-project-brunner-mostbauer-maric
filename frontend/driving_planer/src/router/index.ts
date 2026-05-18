@@ -88,7 +88,7 @@ router.beforeEach((to, from, next) => {
   } else if (to.meta.guestOnly && authStore.isAuthenticated) {
     next({ name: 'home' })
   } else if (to.name === 'start' && authStore.isAuthenticated && authStore.user) {
-    const hasEnrolled = localStorage.getItem(`enrolled_${authStore.user.UserId}`)
+    const hasEnrolled = sessionStorage.getItem(`enrolled_${authStore.user.UserId}`)
     if (hasEnrolled) {
       next({ name: 'dashboard' })
     } else {

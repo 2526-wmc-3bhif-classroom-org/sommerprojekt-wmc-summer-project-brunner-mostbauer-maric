@@ -706,9 +706,7 @@ function toNextWeekday(date: Date): Date {
   return d
 }
 
-function recalculateExamDates(userId: string, course: any) {
-  const goal = localStorage.getItem(`goal_${userId}`)
-  const startDateStr = localStorage.getItem(`startDate_${userId}`)
+function recalculateExamDates(goal: string | null, startDateStr: string | null, course: any) {
   if (!goal || !startDateStr) return
 
   const pace = examPaceMap[goal]
@@ -745,32 +743,35 @@ onMounted(async () => {
     fetchTasks()
     fetchEvents()
 
-    const joinedRaw = localStorage.getItem(`joinedCourse_${userId}`)
-    if (joinedRaw) joinedCourse.value = JSON.parse(joinedRaw)
-
-    if (joinedCourse.value?.id) {
-      try {
-        const res = await fetch(`${API_URL}/programs`, {
-          headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
-        })
-        if (res.ok) {
-          const json = await res.json()
-          const fresh = (json.data ?? []).find((p: any) => p.LicenseProgramId === joinedCourse.value.id)
-          if (fresh) {
-            const updated = {
-              ...joinedCourse.value,
-              dateFrom: fresh.DateFrom,
-              dateTo: fresh.DateTo,
-              weekdays: fresh.Weekdays ? fresh.Weekdays.split(',') : joinedCourse.value.weekdays,
-            }
-            localStorage.setItem(`joinedCourse_${userId}`, JSON.stringify(updated))
-            joinedCourse.value = updated
+    try {
+      const enrollRes = await fetch(`${API_URL}/users/${userId}/enrollments`, {
+        headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+      })
+      if (enrollRes.ok) {
+        const enrollments = await enrollRes.json()
+        if (Array.isArray(enrollments) && enrollments.length > 0) {
+          const e = enrollments[0]
+          const licenseTypeMapping: Record<number, string> = {
+            1: 'A', 2: 'A1', 3: 'A2', 4: 'AM', 5: 'B', 6: 'BE', 7: 'C', 8: 'C1', 9: 'CE', 10: 'D', 11: 'D1', 12: 'DE'
           }
+          joinedCourse.value = {
+            id: e.LicenseProgramId,
+            drivingSchoolId: e.DrivingSchoolId,
+            licenseType: licenseTypeMapping[e.LicenseTypeId] ?? String(e.LicenseTypeId),
+            dateFrom: e.DateFrom,
+            dateTo: e.DateTo,
+            timeFrom: e.TimeFrom ?? '',
+            timeTo: e.TimeTo ?? '',
+            weekdays: e.Weekdays ? e.Weekdays.split(',') : [],
+            isSchnellkurs: !!e.IsSchnellkurs,
+            price: e.Price,
+            maxParticipants: e.MaxParticipants,
+            currentParticipants: e.CurrentParticipants,
+          }
+          recalculateExamDates(e.Goal ?? null, e.PlannerStartDate ?? null, joinedCourse.value)
         }
-      } catch {}
-    }
-
-    recalculateExamDates(userId, joinedCourse.value)
+      }
+    } catch {}
 
     if (joinedCourse.value?.drivingSchoolId) {
       try {

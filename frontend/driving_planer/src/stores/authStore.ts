@@ -43,14 +43,10 @@ export const useAuthStore = defineStore('auth', () => {
     sessionStorage.setItem('token', data.accessToken)
     sessionStorage.setItem('user', JSON.stringify(data.user))
 
-    // Also update localStorage to match the ref initialization logic
-    localStorage.setItem('token', data.accessToken)
-    localStorage.setItem('user', JSON.stringify(data.user))
-
     if(!fromRegister) {
       if(data.user.Role === UserRole.USER) {
-        let hasEnrolled = localStorage.getItem(`enrolled_${data.user.UserId}`)
-        if (!hasEnrolled) {
+        let isEnrolled = sessionStorage.getItem(`enrolled_${data.user.UserId}`) === 'true'
+        if (!isEnrolled) {
           try {
             const enrollRes = await fetch(`${API_URL}/users/${data.user.UserId}/enrollments`, {
               headers: { Authorization: `Bearer ${data.accessToken}` }
@@ -58,36 +54,15 @@ export const useAuthStore = defineStore('auth', () => {
             if (enrollRes.ok) {
               const enrollments = await enrollRes.json()
               if (Array.isArray(enrollments) && enrollments.length > 0) {
-                const e = enrollments[0]
-                const licenseTypeMapping: Record<number, string> = {
-                  1: 'A', 2: 'A1', 3: 'A2', 4: 'AM', 5: 'B', 6: 'BE', 7: 'C', 8: 'C1', 9: 'CE', 10: 'D', 11: 'D1', 12: 'DE'
-                }
-                const joinedCourse = {
-                  id: e.LicenseProgramId,
-                  drivingSchoolId: e.DrivingSchoolId,
-                  licenseType: licenseTypeMapping[e.LicenseTypeId] ?? String(e.LicenseTypeId),
-                  dateFrom: e.DateFrom,
-                  dateTo: e.DateTo,
-                  timeFrom: e.TimeFrom ?? '',
-                  timeTo: e.TimeTo ?? '',
-                  weekdays: e.Weekdays ? e.Weekdays.split(',') : [],
-                  isSchnellkurs: !!e.IsSchnellkurs,
-                  price: e.Price,
-                  maxParticipants: e.MaxParticipants,
-                  currentParticipants: e.CurrentParticipants,
-                }
-                localStorage.setItem(`enrolled_${data.user.UserId}`, 'true')
-                localStorage.setItem(`joinedCourse_${data.user.UserId}`, JSON.stringify(joinedCourse))
-                if (e.Goal) localStorage.setItem(`goal_${data.user.UserId}`, e.Goal)
-                if (e.PlannerStartDate) localStorage.setItem(`startDate_${data.user.UserId}`, e.PlannerStartDate)
-                hasEnrolled = 'true'
+                sessionStorage.setItem(`enrolled_${data.user.UserId}`, 'true')
+                isEnrolled = true
               }
             }
           } catch {
             // falls back to /start if check fails
           }
         }
-        await router.push(hasEnrolled ? '/dashboard' : '/start')
+        await router.push(isEnrolled ? '/dashboard' : '/start')
       } else if(data.user.Role === UserRole.ADMIN) {
         await router.push('/dashboard')
       } else if(data.user.Role === UserRole.SCHOOL){
@@ -136,12 +111,12 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function logout() {
+    const userId = user.value?.UserId
     token.value = null
     user.value = null
     sessionStorage.removeItem('token')
     sessionStorage.removeItem('user')
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+    if (userId) sessionStorage.removeItem(`enrolled_${userId}`)
     router.push('/login')
   }
 
@@ -149,7 +124,6 @@ export const useAuthStore = defineStore('auth', () => {
     if (user.value) {
       user.value = { ...user.value, ...userData }
       sessionStorage.setItem('user', JSON.stringify(user.value))
-      localStorage.setItem('user', JSON.stringify(user.value))
     }
   }
 

@@ -398,10 +398,6 @@ const isLoading = ref(false)
 const authStore = useAuthStore()
 const router = useRouter()
 
-function courseEditsKey() { return `schoolCourseEdits_${authStore.user?.UserId ?? 0}` }
-function getCourseEdits(): Record<number, Partial<Course>> { const raw = localStorage.getItem(courseEditsKey()); return raw ? JSON.parse(raw) : {} }
-function saveCourseEdit(id: number, data: Partial<Course>) { const edits = getCourseEdits(); edits[id] = data; localStorage.setItem(courseEditsKey(), JSON.stringify(edits)) }
-function removeCourseEdit(id: number) { const edits = getCourseEdits(); delete edits[id]; localStorage.setItem(courseEditsKey(), JSON.stringify(edits)) }
 
 const filterLicense = ref('')
 const filteredCourses = computed(() => filterLicense.value ? courses.value.filter(c => c.licenseType === filterLicense.value) : courses.value)
@@ -415,8 +411,7 @@ async function fetchCourses() {
       const res = await fetch(`${API_URL}/programs/school/${authStore.user.DrivingSchoolId}`, { headers })
       if (res.ok) {
         const json = await res.json()
-        const edits = getCourseEdits()
-        courses.value = (json.data ?? []).map((p: any) => ({ ...mapProgram(p), ...edits[p.LicenseProgramId] }))
+        courses.value = (json.data ?? []).map((p: any) => mapProgram(p))
       }
     } else {
       const res = await fetch(`${API_URL}/programs`, { headers })
@@ -431,9 +426,12 @@ async function fetchCourses() {
 }
 
 onMounted(async () => {
-  if (authStore.isStudent && authStore.user) {
-    const saved = localStorage.getItem(`licenseClass_${authStore.user.UserId}`)
-    if (saved) filterLicense.value = saved
+  if (authStore.isStudent) {
+    const pending = sessionStorage.getItem('pendingEnrollment')
+    if (pending) {
+      const { licenseClass } = JSON.parse(pending)
+      if (licenseClass) filterLicense.value = licenseClass
+    }
   }
   await fetchCourses()
 })
@@ -505,7 +503,7 @@ async function saveCourse() {
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
       body: JSON.stringify({ LicenseTypeId: LICENSE_TYPE_IDS[form.value.licenseType], DateFrom: form.value.dateFrom, DateTo: form.value.dateTo, TimeFrom: form.value.timeFrom, TimeTo: form.value.timeTo, Weekdays: form.value.weekdays.join(','), IsSchnellkurs: form.value.isSchnellkurs ? 1 : 0, Price: form.value.price, MaxParticipants: form.value.maxParticipants })
     })
-    if (res.ok) { removeCourseEdit(editingId.value); closeModal(); await fetchCourses() }
+    if (res.ok) { closeModal(); await fetchCourses() }
     else { const json = await res.json().catch(() => ({})); saveError.value = json?.error?.message ?? t('manage.modal.errors.saveError') }
   } else {
     const res = await fetch(`${API_URL}/programs`, {
@@ -524,7 +522,7 @@ async function deleteCourse() {
   if (deleteTargetId.value === null) return
   const id = deleteTargetId.value
   const res = await fetch(`${API_URL}/programs/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${authStore.token ?? ''}` } })
-  if (res.ok) { removeCourseEdit(id); courses.value = courses.value.filter(c => c.id !== id) }
+  if (res.ok) { courses.value = courses.value.filter(c => c.id !== id) }
   deleteTargetId.value = null
 }
 
@@ -533,15 +531,16 @@ const joinTargetCourse = computed(() => joinTargetId.value !== null ? courses.va
 function openJoinModal(id: number) { joinTargetId.value = id }
 async function confirmJoin() {
   if (!joinTargetCourse.value || !authStore.user) return
-  const goal = localStorage.getItem(`goal_${authStore.user.UserId}`) ?? undefined
-  const plannerStartDate = localStorage.getItem(`startDate_${authStore.user.UserId}`) ?? undefined
+  const pending = sessionStorage.getItem('pendingEnrollment')
+  const { goal, startDate: plannerStartDate } = pending ? JSON.parse(pending) : {}
   const res = await fetch(`${API_URL}/programs/${joinTargetId.value}/enroll`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
     body: JSON.stringify({ goal, plannerStartDate })
   })
   if (res.ok) {
-    localStorage.setItem(`joinedCourse_${authStore.user.UserId}`, JSON.stringify(joinTargetCourse.value))
+    sessionStorage.setItem(`enrolled_${authStore.user.UserId}`, 'true')
+    sessionStorage.removeItem('pendingEnrollment')
     joinTargetId.value = null
     router.push('/dashboard')
   }

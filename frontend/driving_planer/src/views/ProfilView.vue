@@ -384,20 +384,16 @@ const updatePassword = async () => {
 const deleteAccount = async () => {
   deleteError.value = ''
   try {
-    const joinedRaw = localStorage.getItem(`joinedCourse_${userId}`)
-    if (joinedRaw) {
-      const joinedCourse = JSON.parse(joinedRaw)
-      if (joinedCourse?.id) await fetch(API_URL + `/programs/${joinedCourse.id}/enroll`, { method: 'DELETE', headers: { Authorization: `Bearer ${authStore.token}` } })
+    const enrollRes = await fetch(API_URL + `/users/${userId}/enrollments`, { headers: { Authorization: `Bearer ${authStore.token}` } })
+    if (enrollRes.ok) {
+      const enrollments = await enrollRes.json()
+      if (Array.isArray(enrollments) && enrollments.length > 0) {
+        const courseId = enrollments[0].LicenseProgramId
+        await fetch(API_URL + `/programs/${courseId}/enroll`, { method: 'DELETE', headers: { Authorization: `Bearer ${authStore.token}` } })
+      }
     }
     const response = await fetch(API_URL + `/users/${userId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${authStore.token}` } })
     if (response.ok) {
-      localStorage.removeItem(`enrolled_${userId}`)
-      localStorage.removeItem(`licenseClass_${userId}`)
-      localStorage.removeItem(`joinedCourse_${userId}`)
-      localStorage.removeItem(`events_${userId}`)
-      localStorage.removeItem(`examDates_${userId}`)
-      localStorage.removeItem(`startDate_${userId}`)
-      localStorage.removeItem(`goal_${userId}`)
       authStore.logout()
     } else {
       const err = await response.json()

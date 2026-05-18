@@ -134,12 +134,11 @@ const submitForm = () => {
   )
   if (!classValid.value) return
 
-  if (authStore.user?.UserId) {
-    localStorage.setItem(`enrolled_${authStore.user.UserId}`, 'true')
-    localStorage.setItem(`licenseClass_${authStore.user.UserId}`, formData.licenseClass)
-    localStorage.setItem(`startDate_${authStore.user.UserId}`, formData.startDate)
-    localStorage.setItem(`goal_${authStore.user.UserId}`, formData.goal)
-  }
+  sessionStorage.setItem('pendingEnrollment', JSON.stringify({
+    licenseClass: formData.licenseClass,
+    startDate: formData.startDate,
+    goal: formData.goal
+  }))
   router.push('/manage')
 }
 
