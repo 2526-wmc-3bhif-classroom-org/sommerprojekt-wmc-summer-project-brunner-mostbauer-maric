@@ -169,6 +169,7 @@
     "paceNormal": "🚗 Normal pace",
     "paceRelaxed": "🛵 Completely relaxed",
     "submit": "Create Driving Plan",
+    "skip": "Skip for now",
     "errors": {
       "noCourse": "No courses available for class {cls} from this date.",
       "invalidDate": "The date format is incorrect. (Date must be in the future).",
