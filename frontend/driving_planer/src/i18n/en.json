@@ -194,12 +194,13 @@
     "tableHeaders": {
       "nr": "#",
       "school": "Driving School",
-      "location": "Location",
+      "location": "Address",
       "owner": "Owner",
       "rating": "Rating",
       "website": "Website"
     },
     "noRating": "not yet rated",
+    "noWebsite": "No website available",
     "notes": "Notes",
     "notePlaceholder": "Your note...",
     "loadError": "Data could not be loaded",
@@ -322,6 +323,7 @@
     "phonePlaceholder": "+43 ...",
     "websitePlaceholder": "https://...",
     "saveChanges": "Save Changes",
+    "saveSuccess": "Changes saved successfully",
     "or": "or",
     "changePassword": "Change Password",
     "deleteAccount": "Delete Account",
@@ -329,14 +331,16 @@
       "title": "Update Photo",
       "drag": "Drag image here",
       "select": "Select File",
-      "remove": "Remove Photo"
+      "remove": "Remove Photo",
+      "success": "Profile photo updated successfully"
     },
     "password": {
       "title": "Change Password",
       "current": "Current Password",
       "new": "New Password",
       "confirm": "Confirm New Password",
-      "update": "Update Password"
+      "update": "Update Password",
+      "success": "Password changed successfully"
     },
     "deleteModal": {
       "title": "Really delete account?",
