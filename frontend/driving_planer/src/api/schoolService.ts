@@ -3,10 +3,9 @@
  * Centralized management for school and rating data with caching
  */
 
-import { apiClient } from './client.js';
-import { cacheManager } from './cache.js';
-import { useAuthStore } from '@/stores/authStore.js';
-import type { DrivingSchool, Rating } from '@/types.js';
+import { apiClient } from './client';
+import { cacheManager } from './cache';
+import type { DrivingSchool, Rating } from '@/types';
 
 class SchoolService {
   private schoolsCacheKey = 'schools:list';
@@ -62,8 +61,10 @@ class SchoolService {
    */
   async setRating(schoolId: number, stars: number): Promise<boolean> {
     try {
-      const authStore = useAuthStore();
-      const userId = authStore.user?.UserId;
+      // Get userId from sessionStorage to avoid circular imports
+      const userJson = sessionStorage.getItem('user');
+      const user = userJson ? JSON.parse(userJson) : null;
+      const userId = user?.UserId;
       
       if (!userId) {
         console.error('User not authenticated');

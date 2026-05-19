@@ -1,11 +1,10 @@
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
-import type {AuthResponse, User} from "@/types.js";
-import router from "@/router/index.js";
-import { apiClient } from "@/api/client.js";
-import { cacheManager } from "@/api/cache.js";
-import { enrollmentService } from "@/api/enrollmentService.js";
-import { schoolService } from "@/api/schoolService.js";
+import type {AuthResponse, User} from '@/types';
+import { apiClient } from '@/api/client';
+import { cacheManager } from '@/api/cache';
+import { enrollmentService } from '@/api/enrollmentService';
+import { schoolService } from '@/api/schoolService';
 
 export enum UserRole {
   ADMIN = "admin",
@@ -33,6 +32,9 @@ export const useAuthStore = defineStore('auth', () => {
       sessionStorage.setItem('user', JSON.stringify(data.user))
 
       if(!fromRegister) {
+        // Dynamic import to avoid circular dependency
+        const router = (await import('@/router/index')).default
+        
         if(data.user.Role === UserRole.USER) {
           const isEnrolled = await enrollmentService.hasEnrollments(data.user.UserId)
           // Set the enrollment flag for route protection
@@ -69,6 +71,10 @@ export const useAuthStore = defineStore('auth', () => {
       await apiClient.post('/auth/register', body, { skipAuth: true })
 
       const role: UserRole = await login({email: userData.email, password: userData.password}, true)
+      
+      // Dynamic import to avoid circular dependency
+      const router = (await import('@/router/index')).default
+      
       if(role === UserRole.ADMIN || role === UserRole.USER) {
         await router.push('/start')
       }else if(role === UserRole.SCHOOL) {
@@ -80,7 +86,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  function logout() {
+  async function logout() {
     const userId = user.value?.UserId
     
     token.value = null
@@ -98,7 +104,9 @@ export const useAuthStore = defineStore('auth', () => {
     enrollmentService.invalidateAll()
     schoolService.invalidateAll()
     
-    router.push('/login')
+    // Dynamic import to avoid circular dependency
+    const router = (await import('@/router/index')).default
+    await router.push('/login')
   }
 
   function updateUser(userData: Partial<User>) {

@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { useAuthStore } from '@/stores/authStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -79,8 +78,10 @@ const router = createRouter({
     })
   },
 })
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start()
+  // Dynamic import to avoid circular dependency with authStore
+  const { useAuthStore } = await import('@/stores/authStore')
   const authStore = useAuthStore()
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
