@@ -33,10 +33,15 @@ export const useSchoolStore = defineStore('schools', () => {
   }
 
   async function fetchSchoolCount(force = false) {
+    isLoadingSchools.value = true
+    error.value = null
     try {
       countOfSchools.value = await schoolService.fetchSchoolCount(force)
     } catch (e) {
+      error.value = 'Fehler beim Laden der Schulanzahl'
       console.error('Failed to fetch schools count:', e)
+    } finally {
+      isLoadingSchools.value = false
     }
   }
 
