@@ -20,9 +20,15 @@ export class EnrollmentService {
 
   private constructor(private enrollmentRepo: EnrollmentRepository) {}
 
-  public getAppointmentsForEnrollment(enrollmentId: number): ServiceResult<Appointment[]> {
+  public getAppointmentsForEnrollment(enrollmentId: number, userId: number): ServiceResult<Appointment[]> {
     const unit = Unit.createReadonly();
     try {
+      // Verify enrollment belongs to the authenticated user
+      const enrollment = this.enrollmentRepo.getEnrollment(unit, enrollmentId);
+      if (!enrollment || enrollment.UserId !== userId) {
+        return { status: StatusCodes.FORBIDDEN, error: { message: "Zugriff verweigert" } };
+      }
+
       const appointments = this.enrollmentRepo.getAppointmentsForEnrollment(unit, enrollmentId);
       return { status: StatusCodes.OK, data: appointments };
     } catch (e: any) {
@@ -32,9 +38,15 @@ export class EnrollmentService {
     }
   }
 
-  public getCourseForEnrollment(enrollmentId: number): ServiceResult<LicenseProgram> {
+  public getCourseForEnrollment(enrollmentId: number, userId: number): ServiceResult<LicenseProgram> {
     const unit = Unit.createReadonly();
     try {
+      // Verify enrollment belongs to the authenticated user
+      const enrollment = this.enrollmentRepo.getEnrollment(unit, enrollmentId);
+      if (!enrollment || enrollment.UserId !== userId) {
+        return { status: StatusCodes.FORBIDDEN, error: { message: "Zugriff verweigert" } };
+      }
+
       const course = this.enrollmentRepo.getCourseForEnrollment(unit, enrollmentId);
       if (course) {
         return { status: StatusCodes.OK, data: course };

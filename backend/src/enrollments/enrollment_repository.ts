@@ -1,5 +1,5 @@
 import { Unit } from "../unit.js";
-import type { Appointment, LicenseProgram } from "../models/types.js";
+import type { Appointment, LicenseProgram, Enrollment } from "../models/types.js";
 
 export class EnrollmentRepository {
   private static instance: EnrollmentRepository | null = null;
@@ -10,6 +10,12 @@ export class EnrollmentRepository {
   }
 
   private constructor() {}
+
+  public getEnrollment(unit: Unit, enrollmentId: number): Enrollment | undefined {
+    return unit
+      .prepare<Enrollment>("SELECT * FROM Enrollment WHERE EnrollmentId = ?")
+      .get(enrollmentId);
+  }
 
   public getAppointmentsForEnrollment(unit: Unit, enrollmentId: number): Appointment[] {
     return unit

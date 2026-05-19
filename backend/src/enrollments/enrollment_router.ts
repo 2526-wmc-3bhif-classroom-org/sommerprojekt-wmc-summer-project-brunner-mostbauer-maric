@@ -2,6 +2,7 @@ import express from "express";
 import { StatusCodes } from "http-status-codes";
 import { EnrollmentService } from "./enrollment_service.js";
 import { isAuthenticated } from "../middleware/auth_handlers.js";
+import type { AuthRequest } from "../middleware/auth_handlers.js";
 
 export const enrollmentRouter = express.Router();
 const enrollmentService: EnrollmentService = EnrollmentService.Instance;
@@ -41,16 +42,23 @@ const enrollmentService: EnrollmentService = EnrollmentService.Instance;
  *                     type: string
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - enrollment does not belong to user
  */
 enrollmentRouter.get("/:id/appointments", isAuthenticated, (req, res) => {
   try {
+    const userId = (req as AuthRequest).payload?.user.UserId || 0;
     const enrollmentId = parseInt(req.params.id);
     if (isNaN(enrollmentId)) {
       res.status(StatusCodes.BAD_REQUEST).json({ error: { message: "Invalid enrollment ID" } });
       return;
     }
-    const result = enrollmentService.getAppointmentsForEnrollment(enrollmentId);
-    res.status(result.status).json(result.error ? { error: result.error } : { data: result.data });
+    const result = enrollmentService.getAppointmentsForEnrollment(enrollmentId, userId);
+    if (result.error) {
+      res.status(result.status).json({ error: result.error });
+    } else {
+      res.status(result.status).json(result.data);
+    }
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: { message: (error as Error).message } });
   }
@@ -92,21 +100,24 @@ enrollmentRouter.get("/:id/appointments", isAuthenticated, (req, res) => {
  *                   format: date
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - enrollment does not belong to user
  *       404:
  *         description: Enrollment or course not found
  */
 enrollmentRouter.get("/:id/course", isAuthenticated, (req, res) => {
   try {
+    const userId = (req as AuthRequest).payload?.user.UserId || 0;
     const enrollmentId = parseInt(req.params.id);
     if (isNaN(enrollmentId)) {
       res.status(StatusCodes.BAD_REQUEST).json({ error: { message: "Invalid enrollment ID" } });
       return;
     }
-    const result = enrollmentService.getCourseForEnrollment(enrollmentId);
+    const result = enrollmentService.getCourseForEnrollment(enrollmentId, userId);
     if (result.error) {
       res.status(result.status).json({ error: result.error });
     } else {
-      res.status(result.status).json({ data: result.data });
+      res.status(result.status).json(result.data);
     }
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: { message: (error as Error).message } });
