@@ -2,7 +2,7 @@
   <Background>
     <div class="min-h-screen flex flex-col items-center justify-start p-4 md:p-8 pt-16 md:pt-10">
       <div class="max-w-2xl w-full" v-motion-fade-visible>
-        <div class="text-center mb-10">
+        <div class="text-center" style="margin-bottom: 1.25rem;">
           <HeaderMain :title="t('start.title')" desktopHeight="md:text-6xl" mobileHeight="text-4xl" class="pb-2 text-black" :duration="500" />
           <p class="text-black font-bold text-base md:text-xl opacity-60 mt-4 px-4">
             {{ t('start.subtitle') }}
@@ -11,7 +11,7 @@
 
         <form @submit.prevent="submitForm" class="bg-white border-2 border-gray-100 rounded-[2rem] p-8 shadow-xl flex flex-col gap-8 transition-all hover:shadow-2xl">
           <div>
-            <label class="font-black text-xl mb-4 block text-black uppercase tracking-tight">{{ t('start.licenseClass') }}</label>
+            <label class="font-black text-xl block text-black uppercase tracking-tight" style="margin-bottom: 1rem;">{{ t('start.licenseClass') }}</label>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div
                 v-for="cls in classes"
@@ -28,7 +28,7 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="font-black text-lg mb-3 block text-black uppercase tracking-tight">{{ t('start.startDate') }}</label>
+              <label class="font-black text-lg block text-black uppercase tracking-tight" style="margin-bottom: 0.875rem;">{{ t('start.startDate') }}</label>
               <input
                 v-model="formData.startDate"
                 type="date"
@@ -38,7 +38,7 @@
               <span v-if="!dateValid" class="text-red-700 text-sm tracking-tight uppercase">{{ t('start.errors.invalidDate') }}</span>
             </div>
             <div>
-              <label class="font-black text-lg mb-3 block text-black uppercase tracking-tight">{{ t('start.pace') }}</label>
+              <label class="font-black text-lg block text-black uppercase tracking-tight" style="margin-bottom: 0.875rem;">{{ t('start.pace') }}</label>
               <select
                 v-model="formData.goal"
                 :class="['w-full p-4 border-2 rounded-2xl text-black font-bold focus:bg-white transition-all outline-none appearance-none shadow-sm', !goalValid ? 'border-red-400 bg-red-50/30' : 'bg-slate-50 border-transparent focus:border-black']"
@@ -54,10 +54,10 @@
 
            <button
              type="submit"
-             class="mt-4 bg-black text-white p-5 rounded-2xl font-black text-xl hover:bg-gray-800 active:scale-[0.98] transition-all shadow-xl hover:shadow-2xl uppercase tracking-widest flex items-center justify-center gap-3"
+             class="mt-4 bg-black text-white p-5 rounded-2xl font-black text-xl active:scale-[0.98] transition-all duration-300 shadow-xl uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] hover:shadow-[0_8px_32px_rgba(0,0,0,0.35)] hover:bg-gray-900 group"
            >
              {{ t('start.submit') }}
-             <i class="pi pi-arrow-right"></i>
+             <i class="pi pi-arrow-right transition-transform duration-300 group-hover:translate-x-1"></i>
            </button>
 
             <button
