@@ -50,7 +50,9 @@ class SchoolService {
       return cacheManager.get<Rating[]>(this.ratingsCacheKey) || [];
     }
 
-    const ratings = await apiClient.get<Rating[]>('/ratings', { skipAuth: true });
+    // Don't skip auth - include authorization if logged in so responses reflect current user context
+    // GET /ratings is publicly accessible but will include user-specific info if authenticated
+    const ratings = await apiClient.get<Rating[]>('/ratings');
     cacheManager.set(this.ratingsCacheKey, ratings, this.ratingsCacheTTL);
     return ratings;
   }
