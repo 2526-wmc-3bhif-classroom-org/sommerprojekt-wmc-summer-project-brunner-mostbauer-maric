@@ -194,12 +194,13 @@
     "tableHeaders": {
       "nr": "#",
       "school": "Fahrschule",
-      "location": "Ort",
+      "location": "Adresse",
       "owner": "Inhaber",
       "rating": "Bewertung",
       "website": "Website"
     },
     "noRating": "noch nicht bewertet",
+    "noWebsite": "Keine Webseite verfügbar",
     "notes": "Notizen",
     "notePlaceholder": "Deine Notiz...",
     "loadError": "Daten konnten nicht geladen werden",
@@ -322,6 +323,7 @@
     "phonePlaceholder": "+43 ...",
     "websitePlaceholder": "https://...",
     "saveChanges": "Änderungen speichern",
+    "saveSuccess": "Änderungen erfolgreich gespeichert",
     "or": "oder",
     "changePassword": "Passwort ändern",
     "deleteAccount": "Account löschen",
@@ -329,14 +331,16 @@
       "title": "Foto aktualisieren",
       "drag": "Bild hierher ziehen",
       "select": "Datei auswählen",
-      "remove": "Foto entfernen"
+      "remove": "Foto entfernen",
+      "success": "Profilbild erfolgreich aktualisiert"
     },
     "password": {
       "title": "Passwort ändern",
       "current": "Aktuelles Passwort",
       "new": "Neues Passwort",
       "confirm": "Neues Passwort bestätigen",
-      "update": "Passwort aktualisieren"
+      "update": "Passwort aktualisieren",
+      "success": "Passwort erfolgreich geändert"
     },
     "deleteModal": {
       "title": "Account wirklich löschen?",

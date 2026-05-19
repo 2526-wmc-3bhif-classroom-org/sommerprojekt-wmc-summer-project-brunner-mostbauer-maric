@@ -113,15 +113,29 @@
                     <a v-if="school.Website" :href="school.Website" target="_blank" @click.stop class="text-blue-500 text-sm p-1">
                       <i class="pi pi-external-link"></i>
                     </a>
+                    <span v-else class="text-slate-300 text-sm p-1 opacity-50 cursor-not-allowed">
+                      <i class="pi pi-external-link"></i>
+                    </span>
                   </div>
 
                   <h3 class="font-bold text-slate-900">{{ school.Name }}</h3>
-                  <p class="text-sm text-slate-500 flex items-center gap-1 mt-1">
-                    <i class="pi pi-map-marker text-[10px]"></i> {{ school.Location }}
-                  </p>
+                  <div class="mt-1">
+                    <a
+                      v-if="school.Location"
+                      :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(school.Location)"
+                      target="_blank"
+                      @click.stop
+                      class="text-sm text-slate-500 hover:text-blue-500 active:text-blue-600 transition-colors flex items-center w-fit"
+                    >
+                      {{ school.Location }}
+                    </a>
+                    <p v-else class="text-sm text-slate-500">
+                      {{ '—' }}
+                    </p>
+                  </div>
 
                   <div class="flex items-center justify-between mt-4">
-                    <span class="text-xs text-slate-400 italic">{{ school.Owner }}</span>
+                    <span class="text-xs text-slate-400 italic">{{ school.Owner || '—' }}</span>
                     <div class="flex flex-col items-end gap-0.5">
                       <div class="flex gap-1">
                         <i

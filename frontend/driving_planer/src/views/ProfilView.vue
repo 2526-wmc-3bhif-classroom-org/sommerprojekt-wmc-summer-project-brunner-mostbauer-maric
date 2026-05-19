@@ -233,6 +233,15 @@
       </div>
     </Transition>
 
+    <Transition name="toast">
+      <div v-if="showSuccessToast" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] pointer-events-none">
+        <div class="bg-emerald-500 text-white px-6 py-3 rounded-2xl shadow-2xl shadow-emerald-200 flex items-center gap-3">
+          <i class="pi pi-check-circle text-lg"></i>
+          <span class="font-semibold text-sm">{{ toastMessage }}</span>
+        </div>
+      </div>
+    </Transition>
+
     <FooterCmp />
   </Background>
 </template>
@@ -249,6 +258,17 @@ const { t } = useI18n()
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 const authStore = useAuthStore()
 const userId = authStore.user.UserId
+
+const showSuccessToast = ref(false)
+const toastMessage = ref('')
+
+const triggerToast = (message: string) => {
+  toastMessage.value = message
+  showSuccessToast.value = true
+  setTimeout(() => {
+    showSuccessToast.value = false
+  }, 1000)
+}
 
 const avatarUrl = computed(() => {
   if (authStore.user?.AvatarPath) {
@@ -354,6 +374,8 @@ const saveProfile = async () => {
     user.UserName = displayName.value
     user.Email = email.value
     sessionStorage.setItem('user', JSON.stringify(user))
+
+    triggerToast(t('profile.saveSuccess'))
   } catch {
     errors.userName = t('profile.errors.networkSave')
     errors.email = t('profile.errors.networkSave')
@@ -372,6 +394,7 @@ const updatePassword = async () => {
       const response = await fetch(API_URL + `/users/${userId}/password`, { method: 'PATCH', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword: passwords.current, newPassword: passwords.new }) })
       if (response.ok) {
         closePasswordModal()
+        triggerToast(t('profile.password.success'))
       } else {
         throw new Error()
       }
@@ -425,10 +448,15 @@ const handleImageUpload = (file: File) => {
   reader.readAsDataURL(file)
   uploadAvatar(file)
   closeImageModal()
+  triggerToast(t('profile.photo.success'))
 }
 </script>
 
 <style scoped>
 .fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+.toast-enter-active, .toast-leave-active { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.toast-enter-from { opacity: 0; transform: translate(-50%, -20px) scale(0.9); }
+.toast-leave-to { opacity: 0; transform: translate(-50%, -20px) scale(0.9); }
 </style>
