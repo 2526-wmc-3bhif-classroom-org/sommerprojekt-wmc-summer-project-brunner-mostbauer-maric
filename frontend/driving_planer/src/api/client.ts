@@ -3,8 +3,6 @@
  * Handles all HTTP requests with error handling, authentication, and response standardization
  */
 
-import { useAuthStore } from '@/stores/authStore.js';
-
 export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
 
 export interface ApiResponse<T> {
@@ -29,6 +27,13 @@ class ApiClient {
   }
 
   /**
+   * Get token from sessionStorage to avoid circular imports
+   */
+  private getToken(): string | null {
+    return sessionStorage.getItem('token');
+  }
+
+  /**
    * Build headers with authorization if available
    */
   private buildHeaders(config?: ApiRequestConfig): HeadersInit {
@@ -38,9 +43,9 @@ class ApiClient {
     };
 
     if (!config?.skipAuth) {
-      const authStore = useAuthStore();
-      if (authStore.token) {
-        headers['Authorization'] = `Bearer ${authStore.token}`;
+      const token = this.getToken();
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
       }
     }
 
@@ -62,8 +67,10 @@ class ApiClient {
 
     // Handle 401 Unauthorized - but preserve login error messages
     if (response.status === 401 && endpoint !== '/auth/login') {
-      const authStore = useAuthStore();
-      authStore.logout();
+      // Dynamically import to avoid circular dependency
+      import('@/stores/authStore.js').then(module => {
+        module.useAuthStore().logout();
+      });
       throw new Error('Unauthorized - please log in again');
     }
 
