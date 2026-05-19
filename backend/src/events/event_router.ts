@@ -79,6 +79,59 @@ eventRouter.post("/", isAuthenticated, (req, res) => {
 /**
  * @swagger
  * /api/events/{id}:
+ *   patch:
+ *     summary: Update an event
+ *     tags: [Events]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *               date:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Event updated
+ *       404:
+ *         description: Event not found
+ *       401:
+ *         description: Unauthorized
+ */
+eventRouter.patch("/:id", isAuthenticated, (req, res) => {
+  try {
+    const userId = (req as AuthRequest).payload?.user.UserId || 0;
+    const eventId = parseInt(req.params.id);
+    if (isNaN(eventId)) {
+      res.status(StatusCodes.BAD_REQUEST).json({ error: { message: "Invalid event ID" } });
+      return;
+    }
+    const { type, date } = req.body;
+    const result = eventService.updateEvent(eventId, userId, type, date);
+    if (result.error) {
+      res.status(result.status).json({ error: result.error });
+    } else {
+      res.status(result.status).json(result.data);
+    }
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: { message: (error as Error).message } });
+  }
+});
+
+/**
+ * @swagger
+ * /api/events/{id}:
  *   delete:
  *     summary: Delete an event
  *     tags: [Events]
