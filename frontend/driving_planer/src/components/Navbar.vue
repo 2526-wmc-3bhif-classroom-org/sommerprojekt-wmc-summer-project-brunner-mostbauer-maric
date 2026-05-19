@@ -19,16 +19,16 @@
 
     <!-- Mobile Sidebar -->
     <aside
-      :class="['md:hidden fixed top-0 left-0 h-full bg-white z-9999 shadow-xl transform transition-transform duration-300',
+      :class="['md:hidden fixed top-0 left-0 h-full w-20 bg-white z-9999 shadow-xl transform transition-transform duration-300 flex flex-col items-center',
         sidebarOpen ? 'translate-x-0' : '-translate-x-full']"
     >
-      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+      <div class="flex items-center justify-center px-4 py-3 border-b border-gray-200 w-full">
         <button @click="sidebarOpen = false" class="p-2 text-gray-400 hover:text-black" :aria-label="t('nav.closeMenu')">
           <i class="pi pi-times text-xl"></i>
         </button>
       </div>
 
-      <nav class="flex flex-col gap-2 p-4">
+      <nav class="flex flex-col items-center gap-2 p-4 w-full">
         <div
           v-for="(link, index) in links"
           :key="index"
@@ -42,7 +42,7 @@
         </div>
       </nav>
 
-      <div class="absolute bottom-6 left-0 right-0 flex flex-col items-start gap-4 px-4">
+      <div class="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-4 px-4">
         <!-- Language selector -->
         <div class="relative">
           <button
