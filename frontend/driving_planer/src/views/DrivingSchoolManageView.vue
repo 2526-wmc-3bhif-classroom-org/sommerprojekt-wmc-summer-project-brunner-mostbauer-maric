@@ -559,7 +559,7 @@ async function confirmJoin() {
     body: JSON.stringify({ goal, plannerStartDate })
   })
   if (res.ok) {
-    sessionStorage.setItem(`enrolled_${authStore.user.UserId}`, 'true')
+    authStore.setEnrolled(true)
     sessionStorage.removeItem('pendingEnrollment')
     joinTargetId.value = null
     router.push('/dashboard')

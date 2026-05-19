@@ -13,7 +13,9 @@
     "openMenu": "Menü öffnen",
     "closeMenu": "Menü schließen",
     "openProfile": "Profilmenü öffnen",
-    "language": "Sprache"
+    "language": "Sprache",
+    "joinCourse": "Kurs beitreten",
+    "startForm": "Fahrplan erstellen"
   },
   "common": {
     "cancel": "Abbrechen",

@@ -9,6 +9,7 @@ export interface User {
   Role: UserRole;
   AvatarPath?: string | null;
   DrivingSchoolId?: number | null;
+  HasSkipped?: number;
 }
 
 export class UserRepository {
@@ -83,6 +84,13 @@ export class UserRepository {
     const result = unit
       .prepare("UPDATE User SET PasswordHash = ? WHERE UserId = ?")
       .run(passwordHash, userId);
+    return result.changes > 0;
+  }
+
+  public updateSkipped(unit: Unit, userId: number, hasSkipped: boolean): boolean {
+    const result = unit
+      .prepare("UPDATE User SET HasSkipped = ? WHERE UserId = ?")
+      .run(hasSkipped ? 1 : 0, userId);
     return result.changes > 0;
   }
 }

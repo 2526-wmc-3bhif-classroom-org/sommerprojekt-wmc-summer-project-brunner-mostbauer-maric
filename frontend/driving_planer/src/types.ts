@@ -7,6 +7,7 @@ export interface User {
   Role: string;
   AvatarPath?: string;
   DrivingSchoolId?: number | null;
+  HasSkipped?: boolean;
 }
 
 export interface AuthResponse {

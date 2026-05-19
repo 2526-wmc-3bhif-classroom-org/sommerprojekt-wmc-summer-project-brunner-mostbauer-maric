@@ -21,6 +21,36 @@ export const useAuthStore = defineStore('auth', () => {
   const isSchool = computed(() => user.value?.Role === UserRole.SCHOOL)
   const isStudent = computed(() => user.value?.Role === UserRole.USER)
 
+  const enrolledStatus = ref<boolean>(
+    user.value ? sessionStorage.getItem(`enrolled_${user.value.UserId}`) === 'true' : false
+  )
+  const isEnrolled = computed(() => enrolledStatus.value)
+
+  function setEnrolled(value: boolean) {
+    enrolledStatus.value = value
+    if (user.value) {
+      sessionStorage.setItem(`enrolled_${user.value.UserId}`, value ? 'true' : 'false')
+    }
+    if (value) skippedEnrollment.value = false
+  }
+
+  const skippedEnrollment = ref<boolean>(
+    user.value ? (user.value.HasSkipped === true || sessionStorage.getItem(`skipped_${user.value.UserId}`) === 'true') : false
+  )
+  const hasSkippedEnrollment = computed(() => skippedEnrollment.value)
+
+  async function setSkippedEnrollment(value: boolean) {
+    skippedEnrollment.value = value
+    if (user.value) {
+      sessionStorage.setItem(`skipped_${user.value.UserId}`, value ? 'true' : 'false')
+      if (value) {
+        try {
+          await apiClient.patch(`/users/${user.value.UserId}/skip`, {}, {})
+        } catch {}
+      }
+    }
+  }
+
   async function login(credentials: { email: string; password: string }, fromRegister: boolean = false) : Promise<UserRole>{
     try {
       const data = await apiClient.post<AuthResponse>('/auth/login', credentials, { skipAuth: true })
@@ -36,10 +66,13 @@ export const useAuthStore = defineStore('auth', () => {
         const router = (await import('@/router/index')).default
         
         if(data.user.Role === UserRole.USER) {
-          const isEnrolled = await enrollmentService.hasEnrollments(data.user.UserId)
-          // Set the enrollment flag for route protection
-          sessionStorage.setItem(`enrolled_${data.user.UserId}`, isEnrolled ? 'true' : 'false')
-          await router.push(isEnrolled ? '/dashboard' : '/start')
+          const enrolled = await enrollmentService.hasEnrollments(data.user.UserId)
+          sessionStorage.setItem(`enrolled_${data.user.UserId}`, enrolled ? 'true' : 'false')
+          enrolledStatus.value = enrolled
+          const skipped = !!data.user.HasSkipped
+          sessionStorage.setItem(`skipped_${data.user.UserId}`, skipped ? 'true' : 'false')
+          skippedEnrollment.value = skipped
+          await router.push(enrolled ? '/dashboard' : (skipped ? '/dashboard' : '/start'))
         } else if(data.user.Role === UserRole.ADMIN) {
           await router.push('/dashboard')
         } else if(data.user.Role === UserRole.SCHOOL){
@@ -91,6 +124,8 @@ export const useAuthStore = defineStore('auth', () => {
     
     token.value = null
     user.value = null
+    enrolledStatus.value = false
+    skippedEnrollment.value = false
     sessionStorage.removeItem('token')
     sessionStorage.removeItem('user')
     
@@ -116,5 +151,5 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { user, token, isAuthenticated, isAdmin, isSchool, isStudent, login, register, logout, updateUser }
+  return { user, token, isAuthenticated, isAdmin, isSchool, isStudent, isEnrolled, setEnrolled, hasSkippedEnrollment, setSkippedEnrollment, login, register, logout, updateUser }
 })

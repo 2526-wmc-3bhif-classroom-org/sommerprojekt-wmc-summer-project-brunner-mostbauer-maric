@@ -89,9 +89,13 @@ router.beforeEach(async (to, from, next) => {
   } else if (to.meta.guestOnly && authStore.isAuthenticated) {
     next({ name: 'home' })
   } else if (to.name === 'start' && authStore.isAuthenticated && authStore.user) {
-    const hasEnrolled = sessionStorage.getItem(`enrolled_${authStore.user.UserId}`)
+    const userId = authStore.user.UserId
+    const hasEnrolled = sessionStorage.getItem(`enrolled_${userId}`) === 'true'
+    const hasSkipped = sessionStorage.getItem(`skipped_${userId}`) === 'true'
     if (hasEnrolled) {
       next({ name: 'dashboard' })
+    } else if (hasSkipped) {
+      next({ name: 'manage' })
     } else {
       next()
     }
