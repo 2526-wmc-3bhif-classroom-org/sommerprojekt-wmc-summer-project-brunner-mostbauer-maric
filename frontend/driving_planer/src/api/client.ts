@@ -50,21 +50,21 @@ class ApiClient {
   /**
    * Handle error responses
    */
-  private async handleErrorResponse(response: Response): Promise<never> {
-    // Handle 401 Unauthorized
-    if (response.status === 401) {
-      const authStore = useAuthStore();
-      authStore.logout();
-      throw new Error('Unauthorized - please log in again');
-    }
-
-    // Try to parse error message from response
+  private async handleErrorResponse(response: Response, endpoint: string): Promise<never> {
+    // Try to parse error message from response first
     let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
     try {
       const errorData = await response.json();
       errorMessage = errorData.error?.message || errorMessage;
     } catch {
       // If JSON parsing fails, use default error message
+    }
+
+    // Handle 401 Unauthorized - but preserve login error messages
+    if (response.status === 401 && endpoint !== '/auth/login') {
+      const authStore = useAuthStore();
+      authStore.logout();
+      throw new Error('Unauthorized - please log in again');
     }
 
     throw new Error(errorMessage);
@@ -94,7 +94,7 @@ class ApiClient {
       const response = await fetch(url, fetchConfig);
 
       if (!response.ok) {
-        await this.handleErrorResponse(response);
+        await this.handleErrorResponse(response, endpoint);
       }
 
       // Handle empty responses (e.g., 204 No Content)

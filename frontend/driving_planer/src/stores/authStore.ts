@@ -35,6 +35,8 @@ export const useAuthStore = defineStore('auth', () => {
       if(!fromRegister) {
         if(data.user.Role === UserRole.USER) {
           const isEnrolled = await enrollmentService.hasEnrollments(data.user.UserId)
+          // Set the enrollment flag for route protection
+          sessionStorage.setItem(`enrolled_${data.user.UserId}`, isEnrolled ? 'true' : 'false')
           await router.push(isEnrolled ? '/dashboard' : '/start')
         } else if(data.user.Role === UserRole.ADMIN) {
           await router.push('/dashboard')
@@ -79,10 +81,17 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function logout() {
+    const userId = user.value?.UserId
+    
     token.value = null
     user.value = null
     sessionStorage.removeItem('token')
     sessionStorage.removeItem('user')
+    
+    // Clear enrollment flag for this user
+    if (userId) {
+      sessionStorage.removeItem(`enrolled_${userId}`)
+    }
     
     // Clear all caches on logout
     cacheManager.clear()
