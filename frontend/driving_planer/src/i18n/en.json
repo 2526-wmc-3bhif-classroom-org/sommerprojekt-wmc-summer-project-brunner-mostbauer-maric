@@ -13,7 +13,9 @@
     "openMenu": "Open Menu",
     "closeMenu": "Close Menu",
     "openProfile": "Open Profile Menu",
-    "language": "Language"
+    "language": "Language",
+    "joinCourse": "Join Course",
+    "startForm": "Create Plan"
   },
   "common": {
     "cancel": "Cancel",

@@ -434,6 +434,25 @@ userRouter.get("/:id/enrollments", isAuthenticated, (req, res) => {
  *       404:
  *         description: User not found
  */
+userRouter.patch("/:id/skip", isAuthenticated, (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const authReq = req as AuthRequest;
+    if (authReq.payload?.user.UserId !== userId) {
+      res.status(StatusCodes.FORBIDDEN).json({ error: { message: "Not authorized" } });
+      return;
+    }
+    const result = userService.setSkipped(userId);
+    if (result.error) {
+      res.status(result.status).json({ error: result.error });
+    } else {
+      res.status(result.status).json(result.data);
+    }
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: { message: (error as Error).message } });
+  }
+});
+
 userRouter.patch("/:id/password", isAuthenticated, (req, res) => {
   try {
     const userId = parseInt(req.params.id);

@@ -87,6 +87,7 @@ const { t } = useI18n()
 const router = useRouter()
 const authStore = useAuthStore()
 
+
 const classes = ['AM','A1', 'A2', 'A', 'B1', 'B', 'C1', 'C', 'D1', 'D', 'BE', 'C1E', 'CE', 'D1E', 'DE', 'F']
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
@@ -159,8 +160,7 @@ const checkIfFuture = (formDate: Date, todayDate: Date) => {
 }
 
 const skipEnrollment = () => {
-  // User chooses to skip enrollment for now
-  // They can enroll later from the dashboard
+  authStore.setSkippedEnrollment(true)
   sessionStorage.removeItem('pendingEnrollment')
   router.push('/dashboard')
 }

@@ -165,6 +165,9 @@ export const buildTables = (connection: Database) => {
     try { connection.exec(`ALTER TABLE LicenseProgram ADD COLUMN TimeFrom TEXT`); } catch {}
     try { connection.exec(`ALTER TABLE LicenseProgram ADD COLUMN TimeTo TEXT`); } catch {}
 
+    // migration: add HasSkipped flag to User
+    try { connection.exec(`ALTER TABLE User ADD COLUMN HasSkipped INTEGER NOT NULL DEFAULT 0`); } catch {}
+
     // migration: add missing license types B1, C1E, D1E, F
     for (const name of ['B1', 'C1E', 'D1E', 'F']) {
       try { connection.exec(`INSERT INTO LicenseType (Name) SELECT '${name}' WHERE NOT EXISTS (SELECT 1 FROM LicenseType WHERE Name = '${name}')`); } catch {}

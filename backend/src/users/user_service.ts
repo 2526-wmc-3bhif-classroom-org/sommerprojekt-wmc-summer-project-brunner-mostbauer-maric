@@ -344,6 +344,26 @@ export class UserService {
     }
   }
 
+  public setSkipped(userId: number): ServiceResult {
+    if (isNaN(userId)) {
+      return { status: StatusCodes.BAD_REQUEST, error: { message: "Invalid user ID" } };
+    }
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const updated = this.userRepo.updateSkipped(unit, userId, true);
+      if (updated) {
+        success = true;
+        return { status: StatusCodes.OK, data: { message: "Skipped" } };
+      }
+      return { status: StatusCodes.NOT_FOUND, error: { message: "User not found" } };
+    } catch (e: any) {
+      return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
+    } finally {
+      unit.complete(success);
+    }
+  }
+
   public getUserEnrollments(userId: number, requestUserId: number, requestUserRole: UserRole): ServiceResult {
     if (isNaN(userId)) {
       return {
