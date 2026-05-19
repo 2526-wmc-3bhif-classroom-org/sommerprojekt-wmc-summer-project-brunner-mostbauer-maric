@@ -63,9 +63,10 @@
             <button
               type="button"
               @click="skipEnrollment"
-              class="mt-2 bg-gray-100 text-black p-4 rounded-2xl font-bold text-base hover:bg-gray-200 active:scale-[0.98] transition-all uppercase tracking-widest border-2 border-gray-300 hover:border-gray-400"
+              class="mt-2 bg-gray-100 text-black p-4 rounded-2xl font-bold text-base active:scale-[0.98] transition-all duration-300 uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] hover:shadow-[0_8px_32px_rgba(0,0,0,0.15)] hover:bg-gray-200 group"
             >
               {{ t('start.skip') }}
+              <i class="pi pi-arrow-right transition-transform duration-300 group-hover:translate-x-1"></i>
             </button>
          </form>
        </div>
