@@ -3,22 +3,22 @@
  * Central export for all API-related services and utilities
  */
 
-export { apiClient } from './client.js';
-export type { ApiResponse, ApiRequestConfig, HttpMethod } from './client.js';
+export { apiClient } from './client';
+export type { ApiResponse, ApiRequestConfig, HttpMethod } from './client';
 
-export { cacheManager } from './cache.js';
-export type { CacheEntry, CacheConfig } from './cache.js';
+export { cacheManager } from './cache';
+export type { CacheEntry, CacheConfig } from './cache';
 
-export { schoolService } from './schoolService.js';
-export { enrollmentService } from './enrollmentService.js';
-export { taskService } from './taskService.js';
-export type { Task } from './taskService.js';
+export { schoolService } from './schoolService';
+export { enrollmentService } from './enrollmentService';
+export { taskService } from './taskService';
+export type { Task } from './taskService';
 
-export { eventService } from './eventService.js';
-export type { CalendarEntry } from './eventService.js';
+export { eventService } from './eventService';
+export type { CalendarEntry } from './eventService';
 
-export { kmLogService } from './kmLogService.js';
-export type { KmLog } from './kmLogService.js';
+export { kmLogService } from './kmLogService';
+export type { KmLog } from './kmLogService';
 
-export { courseService } from './courseService.js';
-export type { Course } from './courseService.js';
+export { courseService } from './courseService';
+export type { Course } from './courseService';

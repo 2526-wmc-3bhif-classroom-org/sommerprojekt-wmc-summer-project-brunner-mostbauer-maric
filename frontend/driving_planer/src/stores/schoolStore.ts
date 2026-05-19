@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
-import type {DrivingSchool, Rating} from "@/types.js";
-import { schoolService } from "@/api/schoolService.js";
+import type {DrivingSchool, Rating} from '@/types';
+import { schoolService } from '@/api/schoolService';
 
 export const useSchoolStore = defineStore('schools', () => {
   const schools = ref<DrivingSchool[]>([])

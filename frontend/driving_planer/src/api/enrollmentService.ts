@@ -3,9 +3,9 @@
  * Manages enrollment-related API calls with caching
  */
 
-import { apiClient } from './client.js';
-import { cacheManager } from './cache.js';
-import type { Enrollment, Appointment } from '@/types.js';
+import { apiClient } from './client';
+import { cacheManager } from './cache';
+import type { Enrollment, Appointment } from '@/types';
 
 class EnrollmentService {
   private enrollmentsCacheTTL = 10 * 60 * 1000; // 10 minutes

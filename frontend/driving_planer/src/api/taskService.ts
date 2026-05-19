@@ -3,8 +3,8 @@
  * Manages task-related API calls with caching
  */
 
-import { apiClient } from './client.js';
-import { cacheManager } from './cache.js';
+import { apiClient } from './client';
+import { cacheManager } from './cache';
 
 export interface Task {
   id: number;

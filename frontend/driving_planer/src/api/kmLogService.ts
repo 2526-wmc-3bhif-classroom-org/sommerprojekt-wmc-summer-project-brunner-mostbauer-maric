@@ -3,8 +3,8 @@
  * Manages kilometer log-related API calls
  */
 
-import { apiClient } from './client.js';
-import { cacheManager } from './cache.js';
+import { apiClient } from './client';
+import { cacheManager } from './cache';
 
 export interface KmLog {
   id: number;
