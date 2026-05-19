@@ -5,6 +5,7 @@
 
 import { apiClient } from './client.js';
 import { cacheManager } from './cache.js';
+import { useAuthStore } from '@/stores/authStore.js';
 import type { DrivingSchool, Rating } from '@/types.js';
 
 class SchoolService {
@@ -59,21 +60,29 @@ class SchoolService {
    */
   async setRating(schoolId: number, stars: number): Promise<boolean> {
     try {
+      const authStore = useAuthStore();
+      const userId = authStore.user?.UserId;
+      
+      if (!userId) {
+        console.error('User not authenticated');
+        return false;
+      }
+
       if (stars === 0) {
         // Delete rating
         await apiClient.delete(`/ratings/${schoolId}`);
       } else {
-        // Check if we need to create or update
+        // Check if current user has already rated this school
         const ratings = await this.fetchRatings();
         const existingRating = ratings.find(
-          (r) => r.DrivingSchoolId === schoolId
+          (r) => r.DrivingSchoolId === schoolId && r.UserId === userId
         );
 
         if (existingRating) {
-          // Update existing
+          // Update existing rating for current user
           await apiClient.patch('/ratings', { schoolId, stars });
         } else {
-          // Create new
+          // Create new rating for current user
           await apiClient.post('/ratings', { schoolId, stars });
         }
       }
