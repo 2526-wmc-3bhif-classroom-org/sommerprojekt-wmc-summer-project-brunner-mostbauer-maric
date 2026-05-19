@@ -10,6 +10,7 @@ import { kmLogRouter } from "./kmlog/km_router.js";
 import { taskRouter } from "./tasks/task_router.js";
 import { ratingRouter } from "./ratings/rating_router.js";
 import { eventRouter } from "./events/event_router.js";
+import { enrollmentRouter } from "./enrollments/enrollment_router.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import cors from "cors";
@@ -147,6 +148,7 @@ app.use("/api/kmlog", kmLogRouter);
 app.use("/api/tasks", taskRouter);
 app.use("/api/ratings", ratingRouter);
 app.use("/api/events", eventRouter);
+app.use("/api/enrollments", enrollmentRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.sendStatus(StatusCodes.OK);
