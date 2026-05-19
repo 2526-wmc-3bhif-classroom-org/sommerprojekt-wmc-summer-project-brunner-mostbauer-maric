@@ -25,11 +25,11 @@ class EventService {
       return cacheManager.get<CalendarEntry[]>(this.eventsCacheKey) || [];
     }
 
-    const data = await apiClient.get<Array<{ id: number; type: string; date: string }>>('/events');
+    const data = await apiClient.get<Array<{ EventId: number; Type: string; Date: string }>>('/events');
     const events = data.map((e) => ({
-      id: e.id,
-      type: e.type,
-      date: e.date,
+      id: e.EventId,
+      type: e.Type,
+      date: e.Date,
       auto: false,
     }));
     cacheManager.set(this.eventsCacheKey, events, this.eventsCacheTTL);
@@ -41,14 +41,14 @@ class EventService {
    */
   async addEvent(type: string, date: string): Promise<CalendarEntry | null> {
     try {
-      const response = await apiClient.post<{ id: number; type: string; date: string }>('/events', {
+      const response = await apiClient.post<{ EventId: number; message: string }>('/events', {
         type,
         date,
       });
       const event: CalendarEntry = {
-        id: response.id,
-        type: response.type,
-        date: response.date,
+        id: response.EventId,
+        type: type,
+        date: date,
       };
       this.invalidate();
       return event;

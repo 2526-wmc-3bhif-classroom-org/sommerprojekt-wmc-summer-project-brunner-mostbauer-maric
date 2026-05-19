@@ -13,8 +13,8 @@ export interface KmLog {
   startLocation: string;
   endLocation: string;
   conditions: string;
-  enrollmentId: number;
-  date: string;
+  enrollmentId?: number;
+  date?: string;
 }
 
 class KmLogService {
@@ -29,9 +29,18 @@ class KmLogService {
       return cacheManager.get<KmLog[]>(this.kmLogsCacheKey) || [];
     }
 
-    const data = await apiClient.get<KmLog[]>('/kmlogs');
-    cacheManager.set(this.kmLogsCacheKey, data, this.kmLogsCacheTTL);
-    return data;
+    const data = await apiClient.get<Array<{ KmLogId: number; StartKm: number; EndKm: number; StartLocation: string; EndLocation: string; Conditions: string; UserId: number; Timestamp: string }>>('/kmlog');
+    const logs = data.map((log) => ({
+      id: log.KmLogId,
+      startKm: log.StartKm,
+      endKm: log.EndKm,
+      startLocation: log.StartLocation,
+      endLocation: log.EndLocation,
+      conditions: log.Conditions,
+      date: log.Timestamp,
+    }));
+    cacheManager.set(this.kmLogsCacheKey, logs, this.kmLogsCacheTTL);
+    return logs;
   }
 
   /**
@@ -39,15 +48,24 @@ class KmLogService {
    */
   async addKmLog(startKm: number, endKm: number, startLocation: string, endLocation: string, conditions: string): Promise<KmLog | null> {
     try {
-      const response = await apiClient.post<KmLog>('/kmlogs', {
+      const response = await apiClient.post<{ KmLogId: number; StartKm: number; EndKm: number; StartLocation: string; EndLocation: string; Conditions: string; UserId: number; Timestamp: string }>('/kmlog', {
         startKm,
         endKm,
         startLocation,
         endLocation,
         conditions,
       });
+      const log: KmLog = {
+        id: response.KmLogId,
+        startKm: response.StartKm,
+        endKm: response.EndKm,
+        startLocation: response.StartLocation,
+        endLocation: response.EndLocation,
+        conditions: response.Conditions,
+        date: response.Timestamp,
+      };
       this.invalidate();
-      return response;
+      return log;
     } catch (error) {
       console.error('Failed to add KM log:', error);
       return null;
@@ -59,7 +77,7 @@ class KmLogService {
    */
   async updateKmLog(logId: number, startKm: number, endKm: number, startLocation: string, endLocation: string, conditions: string): Promise<boolean> {
     try {
-      await apiClient.patch(`/kmlogs/${logId}`, {
+      await apiClient.put(`/kmlog/${logId}`, {
         startKm,
         endKm,
         startLocation,
@@ -79,7 +97,7 @@ class KmLogService {
    */
   async deleteKmLog(logId: number): Promise<boolean> {
     try {
-      await apiClient.delete(`/kmlogs/${logId}`);
+      await apiClient.delete(`/kmlog/${logId}`);
       this.invalidate();
       return true;
     } catch (error) {
