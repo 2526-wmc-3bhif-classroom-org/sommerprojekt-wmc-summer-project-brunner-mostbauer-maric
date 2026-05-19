@@ -17,6 +17,12 @@ export class TaskRepository {
       .all(userId);
   }
 
+  public getById(unit: Unit, taskId: number, userId: number): Task | undefined {
+    return unit
+      .prepare<Task>("SELECT * FROM Task WHERE TaskId = ? AND UserId = ?")
+      .get(taskId, userId);
+  }
+
   public create(unit: Unit, userId: number, text: string, isDefault: boolean): number {
     const result = unit
       .prepare("INSERT INTO Task (UserId, Text, Done, IsDefault) VALUES (?, ?, 0, ?)")
