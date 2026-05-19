@@ -241,6 +241,8 @@
       "price": "Price (€) *",
       "maxParticipants": "Max. Participants *",
       "currentParticipants": "Current Participants",
+      "drivingSchool": "Driving School *",
+      "drivingSchoolSelect": "Select driving school...",
       "saveChanges": "Save Changes",
       "createCourse": "Create Course",
       "errors": {
