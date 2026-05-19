@@ -32,7 +32,7 @@ export class TaskService {
     }
   }
 
-  public addTask(userId: number, text: string, isDefault: boolean): ServiceResult {
+  public addTask(userId: number, text: string, isDefault: boolean): ServiceResult<Task> {
     if (!text || !text.trim()) {
       return { status: StatusCodes.BAD_REQUEST, error: { message: "Text darf nicht leer sein" } };
     }
@@ -40,8 +40,13 @@ export class TaskService {
     let success = false;
     try {
       const taskId = this.taskRepo.create(unit, userId, text.trim(), isDefault);
-      success = true;
-      return { status: StatusCodes.CREATED, data: { TaskId: taskId, message: "Task gespeichert" } };
+      // Fetch the created task to return complete object
+      const task = this.taskRepo.getById(unit, taskId, userId);
+      if (task) {
+        success = true;
+        return { status: StatusCodes.CREATED, data: task };
+      }
+      return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: "Task konnte nicht erstellt werden" } };
     } catch (e: any) {
       return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
     } finally {

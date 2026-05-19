@@ -23,6 +23,13 @@ export class EventRepository {
     return result.lastInsertRowid as number;
   }
 
+  public update(unit: Unit, eventId: number, userId: number, type: string, date: string): boolean {
+    const result = unit
+      .prepare("UPDATE UserEvent SET Type = ?, Date = ? WHERE EventId = ? AND UserId = ?")
+      .run(type, date, eventId, userId);
+    return result.changes > 0;
+  }
+
   public delete(unit: Unit, eventId: number, userId: number): boolean {
     const result = unit
       .prepare("DELETE FROM UserEvent WHERE EventId = ? AND UserId = ?")

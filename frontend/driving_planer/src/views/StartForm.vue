@@ -52,19 +52,27 @@
             </div>
           </div>
 
-          <button
-            type="submit"
-            class="mt-4 bg-black text-white p-5 rounded-2xl font-black text-xl hover:bg-gray-800 active:scale-[0.98] transition-all shadow-xl hover:shadow-2xl uppercase tracking-widest flex items-center justify-center gap-3"
-          >
-            {{ t('start.submit') }}
-            <i class="pi pi-arrow-right"></i>
-          </button>
-        </form>
-      </div>
-    </div>
-    <FooterCmp />
-  </Background>
-</template>
+           <button
+             type="submit"
+             class="mt-4 bg-black text-white p-5 rounded-2xl font-black text-xl hover:bg-gray-800 active:scale-[0.98] transition-all shadow-xl hover:shadow-2xl uppercase tracking-widest flex items-center justify-center gap-3"
+           >
+             {{ t('start.submit') }}
+             <i class="pi pi-arrow-right"></i>
+           </button>
+
+            <button
+              type="button"
+              @click="skipEnrollment"
+              class="mt-2 bg-gray-100 text-black p-4 rounded-2xl font-bold text-base hover:bg-gray-200 active:scale-[0.98] transition-all uppercase tracking-widest border-2 border-gray-300 hover:border-gray-400"
+            >
+              {{ t('start.skip') }}
+            </button>
+         </form>
+       </div>
+     </div>
+     <FooterCmp />
+   </Background>
+ </template>
 
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
@@ -148,6 +156,13 @@ const checkIfFuture = (formDate: Date, todayDate: Date) => {
   d1.setHours(0, 0, 0, 0)
   d2.setHours(0, 0, 0, 0)
   return d1.getTime() >= d2.getTime()
+}
+
+const skipEnrollment = () => {
+  // User chooses to skip enrollment for now
+  // They can enroll later from the dashboard
+  sessionStorage.removeItem('pendingEnrollment')
+  router.push('/dashboard')
 }
 </script>
 

@@ -50,6 +50,29 @@ export class EventService {
     }
   }
 
+  public updateEvent(eventId: number, userId: number, type: string, date: string): ServiceResult {
+    if (!type || !type.trim()) {
+      return { status: StatusCodes.BAD_REQUEST, error: { message: "Type darf nicht leer sein" } };
+    }
+    if (!date || !date.trim()) {
+      return { status: StatusCodes.BAD_REQUEST, error: { message: "Date darf nicht leer sein" } };
+    }
+    const unit = new Unit(false);
+    let success = false;
+    try {
+      const updated = this.eventRepo.update(unit, eventId, userId, type.trim(), date.trim());
+      if (updated) {
+        success = true;
+        return { status: StatusCodes.OK, data: { message: "Event aktualisiert" } };
+      }
+      return { status: StatusCodes.NOT_FOUND, error: { message: "Event nicht gefunden" } };
+    } catch (e: any) {
+      return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
+    } finally {
+      unit.complete(success);
+    }
+  }
+
   public deleteEvent(eventId: number, userId: number): ServiceResult {
     const unit = new Unit(false);
     let success = false;
