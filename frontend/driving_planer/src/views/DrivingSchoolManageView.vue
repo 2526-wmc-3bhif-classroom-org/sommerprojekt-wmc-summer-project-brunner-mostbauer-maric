@@ -144,12 +144,12 @@
           </div>
         </div>
 
-        <div v-else class="flex flex-col items-center justify-center py-24 text-center">
+        <div v-else class="flex flex-col items-center justify-center py-24 mt-4 text-center">
           <div class="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center mb-6 animate-pulse">
             <i class="pi pi-inbox text-indigo-300 text-3xl"></i>
           </div>
-          <h3 class="font-black text-slate-800 text-xl mb-2">{{ t('manage.empty.title') }}</h3>
-          <p class="text-slate-400 text-sm mb-8 max-w-xs">
+          <h3 class="font-black text-slate-800 text-xl" style="margin-top: 0.75rem; margin-bottom: 0.75rem;">{{ t('manage.empty.title') }}</h3>
+          <p class="text-slate-400 text-sm max-w-xs" style="margin-bottom: 1rem;">
             {{ filterLicense ? t('manage.empty.noClass', { cls: filterLicense }) : t('manage.empty.noCoursesYet') }}
           </p>
           <button
@@ -169,11 +169,11 @@
 
     <!-- Create / Edit Modal -->
     <Transition name="modal">
-      <div v-if="showModal" class="fixed inset-0 z-9999 flex items-center justify-center p-4">
+      <div v-if="showModal" class="fixed inset-0 z-9999 flex items-center justify-center p-2 sm:p-4">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="closeModal"></div>
 
-        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 z-10">
-          <div class="flex items-center gap-3 mb-7">
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg p-4 sm:p-8 z-10 overflow-y-auto max-h-[90vh]">
+          <div class="flex items-center gap-3" style="margin-bottom: 2rem;">
             <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
               <i :class="editingId !== null ? 'pi pi-pencil' : 'pi pi-plus-circle'" class="text-indigo-500"></i>
             </div>
@@ -185,9 +185,9 @@
 
           <div class="flex flex-col gap-5">
             <div v-if="authStore.isAdmin && editingId === null">
-              <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Fahrschule *</label>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{{ t('manage.modal.drivingSchool') }}</label>
               <select v-model="selectedSchoolId" class="w-full p-3.5 bg-slate-50 border border-gray-200 rounded-xl text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all">
-                <option :value="null" disabled>Fahrschule wählen...</option>
+                <option :value="null" disabled>{{ t('manage.modal.drivingSchoolSelect') }}</option>
                 <option v-for="school in schools" :key="school.DrivingSchoolId" :value="school.DrivingSchoolId">{{ school.Name }}</option>
               </select>
               <p v-if="errors.selectedSchoolId" class="text-xs text-red-500" style="margin-top: 0.6rem;">{{ errors.selectedSchoolId }}</p>
@@ -312,13 +312,13 @@
     <Transition name="modal">
       <div v-if="deleteTargetId !== null" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="deleteTargetId = null"></div>
-        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 z-10 text-center">
-          <div class="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 z-10 text-center flex flex-col items-center">
+          <div class="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mb-4">
             <i class="pi pi-exclamation-triangle text-red-400 text-2xl"></i>
           </div>
           <h3 class="text-lg font-black text-slate-900 mb-2">{{ t('manage.delete.title') }}</h3>
           <p class="text-sm text-slate-500 mb-8">{{ t('manage.delete.description') }}</p>
-          <div class="flex gap-3">
+          <div class="flex gap-3 w-full">
             <button @click="deleteTargetId = null" class="flex-1 py-3.5 rounded-xl border border-gray-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all">{{ t('common.cancel') }}</button>
             <button @click="deleteCourse" class="flex-1 py-3.5 rounded-xl bg-red-500 hover:bg-red-600 active:scale-95 text-white font-bold text-sm transition-all shadow-md">{{ t('common.delete') }}</button>
           </div>
@@ -364,7 +364,8 @@ const { t } = useI18n()
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 const LICENSE_TYPE_IDS: Record<string, number> = {
-  A: 1, A1: 2, A2: 3, AM: 4, B: 5, BE: 6, C: 7, C1: 8, CE: 9, D: 10, D1: 11, DE: 12
+  A: 1, A1: 2, A2: 3, AM: 4, B: 5, BE: 6, C: 7, C1: 8, CE: 9, D: 10, D1: 11, DE: 12,
+  B1: 13, C1E: 14, D1E: 15, F: 16
 }
 const LICENSE_ID_TO_NAME: Record<number, string> = Object.fromEntries(
   Object.entries(LICENSE_TYPE_IDS).map(([k, v]) => [v, k])
@@ -445,15 +446,15 @@ onMounted(async () => {
   await fetchCourses()
 })
 
-const licenseClasses = ['A', 'A1', 'A2', 'AM', 'B', 'BE', 'C', 'C1', 'CE', 'D', 'D1', 'DE']
+const licenseClasses = ['A', 'A1', 'A2', 'AM', 'B', 'B1', 'BE', 'C', 'C1', 'CE', 'C1E', 'D', 'D1', 'DE', 'D1E', 'F']
 const allWeekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
 
 function formatDate(d: string) {
   return d ? new Date(d).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—'
 }
 
-const accentMap: Record<string,string> = { A:'bg-orange-400', A1:'bg-orange-300', A2:'bg-amber-400', AM:'bg-yellow-400', B:'bg-indigo-500', BE:'bg-indigo-400', C:'bg-violet-500', C1:'bg-violet-400', CE:'bg-purple-500', D:'bg-emerald-500', D1:'bg-emerald-400', DE:'bg-teal-500' }
-const badgeMap: Record<string,string> = { A:'bg-orange-50 text-orange-600', A1:'bg-orange-50 text-orange-500', A2:'bg-amber-50 text-amber-600', AM:'bg-yellow-50 text-yellow-600', B:'bg-indigo-50 text-indigo-600', BE:'bg-indigo-50 text-indigo-500', C:'bg-violet-50 text-violet-600', C1:'bg-violet-50 text-violet-500', CE:'bg-purple-50 text-purple-600', D:'bg-emerald-50 text-emerald-600', D1:'bg-emerald-50 text-emerald-500', DE:'bg-teal-50 text-teal-600' }
+const accentMap: Record<string,string> = { A:'bg-orange-400', A1:'bg-orange-300', A2:'bg-amber-400', AM:'bg-yellow-400', B:'bg-indigo-500', B1:'bg-indigo-300', BE:'bg-indigo-400', C:'bg-violet-500', C1:'bg-violet-400', CE:'bg-purple-500', C1E:'bg-purple-400', D:'bg-emerald-500', D1:'bg-emerald-400', DE:'bg-teal-500', D1E:'bg-teal-400', F:'bg-slate-500' }
+const badgeMap: Record<string,string> = { A:'bg-orange-50 text-orange-600', A1:'bg-orange-50 text-orange-500', A2:'bg-amber-50 text-amber-600', AM:'bg-yellow-50 text-yellow-600', B:'bg-indigo-50 text-indigo-600', B1:'bg-indigo-50 text-indigo-400', BE:'bg-indigo-50 text-indigo-500', C:'bg-violet-50 text-violet-600', C1:'bg-violet-50 text-violet-500', CE:'bg-purple-50 text-purple-600', C1E:'bg-purple-50 text-purple-500', D:'bg-emerald-50 text-emerald-600', D1:'bg-emerald-50 text-emerald-500', DE:'bg-teal-50 text-teal-600', D1E:'bg-teal-50 text-teal-500', F:'bg-slate-100 text-slate-600' }
 const licenseAccent = (t: string) => accentMap[t] ?? 'bg-slate-400'
 const licenseBadge = (t: string) => badgeMap[t] ?? 'bg-slate-100 text-slate-600'
 

@@ -194,7 +194,7 @@ export function ensureSampleDataInserted(unit: Unit): "inserted" | "skipped" {
   }
 
   function insertLicenseTypes(): void {
-    const licenseTypes = ["A", "A1", "A2", "AM", "B", "BE", "C", "C1", "CE", "D", "D1", "DE"];
+    const licenseTypes = ["A", "A1", "A2", "AM", "B", "BE", "C", "C1", "CE", "D", "D1", "DE", "B1", "C1E", "D1E", "F"];
     const insertStmt = unit.prepare(`INSERT OR IGNORE INTO LicenseType (Name) VALUES (?)`);
     for (const name of licenseTypes) {
       insertStmt.run(name);

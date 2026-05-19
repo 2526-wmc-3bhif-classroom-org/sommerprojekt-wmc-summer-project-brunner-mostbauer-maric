@@ -164,6 +164,11 @@ export const buildTables = (connection: Database) => {
     // migration: add TimeFrom/TimeTo to LicenseProgram
     try { connection.exec(`ALTER TABLE LicenseProgram ADD COLUMN TimeFrom TEXT`); } catch {}
     try { connection.exec(`ALTER TABLE LicenseProgram ADD COLUMN TimeTo TEXT`); } catch {}
+
+    // migration: add missing license types B1, C1E, D1E, F
+    for (const name of ['B1', 'C1E', 'D1E', 'F']) {
+      try { connection.exec(`INSERT INTO LicenseType (Name) SELECT '${name}' WHERE NOT EXISTS (SELECT 1 FROM LicenseType WHERE Name = '${name}')`); } catch {}
+    }
     // migration: mark existing default tasks correctly
     connection.exec(`UPDATE Task SET IsDefault = 1 WHERE Text IN (
       'Ärztliche/Augenuntersuchung',
