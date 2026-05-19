@@ -3,7 +3,7 @@
       v-motion
       :initial="{ opacity: 0, y: -20 }"
       :visible-once="{ opacity: 1, y: 0, transition: { duration: 500 } }"
-      class="hover:bg-white hover:shadow-xl hover:shadow-blue-900/5 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer group relative z-0 hover:z-10"
+      class="hover:bg-white hover:shadow-xl hover:shadow-blue-900/5 hover:-translate-y-0.5 transition-all duration-300 cursor-default group relative z-0 hover:z-10"
     >
       <td class="px-6 py-4 text-sm font-medium text-slate-400 group-hover:text-blue-400 transition-colors">
         {{ index + 1 }}

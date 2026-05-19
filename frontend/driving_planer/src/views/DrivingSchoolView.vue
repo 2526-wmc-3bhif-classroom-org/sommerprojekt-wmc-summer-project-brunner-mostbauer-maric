@@ -20,7 +20,7 @@
             <InfoStatsCard
               :index="0"
               :title="t('schools.stats.schools')"
-              :description="t('schools.stats.schoolsDesc', { count: schools.length })"
+              :description="t('schools.stats.schoolsDesc', { count: schoolStore.countOfSchools })"
               icon="pi pi-car"
               iconColor="text-blue-500"
               borderColor="border-blue-500"
@@ -51,7 +51,7 @@
                   {{ t('schools.overview') }}
                   <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 group-hover/title:w-full transition-all duration-300"></span>
                 </h2>
-                <span class="px-2.5 py-0.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-full hover:bg-blue-100 hover:scale-105 transition-all cursor-help border border-transparent hover:border-blue-200">
+                <span class="px-2.5 py-0.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-full hover:bg-blue-100 hover:scale-105 transition-all cursor-default border border-transparent hover:border-blue-200">
                   {{ t('schools.entries', { count: filteredSchools.length }) }}
                 </span>
               </div>
@@ -216,7 +216,8 @@ onMounted(async () => {
   isLoading.value = true
   await Promise.all([
     schoolStore.fetchSchools(),
-    schoolStore.fetchRatings()
+    schoolStore.fetchRatings(),
+    schoolStore.fetchSchoolCount()
   ])
   syncSchools()
   isLoading.value = false
