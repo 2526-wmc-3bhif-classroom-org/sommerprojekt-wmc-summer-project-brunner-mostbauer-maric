@@ -1,7 +1,7 @@
 import { EnrollmentRepository } from "./enrollment_repository.js";
 import { Unit } from "../unit.js";
 import { StatusCodes } from "http-status-codes";
-import type { Appointment } from "../models/types.js";
+import type { Appointment, LicenseProgram } from "../models/types.js";
 
 export interface ServiceResult<T = any> {
   status: number;
@@ -25,6 +25,21 @@ export class EnrollmentService {
     try {
       const appointments = this.enrollmentRepo.getAppointmentsForEnrollment(unit, enrollmentId);
       return { status: StatusCodes.OK, data: appointments };
+    } catch (e: any) {
+      return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
+    } finally {
+      unit.complete();
+    }
+  }
+
+  public getCourseForEnrollment(enrollmentId: number): ServiceResult<LicenseProgram> {
+    const unit = Unit.createReadonly();
+    try {
+      const course = this.enrollmentRepo.getCourseForEnrollment(unit, enrollmentId);
+      if (course) {
+        return { status: StatusCodes.OK, data: course };
+      }
+      return { status: StatusCodes.NOT_FOUND, error: { message: "Enrollment oder zugehöriger Kurs nicht gefunden" } };
     } catch (e: any) {
       return { status: StatusCodes.INTERNAL_SERVER_ERROR, error: { message: e.message } };
     } finally {
