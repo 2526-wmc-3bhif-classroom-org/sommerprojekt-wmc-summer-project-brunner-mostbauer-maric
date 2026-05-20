@@ -220,6 +220,8 @@
     "overview": "Kursübersicht",
     "coursesCount": "0 Kurse angelegt | {n} Kurs angelegt | {n} Kurse angelegt",
     "allClasses": "Alle Klassen",
+    "filterByClass": "Führerscheinklasse",
+    "filterByDate": "Kurse ab Datum",
     "class": "Klasse {cls}",
     "newCourse": "Neuer Kurs",
     "freeSpots": "{count} freie Plätze",

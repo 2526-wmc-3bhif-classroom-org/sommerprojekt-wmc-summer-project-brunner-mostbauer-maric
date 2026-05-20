@@ -220,6 +220,8 @@
     "overview": "Course Overview",
     "coursesCount": "0 courses created | {n} course created | {n} courses created",
     "allClasses": "All Classes",
+    "filterByClass": "License Class",
+    "filterByDate": "Courses from Date",
     "class": "Class {cls}",
     "newCourse": "New Course",
     "freeSpots": "{count} spots available",
