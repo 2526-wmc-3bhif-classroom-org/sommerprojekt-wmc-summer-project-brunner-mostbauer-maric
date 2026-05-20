@@ -23,14 +23,24 @@
           </div>
 
           <div class="flex items-center gap-3 flex-col sm:flex-row sm:items-center">
-            <select
-              v-if="!authStore.isStudent"
-              v-model="filterLicense"
-              class="w-full sm:w-auto px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-200 shadow-sm transition-all"
-            >
-              <option value="">{{ t('manage.allClasses') }}</option>
-              <option v-for="cls in usedLicenses" :key="cls" :value="cls">{{ t('manage.class', { cls }) }}</option>
-            </select>
+            <div class="flex flex-col w-full sm:w-auto">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">{{ t('manage.filterByClass') }}</span>
+              <select
+                v-model="filterLicense"
+                class="w-full sm:w-auto px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-200 shadow-sm transition-all"
+              >
+                <option value="">{{ t('manage.allClasses') }}</option>
+                <option v-for="cls in usedLicenses" :key="cls" :value="cls">{{ t('manage.class', { cls }) }}</option>
+              </select>
+            </div>
+            <div class="flex flex-col w-full sm:w-auto">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">{{ t('manage.filterByDate') }}</span>
+              <input
+                v-model="filterDate"
+                type="date"
+                class="w-full sm:w-auto px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-200 shadow-sm transition-all"
+              />
+            </div>
 
             <button
               v-if="authStore.isSchool || authStore.isAdmin"
@@ -339,7 +349,20 @@
             <span class="font-bold text-slate-700">{{ t('manage.class', { cls: joinTargetCourse.licenseType }) }}</span>
             &nbsp;·&nbsp;{{ formatDate(joinTargetCourse.dateFrom) }} – {{ formatDate(joinTargetCourse.dateTo) }}
           </div>
-          <p class="text-sm text-slate-400 mb-8">{{ t('manage.join.description') }}</p>
+          <p class="text-sm text-slate-400" :class="hasPendingEnrollment ? 'mb-8' : 'mb-4'">{{ t('manage.join.description') }}</p>
+          <div v-if="!hasPendingEnrollment" class="flex flex-col gap-3 mb-6 text-left">
+            <div style="margin-top: 0.75rem;">
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">{{ t('start.pace') }}</label>
+              <select v-model="joinGoal" class="w-full p-3 bg-slate-50 border-2 border-transparent rounded-xl text-black font-bold focus:bg-white focus:border-black transition-all outline-none appearance-none">
+                <option value="" disabled>{{ t('start.paceGoal') }}</option>
+                <option value="fast">{{ t('start.paceFast') }}</option>
+                <option value="normal">{{ t('start.paceNormal') }}</option>
+                <option value="relaxed">{{ t('start.paceRelaxed') }}</option>
+              </select>
+              <span v-if="joinErrors.goal" class="text-red-500 text-xs mt-1 block">{{ joinErrors.goal }}</span>
+              <div style="margin-bottom: 0.75rem;"></div>
+            </div>
+          </div>
           <div class="flex gap-3">
             <button @click="joinTargetId = null" class="flex-1 py-3.5 rounded-xl border border-gray-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all">{{ t('common.cancel') }}</button>
             <button @click="confirmJoin" class="flex-1 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-bold text-sm transition-all shadow-md">{{ t('common.join') }}</button>
@@ -410,7 +433,14 @@ const router = useRouter()
 
 
 const filterLicense = ref('')
-const filteredCourses = computed(() => filterLicense.value ? courses.value.filter(c => c.licenseType === filterLicense.value) : courses.value)
+const filterDate = ref('')
+const filteredCourses = computed(() => {
+  return courses.value.filter(c => {
+    if (filterLicense.value && c.licenseType !== filterLicense.value) return false
+    if (filterDate.value && c.dateTo < filterDate.value) return false
+    return true
+  })
+})
 const usedLicenses = computed(() => [...new Set(courses.value.map(c => c.licenseType))])
 
 async function fetchCourses() {
@@ -548,11 +578,33 @@ async function deleteCourse() {
 
 const joinTargetId = ref<number | null>(null)
 const joinTargetCourse = computed(() => joinTargetId.value !== null ? courses.value.find(c => c.id === joinTargetId.value) : null)
-function openJoinModal(id: number) { joinTargetId.value = id }
+const hasPendingEnrollment = ref(false)
+const joinGoal = ref('')
+const joinErrors = ref<{ goal?: string }>({})
+
+function openJoinModal(id: number) {
+  joinTargetId.value = id
+  hasPendingEnrollment.value = !!sessionStorage.getItem('pendingEnrollment')
+  joinGoal.value = ''
+  joinErrors.value = {}
+}
+
 async function confirmJoin() {
   if (!joinTargetCourse.value || !authStore.user) return
   const pending = sessionStorage.getItem('pendingEnrollment')
-  const { goal, startDate: plannerStartDate } = pending ? JSON.parse(pending) : {}
+  let goal: string | undefined
+  let plannerStartDate: string | undefined
+
+  if (pending) {
+    const parsed = JSON.parse(pending)
+    goal = parsed.goal
+    plannerStartDate = parsed.startDate
+  } else {
+    if (!joinGoal.value) { joinErrors.value = { goal: t('start.errors.noPace') }; return }
+    goal = joinGoal.value
+    plannerStartDate = joinTargetCourse.value.dateFrom
+  }
+
   const res = await fetch(`${API_URL}/programs/${joinTargetId.value}/enroll`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
