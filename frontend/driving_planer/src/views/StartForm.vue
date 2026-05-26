@@ -141,8 +141,8 @@ const submitForm = () => {
    if (!dateValid.value || !goalValid.value) return
 
    classValid.value = availableCourses.value.some(
-     c => c.licenseType === formData.licenseClass && c.dateTo >= formData.startDate
-   )
+      c => c.licenseType === formData.licenseClass && c.dateTo >= (formData.startDate ?? '')
+    )
    if (!classValid.value) return
 
    sessionStorage.setItem('pendingEnrollment', JSON.stringify({

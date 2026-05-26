@@ -151,8 +151,8 @@
             </div>
             <p v-if="errors.image" class="text-red-500 text-center text-xs mt-4">{{ errors.image }}</p>
             <div class="h-8"></div>
-            <input type="file" ref="fileInput" class="hidden" @change="onFileSelect" accept="image/*" />
-            <button @click="$refs.fileInput.click()" class="w-full py-4 bg-black/[0.03] border border-black/10 rounded-2xl text-sm font-semibold text-black hover:bg-black/5 transition-all cursor-pointer">
+             <input type="file" ref="fileInput" class="hidden" @change="onFileSelect" accept="image/*" />
+             <button @click="fileInput?.click()" class="w-full py-4 bg-black/[0.03] border border-black/10 rounded-2xl text-sm font-semibold text-black hover:bg-black/5 transition-all cursor-pointer">
               {{ t('profile.photo.select') }}
             </button>
             <button v-if="avatarUrl" @click="deleteAvatar" style="margin-top: 20px;" class="w-full py-4 bg-red-50 border border-red-100 rounded-2xl text-sm font-semibold text-red-500 hover:bg-red-100 transition-all cursor-pointer flex items-center justify-center gap-2">
@@ -343,7 +343,7 @@ const deleteAvatar = async () => {
   try {
     const response = await fetch(API_URL + `/users/${userId}/avatar`, { method: 'DELETE', headers: { Authorization: `Bearer ${authStore.token}` } })
     if (response.ok) {
-      authStore.updateUser({ AvatarPath: null })
+      authStore.updateUser({ AvatarPath: undefined })
       previewImage.value = null
       closeImageModal()
     } else {
