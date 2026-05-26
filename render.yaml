@@ -1,0 +1,59 @@
+services:
+  # Backend Service - Node.js/Express API
+  - type: web
+    name: driving-planer-backend
+    env: node
+    plan: free
+    runtime: node-20
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        value: /var/data/driving_planer.db
+      - key: CORS_ORIGIN
+        fromService:
+          name: driving-planer-frontend
+          type: web
+          property: url
+      # Add these in Render dashboard after deployment:
+      # - key: JWT_SECRET
+      #   scope: build,runtime
+      #   value: <your-secret-key>
+    healthCheckPath: /health
+    disk:
+      name: sqlite-data
+      mountPath: /var/data
+      sizeGB: 1
+
+  # Frontend Service - Vue 3 + Vite
+  - type: static
+    name: driving-planer-frontend
+    buildCommand: cd frontend/driving_planer && npm install && npm run build
+    staticPublishPath: frontend/driving_planer/dist
+    routes:
+      - path: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: driving-planer-backend
+          type: web
+          property: url
+        appendPath: /api
+
+  # Optional: Job for database initialization
+  # Uncomment if you need to run migrations on deployment
+  # - type: cron
+  #   name: db-seed
+  #   schedule: "0 0 1 * *"  # Run once a month
+  #   buildCommand: cd backend && npm install
+  #   startCommand: cd backend && npm run seed
+  #   envVars:
+  #     - key: NODE_ENV
+  #       value: production
+  #     - key: DATABASE_URL
+  #       value: /var/data/driving_planer.db
