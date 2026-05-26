@@ -150,7 +150,7 @@
                       <i class="pi pi-check absolute text-[10px] text-white opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
                     </div>
                     <input v-if="editingId === item.id" v-model="editText" @keyup.enter="saveEditTask(item)" @blur="saveEditTask(item)" type="text" class="flex-1 bg-transparent outline-none font-bold text-base text-black min-w-0" />
-                    <span v-else :class="item.done ? 'line-through opacity-20 italic' : 'font-bold'" class="text-base text-black transition-all truncate">{{ item.isDefault && item.text && defaultTaskKeys[item.text] ? t(defaultTaskKeys[item.text]) : item.text }}</span>
+                    <span v-else :class="item.done ? 'line-through opacity-20 italic' : 'font-bold'" class="text-base text-black transition-all truncate">{{ getTaskLabel(item) }}</span>
                   </label>
                   <div class="flex gap-1 flex-shrink-0">
                     <button @click="!item.isDefault && startEditTask(item)"
@@ -607,11 +607,18 @@ const fetchTasks = async () => {
         })
       }
       await fetchTasks()
-    }
-  }
-}
+     }
+   }
+ }
 
-const addCheck = async () => {
+ const getTaskLabel = (item: any): string => {
+   if (item.isDefault && item.text && defaultTaskKeys[item.text as keyof typeof defaultTaskKeys]) {
+     return t(defaultTaskKeys[item.text as keyof typeof defaultTaskKeys])
+   }
+   return item.text ?? ''
+ }
+
+ const addCheck = async () => {
   if (!checkInput.value.trim()) { taskError.value = true; return }
   const res = await fetch(`${API_URL}/tasks`, {
     method: 'POST',
