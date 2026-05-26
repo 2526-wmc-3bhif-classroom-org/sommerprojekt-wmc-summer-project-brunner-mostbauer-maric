@@ -6,6 +6,7 @@ on:
       - main
       - master
       - develop
+      - deploy
     paths:
       - 'frontend/driving_planer/**'
       - '.github/workflows/deploy-github-pages.yml'
