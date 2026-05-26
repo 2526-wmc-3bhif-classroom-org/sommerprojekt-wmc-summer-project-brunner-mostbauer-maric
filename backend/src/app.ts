@@ -45,7 +45,7 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
-const PORT = 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const app = express();
 export { app };
 
@@ -155,7 +155,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => {
-    console.log("Backend running on: http://localhost:" + PORT);
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log("Backend running on: http://0.0.0.0:" + PORT);
   });
 }
