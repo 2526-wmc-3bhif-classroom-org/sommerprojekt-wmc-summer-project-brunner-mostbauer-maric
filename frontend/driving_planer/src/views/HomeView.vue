@@ -102,17 +102,24 @@ import {useAuthStore} from "@/stores/authStore.ts";
 import {useSchoolStore} from "@/stores/schoolStore.ts";
 import {useUserStore} from "@/stores/userStore.ts";
 import {useRouter} from "vue-router";
+import {ref} from "vue";
 
 const { t } = useI18n()
 const router = useRouter();
 const schoolStore = useSchoolStore();
 const userStore = useUserStore();
 const authStore = useAuthStore();
+const mobile = ref<boolean>(false);
+mobile.value = window.innerWidth < 768;
 
+window.addEventListener('resize', () => {
+  mobile.value = window.innerWidth < 768;
+})
 onMounted(async () => {
   await schoolStore.fetchSchoolCount();
   await userStore.fetchUsersCount();
 })
+
 
 function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -135,7 +142,7 @@ const statistics = computed(() => [
     backgroundColor: "bg-lime-700",
     endValue: 95,
     suffix: "%",
-    duration: 400,
+    duration: mobile.value ? 400 : 600,
   },
   {
     description: t('home.stats.schools'),
@@ -144,7 +151,7 @@ const statistics = computed(() => [
     backgroundColor: "bg-violet-700",
     endValue: schoolStore.countOfSchools,
     suffix: "+",
-    duration: 400,
+    duration: mobile.value ? 400 : 800,
   },
 ])
 
