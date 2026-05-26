@@ -3,24 +3,27 @@ name: Deploy Frontend to GitHub Pages
 on:
   push:
     branches:
-      - main
-      - master
-      - develop
       - deploy
     paths:
       - 'frontend/driving_planer/**'
-      - '.github/workflows/deploy-github-pages.yml'
-  # Allow manual trigger
+      - '.github/workflows/deploy-frontend.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout code
@@ -34,18 +37,18 @@ jobs:
           cache-dependency-path: 'frontend/driving_planer/package-lock.json'
 
       - name: Install dependencies
-        run: cd frontend/driving_planer && npm ci
-
-      - name: Clean old dist directory
-        run: cd frontend/driving_planer && rm -rf dist dist-build || true
+        working-directory: ./frontend/driving_planer
+        run: npm ci
 
       - name: Build frontend
-        run: cd frontend/driving_planer && npm run build
-        env:
-          VITE_API_URL: ${{ secrets.RAILWAY_API_URL }}/api
+        working-directory: ./frontend/driving_planer
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './frontend/driving_planer/dist'
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend/driving_planer/dist
+        id: deployment
+        uses: actions/deploy-pages@v4
