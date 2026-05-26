@@ -257,7 +257,7 @@ import type { User } from '@/types.ts'
 const { t } = useI18n()
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 const authStore = useAuthStore()
-const userId = authStore.user.UserId
+const userId = authStore.user?.UserId ?? 0
 
 const showSuccessToast = ref(false)
 const toastMessage = ref('')
@@ -290,8 +290,8 @@ const previewImage = ref<string | null>(null)
 
 const userName = ref('')
 const email = ref('')
-const displayName = ref(authStore.user.UserName)
-const displayEmail = ref(authStore.user.Email)
+const displayName = ref(authStore.user?.UserName ?? '')
+const displayEmail = ref(authStore.user?.Email ?? '')
 
 const schoolLocation = ref('')
 const schoolOwner = ref('')
@@ -302,22 +302,23 @@ const passwords = reactive({ current: '', new: '', confirm: '' })
 const fileInput = ref<HTMLInputElement | null>(null)
 
 onMounted(async () => {
-  userName.value = authStore.user.UserName
-  email.value = authStore.user.Email
+   if (!authStore.user) return
+   userName.value = authStore.user.UserName
+   email.value = authStore.user.Email
 
-  if (authStore.isSchool && authStore.user.DrivingSchoolId) {
-    try {
-      const res = await fetch(`${API_URL}/schools/${authStore.user.DrivingSchoolId}`, { headers: { Authorization: `Bearer ${authStore.token}` } })
-      if (res.ok) {
-        const school = await res.json()
-        schoolLocation.value = school.Location ?? ''
-        schoolOwner.value = school.Owner ?? ''
-        schoolPhone.value = school.Phone ?? ''
-        schoolWebsite.value = school.Website ?? ''
-      }
-    } catch {}
-  }
-})
+   if (authStore.isSchool && authStore.user.DrivingSchoolId) {
+     try {
+       const res = await fetch(`${API_URL}/schools/${authStore.user.DrivingSchoolId}`, { headers: { Authorization: `Bearer ${authStore.token}` } })
+       if (res.ok) {
+         const school = await res.json()
+         schoolLocation.value = school.Location ?? ''
+         schoolOwner.value = school.Owner ?? ''
+         schoolPhone.value = school.Phone ?? ''
+         schoolWebsite.value = school.Website ?? ''
+       }
+     } catch {}
+   }
+ })
 
 const errors = reactive({ userName: '', email: '', currentPass: '', newPass: '', confirmPass: '', image: '' })
 
@@ -355,32 +356,32 @@ const deleteAvatar = async () => {
 }
 
 const saveProfile = async () => {
-  let valid = true
-  if (!userName.value) { errors.userName = t('profile.errors.userName'); valid = false }
-  if (!email.value) { errors.email = t('profile.errors.email'); valid = false }
-  if (!valid) return
+   let valid = true
+   if (!userName.value) { errors.userName = t('profile.errors.userName'); valid = false }
+   if (!email.value) { errors.email = t('profile.errors.email'); valid = false }
+   if (!valid) return
 
-  try {
-    const response = await fetch(API_URL + `/users/${userId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ userName: userName.value, email: email.value }) })
-    if (!response.ok) throw new Error()
+   try {
+     const response = await fetch(API_URL + `/users/${userId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ userName: userName.value, email: email.value }) })
+     if (!response.ok) throw new Error()
 
-    if (authStore.isSchool && authStore.user.DrivingSchoolId) {
-      await fetch(API_URL + `/schools/${authStore.user.DrivingSchoolId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: userName.value, location: schoolLocation.value || undefined, owner: schoolOwner.value || undefined, email: email.value, website: schoolWebsite.value || undefined, phone: schoolPhone.value || undefined }) })
-    }
+     if (authStore.isSchool && authStore.user?.DrivingSchoolId) {
+       await fetch(API_URL + `/schools/${authStore.user.DrivingSchoolId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: userName.value, location: schoolLocation.value || undefined, owner: schoolOwner.value || undefined, email: email.value, website: schoolWebsite.value || undefined, phone: schoolPhone.value || undefined }) })
+     }
 
-    displayName.value = userName.value
-    displayEmail.value = email.value
-    const user: User = JSON.parse(<string>sessionStorage.getItem('user'))
-    user.UserName = displayName.value
-    user.Email = email.value
-    sessionStorage.setItem('user', JSON.stringify(user))
+     displayName.value = userName.value
+     displayEmail.value = email.value
+     const user: User = JSON.parse(<string>sessionStorage.getItem('user'))
+     user.UserName = displayName.value
+     user.Email = email.value
+     sessionStorage.setItem('user', JSON.stringify(user))
 
-    triggerToast(t('profile.saveSuccess'))
-  } catch {
-    errors.userName = t('profile.errors.networkSave')
-    errors.email = t('profile.errors.networkSave')
-  }
-}
+     triggerToast(t('profile.saveSuccess'))
+   } catch {
+     errors.userName = t('profile.errors.networkSave')
+     errors.email = t('profile.errors.networkSave')
+   }
+ }
 
 const updatePassword = async () => {
   let valid = true

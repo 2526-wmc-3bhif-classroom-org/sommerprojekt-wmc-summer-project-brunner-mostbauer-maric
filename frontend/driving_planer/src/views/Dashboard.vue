@@ -270,14 +270,14 @@
               </div>
               <div v-else class="flex flex-col gap-4">
                 <div v-for="(date, i) in examDates" :key="`exam-${i}`" class="flex justify-between items-center p-5 border border-zinc-100 rounded-[2rem] bg-zinc-50/30">
-                  <div class="flex flex-col gap-1">
-                    <div class="flex items-center gap-2">
-                      <span class="text-[13px] text-black uppercase tracking-widest opacity-40">{{ t('eventTypes.' + date.type, date.type) }}</span>
-                      <span class="text-[9px] font-black uppercase tracking-widest bg-zinc-100 text-zinc-400 px-2 py-0.5 rounded-full">{{ t('common.auto') }}</span>
-                    </div>
-                    <span class="font-bold text-lg text-black">{{ new Date(date.date).toLocaleDateString(dateLocale) }}</span>
-                  </div>
-                </div>
+                   <div class="flex flex-col gap-1">
+                     <div class="flex items-center gap-2">
+                       <span class="text-[13px] text-black uppercase tracking-widest opacity-40">{{ t('eventTypes.' + date.type, date.type) }}</span>
+                       <span class="text-[9px] font-black uppercase tracking-widest bg-zinc-100 text-zinc-400 px-2 py-0.5 rounded-full">{{ t('common.auto') }}</span>
+                     </div>
+                     <span class="font-bold text-lg text-black">{{ new Date(date.date ?? '').toLocaleDateString(dateLocale) }}</span>
+                   </div>
+                 </div>
                 <div v-for="(date, i) in dates" :key="i" class="group flex justify-between items-center p-5 border border-zinc-100 rounded-[2rem] bg-zinc-50/30">
                   <div class="flex flex-col gap-1">
                     <span class="text-[15px] text-black uppercase tracking-widest opacity-40">{{ t('eventTypes.' + date.type, date.type) }}</span>

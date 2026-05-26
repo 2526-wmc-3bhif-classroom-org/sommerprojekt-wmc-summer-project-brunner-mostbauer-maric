@@ -195,40 +195,42 @@ watch(() => route.path, () => {
   langMenuOpen.value = false
 })
 
-const menu = ref(null)
+const menu = ref<InstanceType<typeof Menu> | null>(null)
 const sidebarOpen = ref(false)
 
 const links = computed(() => {
-  const allLinks = [
-    { to: '/',          title: t('nav.home'),       icon: 'pi-home',        show: true },
-    { to: '/about',     title: t('nav.about'),      icon: 'pi-info-circle', show: true },
-    { to: '/contact',   title: t('nav.contact'),    icon: 'pi-envelope',    show: true },
-    { to: '/schools',   title: t('nav.schools'),    icon: 'pi-book',            show: authStore.isAdmin || authStore.isSchool || authStore.isStudent },
-    { to: '/dashboard', title: t('nav.dashboard'),  icon: 'pi-chart-bar',       show: authStore.isAdmin || (authStore.isStudent && (authStore.isEnrolled || authStore.hasSkippedEnrollment)) },
-    { to: '/manage',    title: t('nav.manage'),     icon: 'pi-building',        show: authStore.isAdmin || authStore.isSchool },
-    { to: '/start',     title: t('nav.startForm'),  icon: 'pi-map',             show: authStore.isStudent && !authStore.isEnrolled && !authStore.hasSkippedEnrollment },
-    { to: '/manage',    title: t('nav.joinCourse'), icon: 'pi-graduation-cap',  show: authStore.isStudent && !authStore.isEnrolled && authStore.hasSkippedEnrollment },
-  ]
-  return allLinks.filter(link => link.show)
-})
+   const allLinks = [
+     { to: '/',          title: t('nav.home'),       icon: 'pi-home',        show: true },
+     { to: '/about',     title: t('nav.about'),      icon: 'pi-info-circle', show: true },
+     { to: '/contact',   title: t('nav.contact'),    icon: 'pi-envelope',    show: true },
+     { to: '/schools',   title: t('nav.schools'),    icon: 'pi-book',            show: authStore.isAdmin || authStore.isSchool || authStore.isStudent },
+     { to: '/dashboard', title: t('nav.dashboard'),  icon: 'pi-chart-bar',       show: authStore.isAdmin || (authStore.isStudent && (authStore.isEnrolled || authStore.hasSkippedEnrollment)) },
+     { to: '/manage',    title: t('nav.manage'),     icon: 'pi-building',        show: authStore.isAdmin || authStore.isSchool },
+     { to: '/start',     title: t('nav.startForm'),  icon: 'pi-map',             show: authStore.isStudent && !authStore.isEnrolled && !authStore.hasSkippedEnrollment },
+     { to: '/manage',    title: t('nav.joinCourse'), icon: 'pi-graduation-cap',  show: authStore.isStudent && !authStore.isEnrolled && authStore.hasSkippedEnrollment },
+   ]
+   return allLinks.filter(link => link.show)
+ })
 
 const menuItems = computed(() => {
-  if (authStore.isAuthenticated) {
-    return [
-      { label: t('nav.profile', { name: authStore.user?.UserName }), icon: 'pi pi-user', command: () => { router.push('/profile') } },
-      { label: t('nav.logout'), icon: 'pi pi-sign-out', command: () => { handleLogout() } }
-    ]
-  } else {
-    return [
-      { label: t('nav.login'), icon: 'pi pi-sign-in', command: () => { router.push('/login') } },
-      { label: t('nav.register'), icon: 'pi pi-user-plus', command: () => { router.push('/register') } }
-    ]
-  }
-})
+   if (authStore.isAuthenticated) {
+     return [
+       { label: t('nav.profile', { name: authStore.user?.UserName }), icon: 'pi pi-user', command: () => { router.push('/profile') } },
+       { label: t('nav.logout'), icon: 'pi pi-sign-out', command: () => { handleLogout() } }
+     ]
+   } else {
+     return [
+       { label: t('nav.login'), icon: 'pi pi-sign-in', command: () => { router.push('/login') } },
+       { label: t('nav.register'), icon: 'pi pi-user-plus', command: () => { router.push('/register') } }
+     ]
+   }
+ })
 
-const toggleMenu = (event) => {
-  menu.value.toggle(event)
-}
+const toggleMenu = (event: Event) => {
+   if (menu.value) {
+     menu.value.toggle(event)
+   }
+ }
 
 const handleLogout = () => {
   authStore.logout()
