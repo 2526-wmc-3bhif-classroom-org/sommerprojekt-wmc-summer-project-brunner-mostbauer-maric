@@ -7,6 +7,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/',
   plugins: [
     vue(),
     vueDevTools(),
