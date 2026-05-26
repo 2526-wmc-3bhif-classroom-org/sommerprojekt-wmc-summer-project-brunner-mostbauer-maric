@@ -3,7 +3,7 @@ services:
   - type: web
     name: driving-planer-backend
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: cd backend && npm install && npm run build
     startCommand: cd backend && npm start
     envVars:
@@ -12,7 +12,7 @@ services:
       - key: PORT
         value: 3000
       - key: DATABASE_URL
-        value: /var/data/driving_planer.db
+        value: /tmp/driving_planer.db
       - key: CORS_ORIGIN
         value: https://driving-planer-frontend.onrender.com
       # Add this in Render dashboard after deployment:
@@ -24,7 +24,7 @@ services:
   - type: web
     name: driving-planer-frontend
     runtime: static
-    plan: starter
+    plan: free
     buildCommand: cd frontend/driving_planer && npm install && npm run build
     staticPublishPath: frontend/driving_planer/dist
     routes:
