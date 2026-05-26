@@ -36,6 +36,9 @@ jobs:
       - name: Install dependencies
         run: cd frontend/driving_planer && npm ci
 
+      - name: Clean old dist directory
+        run: cd frontend/driving_planer && rm -rf dist dist-build || true
+
       - name: Build frontend
         run: cd frontend/driving_planer && npm run build
         env:
