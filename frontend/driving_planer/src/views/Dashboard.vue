@@ -611,12 +611,15 @@ const fetchTasks = async () => {
    }
  }
 
- const getTaskLabel = (item: any): string => {
-   if (item.isDefault && item.text && defaultTaskKeys[item.text as keyof typeof defaultTaskKeys]) {
-     return t(defaultTaskKeys[item.text as keyof typeof defaultTaskKeys])
-   }
-   return item.text ?? ''
- }
+  const getTaskLabel = (item: any): string => {
+    if (item.isDefault && item.text) {
+      const key = defaultTaskKeys[item.text as keyof typeof defaultTaskKeys]
+      if (key) {
+        return t(key)
+      }
+    }
+    return item.text ?? ''
+  }
 
  const addCheck = async () => {
   if (!checkInput.value.trim()) { taskError.value = true; return }
