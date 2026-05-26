@@ -24,6 +24,7 @@ services:
   - type: web
     name: driving-planer-frontend
     runtime: static
+    plan: starter
     buildCommand: cd frontend/driving_planer && npm install && npm run build
     staticPublishPath: frontend/driving_planer/dist
     routes:
