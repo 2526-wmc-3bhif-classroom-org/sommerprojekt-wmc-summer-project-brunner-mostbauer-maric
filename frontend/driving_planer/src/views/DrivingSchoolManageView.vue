@@ -576,6 +576,86 @@ async function deleteCourse() {
   deleteTargetId.value = null
 }
 
+const LICENSE_LESSON_COUNT: Record<string, number> = {
+  A: 12, A1: 10, A2: 12, AM: 8, B: 16, B1: 12, BE: 8,
+  C: 20, C1: 12, CE: 20, C1E: 12, D: 20, D1: 12, DE: 14, D1E: 10, F: 8,
+}
+
+const LESSONS_PER_WEEK: Record<string, number> = {
+  fast: 3, normal: 2, relaxed: 1,
+}
+
+function getISOWeekKey(date: Date): string {
+  const d = new Date(date)
+  const day = d.getDay() || 7
+  d.setDate(d.getDate() + 4 - day)
+  const yearStart = new Date(d.getFullYear(), 0, 1)
+  const weekNum = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+  return `${d.getFullYear()}-${weekNum}`
+}
+
+async function generateDrivingLessons(course: Course, goal: string, schoolOpeningDays: number[]) {
+  const totalLessons = LICENSE_LESSON_COUNT[course.licenseType] ?? 16
+  const lessonsPerWeek = LESSONS_PER_WEEK[goal] ?? 2
+  const weekdayMap: Record<string, number> = { Mo: 1, Di: 2, Mi: 3, Do: 4, Fr: 5, Sa: 6, So: 0 }
+  const courseDayNums = new Set(course.weekdays.map(w => weekdayMap[w]))
+
+  const current = new Date(course.dateFrom)
+  const courseEnd = new Date(course.dateTo)
+  let totalCount = 0
+  let weekLessons = 0
+  let currentWeekKey = ''
+
+  // Phase 1: während dem Kurs – auf Kurstagen
+  while (totalCount < totalLessons && current <= courseEnd) {
+    const weekKey = getISOWeekKey(current)
+    if (weekKey !== currentWeekKey) {
+      weekLessons = 0
+      currentWeekKey = weekKey
+    }
+    if (weekLessons < lessonsPerWeek && courseDayNums.has(current.getDay())) {
+      const dateStr = current.toISOString().split('T')[0]
+      await fetch(`${API_URL}/events`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
+        body: JSON.stringify({ type: 'Fahrstunde', date: dateStr }),
+      })
+      totalCount++
+      weekLessons++
+    }
+    current.setDate(current.getDate() + 1)
+  }
+
+  // Phase 2: nach dem Kurs – auf Öffnungstagen der Fahrschule
+  if (totalCount < totalLessons && schoolOpeningDays.length > 0) {
+    const openingDayNums = new Set(schoolOpeningDays)
+    currentWeekKey = ''
+    weekLessons = 0
+
+    const maxDate = new Date(course.dateTo)
+    maxDate.setFullYear(maxDate.getFullYear() + 2)
+
+    while (totalCount < totalLessons && current <= maxDate) {
+      const weekKey = getISOWeekKey(current)
+      if (weekKey !== currentWeekKey) {
+        weekLessons = 0
+        currentWeekKey = weekKey
+      }
+      if (weekLessons < lessonsPerWeek && openingDayNums.has(current.getDay())) {
+        const dateStr = current.toISOString().split('T')[0]
+        await fetch(`${API_URL}/events`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token ?? ''}` },
+          body: JSON.stringify({ type: 'Fahrstunde', date: dateStr }),
+        })
+        totalCount++
+        weekLessons++
+      }
+      current.setDate(current.getDate() + 1)
+    }
+  }
+}
+
 const joinTargetId = ref<number | null>(null)
 const joinTargetCourse = computed(() => joinTargetId.value !== null ? courses.value.find(c => c.id === joinTargetId.value) : null)
 const hasPendingEnrollment = ref(false)
@@ -613,6 +693,22 @@ async function confirmJoin() {
   if (res.ok) {
     authStore.setEnrolled(true)
     sessionStorage.removeItem('pendingEnrollment')
+    if (joinTargetCourse.value && goal) {
+      const weekdayMap: Record<string, number> = { Mo: 1, Di: 2, Mi: 3, Do: 4, Fr: 5, Sa: 6, So: 0 }
+      let schoolOpeningDays: number[] = []
+      try {
+        const schoolRes = await fetch(`${API_URL}/schools/${joinTargetCourse.value.drivingSchoolId}`, {
+          headers: { Authorization: `Bearer ${authStore.token ?? ''}` }
+        })
+        if (schoolRes.ok) {
+          const school = await schoolRes.json()
+          if (school.OpeningDays) {
+            schoolOpeningDays = school.OpeningDays.split(',').map((d: string) => weekdayMap[d]).filter((n: number) => n !== undefined)
+          }
+        }
+      } catch {}
+      await generateDrivingLessons(joinTargetCourse.value, goal, schoolOpeningDays)
+    }
     joinTargetId.value = null
     router.push('/dashboard')
   }

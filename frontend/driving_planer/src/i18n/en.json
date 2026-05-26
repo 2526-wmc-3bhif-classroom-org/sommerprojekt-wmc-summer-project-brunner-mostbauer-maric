@@ -138,7 +138,8 @@
         "practice": "Practice",
         "grundwissen": "Basic Knowledge",
         "theoriePruefung": "Theory Exam",
-        "praxisPruefung": "Practice Exam"
+        "praxisPruefung": "Practice Exam",
+        "drivingLessons": "Driving Lessons"
       }
     },
     "events": {
@@ -322,6 +323,10 @@
     "owner": "Owner",
     "phone": "Phone",
     "website": "Website",
+    "openingDays": "Opening Days",
+    "openingHours": "Opening Hours",
+    "from": "From",
+    "to": "To",
     "addressPlaceholder": "Street, ZIP City",
     "ownerPlaceholder": "First and Last Name",
     "phonePlaceholder": "+43 ...",
@@ -388,6 +393,7 @@
   "eventTypes": {
     "Theorie": "Theory",
     "Praxis": "Practice",
+    "Fahrstunde": "Driving Lesson",
     "Voraussichtliche Grundwissensprüfung": "Estimated Basic Knowledge Exam",
     "Voraussichtliche Kursspezifische Theorieprüfung": "Estimated Course-Specific Theory Exam",
     "Voraussichtliche Praxisprüfung": "Estimated Practical Exam"

@@ -98,6 +98,36 @@
                   <input v-model="schoolWebsite" type="url" :placeholder="t('profile.websitePlaceholder')" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
                 </div>
               </div>
+
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.openingDays') }}</label>
+                <div class="flex flex-wrap gap-2">
+                  <label v-for="day in allWeekdays" :key="day" class="flex items-center gap-2 cursor-pointer select-none">
+                    <div
+                      @click="toggleOpeningDay(day)"
+                      class="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0"
+                      :class="schoolOpeningDays.includes(day) ? 'bg-black border-black' : 'bg-white border-black/20 hover:border-black/50'"
+                    >
+                      <i v-if="schoolOpeningDays.includes(day)" class="pi pi-check text-white text-[10px]"></i>
+                    </div>
+                    <span class="text-sm text-black/70 font-semibold">{{ day }}</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.openingHours') }}</label>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-[10px] text-black/30 font-semibold mb-1">{{ t('profile.from') }}</label>
+                    <input v-model="schoolOpeningTimeFrom" type="time" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl px-4 py-4 text-black text-sm font-bold focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-black/30 font-semibold mb-1">{{ t('profile.to') }}</label>
+                    <input v-model="schoolOpeningTimeTo" type="time" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl px-4 py-4 text-black text-sm font-bold focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
+                  </div>
+                </div>
+              </div>
             </template>
 
             <button @click="saveProfile" class="mt-6 w-full bg-black text-white text-sm font-semibold py-4 rounded-2xl cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/10">
@@ -297,6 +327,16 @@ const schoolLocation = ref('')
 const schoolOwner = ref('')
 const schoolPhone = ref('')
 const schoolWebsite = ref('')
+const schoolOpeningDays = ref<string[]>([])
+const schoolOpeningTimeFrom = ref('')
+const schoolOpeningTimeTo = ref('')
+const allWeekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
+
+function toggleOpeningDay(day: string) {
+  const idx = schoolOpeningDays.value.indexOf(day)
+  if (idx === -1) schoolOpeningDays.value.push(day)
+  else schoolOpeningDays.value.splice(idx, 1)
+}
 
 const passwords = reactive({ current: '', new: '', confirm: '' })
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -314,6 +354,9 @@ onMounted(async () => {
         schoolOwner.value = school.Owner ?? ''
         schoolPhone.value = school.Phone ?? ''
         schoolWebsite.value = school.Website ?? ''
+        schoolOpeningDays.value = school.OpeningDays ? school.OpeningDays.split(',') : []
+        schoolOpeningTimeFrom.value = school.OpeningTimeFrom ?? ''
+        schoolOpeningTimeTo.value = school.OpeningTimeTo ?? ''
       }
     } catch {}
   }
@@ -365,7 +408,7 @@ const saveProfile = async () => {
     if (!response.ok) throw new Error()
 
     if (authStore.isSchool && authStore.user.DrivingSchoolId) {
-      await fetch(API_URL + `/schools/${authStore.user.DrivingSchoolId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: userName.value, location: schoolLocation.value || undefined, owner: schoolOwner.value || undefined, email: email.value, website: schoolWebsite.value || undefined, phone: schoolPhone.value || undefined }) })
+      await fetch(API_URL + `/schools/${authStore.user.DrivingSchoolId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: userName.value, location: schoolLocation.value || undefined, owner: schoolOwner.value || undefined, email: email.value, website: schoolWebsite.value || undefined, phone: schoolPhone.value || undefined, openingDays: schoolOpeningDays.value.length > 0 ? schoolOpeningDays.value.join(',') : undefined, openingTimeFrom: schoolOpeningTimeFrom.value || undefined, openingTimeTo: schoolOpeningTimeTo.value || undefined }) })
     }
 
     displayName.value = userName.value

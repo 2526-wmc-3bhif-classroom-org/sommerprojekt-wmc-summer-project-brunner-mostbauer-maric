@@ -168,6 +168,11 @@ export const buildTables = (connection: Database) => {
     // migration: add HasSkipped flag to User
     try { connection.exec(`ALTER TABLE User ADD COLUMN HasSkipped INTEGER NOT NULL DEFAULT 0`); } catch {}
 
+    // migration: add opening hours to DrivingSchool
+    try { connection.exec(`ALTER TABLE DrivingSchool ADD COLUMN OpeningDays TEXT`); } catch {}
+    try { connection.exec(`ALTER TABLE DrivingSchool ADD COLUMN OpeningTimeFrom TEXT`); } catch {}
+    try { connection.exec(`ALTER TABLE DrivingSchool ADD COLUMN OpeningTimeTo TEXT`); } catch {}
+
     // migration: add missing license types B1, C1E, D1E, F
     for (const name of ['B1', 'C1E', 'D1E', 'F']) {
       try { connection.exec(`INSERT INTO LicenseType (Name) SELECT '${name}' WHERE NOT EXISTS (SELECT 1 FROM LicenseType WHERE Name = '${name}')`); } catch {}

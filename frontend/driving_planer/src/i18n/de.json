@@ -138,7 +138,8 @@
         "practice": "Praxis",
         "grundwissen": "Grundwissen",
         "theoriePruefung": "Theorie Prüfung",
-        "praxisPruefung": "Praxis Prüfung"
+        "praxisPruefung": "Praxis Prüfung",
+        "drivingLessons": "Fahrstunden"
       }
     },
     "events": {
@@ -322,6 +323,10 @@
     "owner": "Inhaber",
     "phone": "Telefon",
     "website": "Website",
+    "openingDays": "Öffnungstage",
+    "openingHours": "Öffnungszeiten",
+    "from": "Von",
+    "to": "Bis",
     "addressPlaceholder": "Straße, PLZ Ort",
     "ownerPlaceholder": "Vor- und Nachname",
     "phonePlaceholder": "+43 ...",
@@ -388,6 +393,7 @@
   "eventTypes": {
     "Theorie": "Theorie",
     "Praxis": "Praxis",
+    "Fahrstunde": "Fahrstunde",
     "Voraussichtliche Grundwissensprüfung": "Voraussichtliche Grundwissensprüfung",
     "Voraussichtliche Kursspezifische Theorieprüfung": "Voraussichtliche Kursspezifische Theorieprüfung",
     "Voraussichtliche Praxisprüfung": "Voraussichtliche Praxisprüfung"
