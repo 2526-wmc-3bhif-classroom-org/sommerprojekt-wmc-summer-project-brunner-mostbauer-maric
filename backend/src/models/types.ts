@@ -14,6 +14,9 @@ export interface DrivingSchool {
   Email?: string | null;
   Website?: string | null;
   Phone?: string | null;
+  OpeningDays?: string | null;
+  OpeningTimeFrom?: string | null;
+  OpeningTimeTo?: string | null;
 }
 
 export interface DocType {

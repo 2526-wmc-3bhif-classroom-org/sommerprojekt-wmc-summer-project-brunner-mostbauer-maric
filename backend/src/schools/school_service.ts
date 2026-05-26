@@ -56,14 +56,14 @@ export class SchoolService {
     }
   }
 
-  public updateSchool(id: number, name: string, location?: string, owner?: string, email?: string, website?: string, phone?: string): ServiceResult<void> {
+  public updateSchool(id: number, name: string, location?: string, owner?: string, email?: string, website?: string, phone?: string, openingDays?: string, openingTimeFrom?: string, openingTimeTo?: string): ServiceResult<void> {
     if (isNaN(id)) {
       return { status: StatusCodes.BAD_REQUEST, error: { message: "Invalid schoolId" } };
     }
     const unit = new Unit(false);
     let success = false;
     try {
-      const updated = this.schoolRepo.update(unit, id, name, location, owner, email, website, phone);
+      const updated = this.schoolRepo.update(unit, id, name, location, owner, email, website, phone, openingDays, openingTimeFrom, openingTimeTo);
       if (!updated) {
         return { status: StatusCodes.NOT_FOUND, error: { message: "School not found" } };
       }
