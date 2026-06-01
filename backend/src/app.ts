@@ -49,7 +49,29 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const app = express();
 export { app };
 
-app.use(cors());
+// Configure CORS to accept requests from GitHub Pages and localhost
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:8080',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000',
+  'https://2526-wmc-3bhif-classroom-org.github.io',
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 app.use((err: any, req: Request, res: Response, next: any) => {
