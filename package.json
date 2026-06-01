@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "main": "backend/src/app.ts",
+  "workspaces": [
+    "backend"
+  ],
   "scripts": {
     "start": "npm run start:backend",
     "start:backend": "npm --prefix ./backend start",
@@ -12,3 +15,4 @@
     "@emailjs/browser": "^4.4.1"
   }
 }
+

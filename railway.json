@@ -1,5 +1,5 @@
 {
-  "provider": "node",
+  "$schema": "https://railway.app/railway.schema.json",
   "deploy": {
     "startCommand": "npm run start:backend"
   }
