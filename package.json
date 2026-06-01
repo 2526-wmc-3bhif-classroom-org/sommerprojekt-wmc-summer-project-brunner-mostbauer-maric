@@ -4,8 +4,8 @@
   "type": "module",
   "main": "backend/src/app.ts",
   "scripts": {
-    "start": "/bin/sh -c 'cd backend && npm start'",
-    "dev": "cd backend && npm run dev"
+    "start": "npm --prefix ./backend start",
+    "dev": "npm --prefix ./backend run dev"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1"
