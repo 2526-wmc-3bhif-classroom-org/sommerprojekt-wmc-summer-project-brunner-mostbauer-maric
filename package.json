@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "cd backend && npm start"
+  },
   "dependencies": {
     "@emailjs/browser": "^4.4.1"
   }
