@@ -1,0 +1,6 @@
+{
+  "provider": "node",
+  "deploy": {
+    "startCommand": "npm run start:backend"
+  }
+}
