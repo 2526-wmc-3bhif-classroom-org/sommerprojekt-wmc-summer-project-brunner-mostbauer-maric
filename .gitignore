@@ -1,1 +1,7 @@
-/.idea
+**/.idea
+**/node_modules
+dist
+.vscode
+*.md
+lighthouse_report.json
+.claude/

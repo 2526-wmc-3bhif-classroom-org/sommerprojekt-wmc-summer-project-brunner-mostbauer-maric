@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+@import './base.css';
+
+body {
+  background: transparent !important;
+  background-color: transparent !important;
+  overflow-x: hidden !important;
+}
+
+html {
+  background-color: #f8fafc !important;
+  overflow-x: hidden !important;
+}
+#app {
+  position: relative;
+  z-index: 1;
+}
