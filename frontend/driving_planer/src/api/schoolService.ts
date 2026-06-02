@@ -1,0 +1,128 @@
+/**
+ * School Data Service
+ * Centralized management for school and rating data with caching
+ */
+
+import { apiClient } from './client';
+import { cacheManager } from './cache';
+import type { DrivingSchool, Rating } from '@/types';
+
+class SchoolService {
+  private schoolsCacheKey = 'schools:list';
+  private ratingsCacheKey = 'schools:ratings';
+  private schoolCountCacheKey = 'schools:count';
+  private schoolCacheTTL = 10 * 60 * 1000; // 10 minutes
+  private ratingsCacheTTL = 5 * 60 * 1000; // 5 minutes
+
+  /**
+   * Fetch all schools with caching
+   */
+  async fetchSchools(force = false): Promise<DrivingSchool[]> {
+    if (!force && cacheManager.has(this.schoolsCacheKey)) {
+      return cacheManager.get<DrivingSchool[]>(this.schoolsCacheKey) || [];
+    }
+
+    const schools = await apiClient.get<DrivingSchool[]>('/schools');
+    cacheManager.set(this.schoolsCacheKey, schools, this.schoolCacheTTL);
+    return schools;
+  }
+
+  /**
+   * Fetch school count with caching
+   */
+  async fetchSchoolCount(force = false): Promise<number> {
+    if (!force && cacheManager.has(this.schoolCountCacheKey)) {
+      return cacheManager.get<number>(this.schoolCountCacheKey) || 0;
+    }
+
+    const response = await apiClient.get<{ count: number }>('/schools/count');
+    const count = response.count;
+    cacheManager.set(this.schoolCountCacheKey, count, this.schoolCacheTTL);
+    return count;
+  }
+
+  /**
+   * Fetch all ratings with caching
+   */
+  async fetchRatings(force = false): Promise<Rating[]> {
+    if (!force && cacheManager.has(this.ratingsCacheKey)) {
+      return cacheManager.get<Rating[]>(this.ratingsCacheKey) || [];
+    }
+
+    // Don't skip auth - include authorization if logged in so responses reflect current user context
+    // GET /ratings is publicly accessible but will include user-specific info if authenticated
+    const ratings = await apiClient.get<Rating[]>('/ratings');
+    cacheManager.set(this.ratingsCacheKey, ratings, this.ratingsCacheTTL);
+    return ratings;
+  }
+
+  /**
+   * Add or update a rating
+   */
+  async setRating(schoolId: number, stars: number): Promise<boolean> {
+    try {
+      // Get userId from sessionStorage to avoid circular imports
+      const userJson = sessionStorage.getItem('user');
+      const user = userJson ? JSON.parse(userJson) : null;
+      const userId = user?.UserId;
+      
+      if (!userId) {
+        console.error('User not authenticated');
+        return false;
+      }
+
+      if (stars === 0) {
+        // Delete rating
+        await apiClient.delete(`/ratings/${schoolId}`);
+      } else {
+        // Check if current user has already rated this school
+        const ratings = await this.fetchRatings();
+        const existingRating = ratings.find(
+          (r) => r.DrivingSchoolId === schoolId && r.UserId === userId
+        );
+
+        if (existingRating) {
+          // Update existing rating for current user
+          await apiClient.patch('/ratings', { schoolId, stars });
+        } else {
+          // Create new rating for current user
+          await apiClient.post('/ratings', { schoolId, stars });
+        }
+      }
+
+      // Invalidate cache to force refresh
+      cacheManager.invalidate(this.ratingsCacheKey);
+      return true;
+    } catch (error) {
+      console.error('Failed to set rating:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get cached school by ID
+   */
+  async getSchoolById(id: number): Promise<DrivingSchool | null> {
+    const schools = await this.fetchSchools();
+    return schools.find((s) => s.DrivingSchoolId === id) || null;
+  }
+
+  /**
+   * Get cached ratings for a specific school
+   */
+  async getSchoolRatings(schoolId: number): Promise<Rating[]> {
+    const ratings = await this.fetchRatings();
+    return ratings.filter((r) => r.DrivingSchoolId === schoolId);
+  }
+
+  /**
+   * Invalidate all school-related caches
+   */
+  invalidateAll(): void {
+    cacheManager.invalidate(this.schoolsCacheKey);
+    cacheManager.invalidate(this.ratingsCacheKey);
+    cacheManager.invalidate(this.schoolCountCacheKey);
+  }
+}
+
+export const schoolService = new SchoolService();
