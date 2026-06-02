@@ -141,9 +141,12 @@
                         <i
                           v-for="star in 5"
                           :key="star"
-                          @click.stop="setMobileRating(school, star)"
-                          class="pi text-sm cursor-pointer"
-                          :class="[star <= Math.round(getMobileAvg(school)) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200']"
+                          @click.stop="authStore.isSchool ? null : setMobileRating(school, star)"
+                          class="pi text-sm"
+                          :class="[
+                            star <= Math.round(getMobileAvg(school)) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200',
+                            authStore.isSchool ? 'cursor-default opacity-80' : 'cursor-pointer'
+                          ]"
                         ></i>
                       </div>
                       <span class="text-[10px] text-slate-400">
@@ -171,6 +174,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DrivingSchoolLine from "@/components/DrivingSchoolLine.vue";
+import SchoolComments from "@/components/SchoolComments.vue";
 import Background from '@/components/Background.vue';
 import FooterCmp from '@/components/FooterCmp.vue';
 import HeaderMain from '@/components/HeaderMain.vue';
@@ -197,10 +201,16 @@ async function setMobileRating(school: WebsiteDrivingSchool, stars: number) {
   const userId = authStore.user?.UserId
   if (!userId) return
   
-  const currentRating = schoolStore.ratings.find(r => r.DrivingSchoolId === school.DrivingSchoolId && r.UserId === userId)?.Stars ?? 0
+  const ratingRecord = schoolStore.ratings.find(r => r.DrivingSchoolId === school.DrivingSchoolId && r.UserId === userId)
+  const currentRating = ratingRecord?.Stars ?? 0
+  const currentContent = ratingRecord?.Content || undefined
   const newRating = currentRating === stars ? 0 : stars
 
-  await schoolStore.setRating(school.DrivingSchoolId, newRating)
+  if (newRating === 0) {
+    await schoolStore.setRating(school.DrivingSchoolId, 0)
+  } else {
+    await schoolStore.setRating(school.DrivingSchoolId, newRating, currentContent)
+  }
 }
 
 const schools = ref<WebsiteDrivingSchool[]>([]);

@@ -131,7 +131,7 @@ const selectClass = (cls: string) => {
 
 const submitForm = () => {
   goalValid.value = !!formData.goal
-  const timestampForm = new Date(formData.startDate).getTime()
+  const timestampForm = new Date(formData.startDate || '').getTime()
   if (!formData.startDate || Number.isNaN(timestampForm) || !checkIfFuture(new Date(formData.startDate), new Date(Date.now()))) {
     dateValid.value = false
   } else {
@@ -140,7 +140,7 @@ const submitForm = () => {
   if (!dateValid.value || !goalValid.value) return
 
   classValid.value = availableCourses.value.some(
-    c => c.licenseType === formData.licenseClass && c.dateTo >= formData.startDate
+    c => c.licenseType === formData.licenseClass && c.dateTo >= (formData.startDate || '')
   )
   if (!classValid.value) return
 

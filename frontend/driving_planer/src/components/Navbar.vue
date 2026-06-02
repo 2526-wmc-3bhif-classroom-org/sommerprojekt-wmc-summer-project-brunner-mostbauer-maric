@@ -195,7 +195,7 @@ watch(() => route.path, () => {
   langMenuOpen.value = false
 })
 
-const menu = ref(null)
+const menu = ref<any>(null)
 const sidebarOpen = ref(false)
 
 const links = computed(() => {
@@ -226,8 +226,10 @@ const menuItems = computed(() => {
   }
 })
 
-const toggleMenu = (event) => {
-  menu.value.toggle(event)
+const toggleMenu = (event: Event) => {
+  if (menu.value) {
+    menu.value.toggle(event)
+  }
 }
 
 const handleLogout = () => {
