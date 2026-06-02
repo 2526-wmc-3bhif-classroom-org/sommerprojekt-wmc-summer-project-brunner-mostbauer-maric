@@ -10,6 +10,9 @@ export interface User {
   AvatarPath?: string | null;
   DrivingSchoolId?: number | null;
   HasSkipped?: number;
+  Location?: string | null;
+  Latitude?: number | null;
+  Longitude?: number | null;
 }
 
 export class UserRepository {
@@ -41,10 +44,29 @@ export class UserRepository {
       .get(userId);
   }
 
-  public create(unit: Unit, userName: string, email: string, passwordHash: string, role: UserRole): number {
+  public create(
+    unit: Unit,
+    userName: string,
+    email: string,
+    passwordHash: string,
+    role: UserRole,
+    location?: string | null,
+    latitude?: number | null,
+    longitude?: number | null
+  ): number {
     const result = unit
-      .prepare("INSERT INTO User (UserName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?)")
-      .run(userName, email, passwordHash, role);
+      .prepare(
+        "INSERT INTO User (UserName, Email, PasswordHash, Role, Location, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      )
+      .run(
+        userName,
+        email,
+        passwordHash,
+        role,
+        location ?? null,
+        latitude ?? null,
+        longitude ?? null
+      );
     return result.lastInsertRowid as number;
   }
 
