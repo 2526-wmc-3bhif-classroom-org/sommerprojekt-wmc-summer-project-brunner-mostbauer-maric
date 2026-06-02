@@ -44,7 +44,10 @@ let cleanupScroll: (() => void) | null = null
 let cleanupResize: (() => void) | null = null
 
 /* Maximum distance between particles to draw connecting lines */
-const MAX_DISTANCE: number = 120
+const MAX_DISTANCE: number = 160
+
+/* Maximum number of active particles to prevent cluttering */
+const MAX_PARTICLES: number = 200
 
 /* Array storing all active particles */
 const particles: Particle[] = []
@@ -100,7 +103,9 @@ onMounted(async () => {
 
   /* Spawn additional particles when the user scrolls */
   const onScroll = (): void => {
+    if (particles.length >= MAX_PARTICLES) return
     for (let i = 0; i < 3; i++) {
+      if (particles.length >= MAX_PARTICLES) break
       particles.push(spawnParticleInView())
     }
   }
@@ -126,7 +131,9 @@ onMounted(async () => {
 
   /* Periodically spawn new particles */
   spawnInterval = setInterval(() => {
+    if (particles.length >= MAX_PARTICLES) return
     for (let i = 0; i < 2; i++) {
+      if (particles.length >= MAX_PARTICLES) break
       particles.push(spawnParticle(c.width, c.height))
     }
   }, 1200)
@@ -138,7 +145,7 @@ onMounted(async () => {
 
 
   /* Initial particle population */
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 100; i++) {
     particles.push(spawnParticle(c.width, c.height))
   }
 
@@ -150,7 +157,9 @@ onMounted(async () => {
     ctx.clearRect(0, 0, c.width, c.height)
 
     /* Occasionally spawn a random particle */
-    if (Math.random() < 0.1) particles.push(spawnParticle(c.width, c.height))
+    if (particles.length < MAX_PARTICLES && Math.random() < 0.1) {
+      particles.push(spawnParticle(c.width, c.height))
+    }
 
 
     /* Update and draw each particle */
