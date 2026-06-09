@@ -13,7 +13,13 @@
           <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition-all duration-300">
             <i class="pi pi-car text-sm"></i>
           </div>
-          <span class="font-bold text-slate-700 group-hover:text-blue-600 transition-colors">{{ school.Name }}</span>
+          <div class="flex flex-col">
+            <span class="font-bold text-slate-700 group-hover:text-blue-600 transition-colors">{{ school.Name }}</span>
+            <span v-if="school.distance != null" class="text-xs text-slate-400">
+              <i class="pi pi-map-marker text-[10px] text-blue-400 mr-0.5"></i>
+              {{ school.distance.toFixed(1) }} km entfernt
+            </span>
+          </div>
         </div>
       </td>
 

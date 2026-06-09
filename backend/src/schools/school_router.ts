@@ -58,7 +58,8 @@ const schoolService: SchoolService = SchoolService.Instance;
  */
 schoolRouter.get("/", isAuthenticated, (req, res) => {
   try {
-    const schools = schoolService.getAllSchools();
+    const userId = (req as AuthRequest).payload?.user.UserId;
+    const schools = schoolService.getAllSchools(userId);
     res.status(StatusCodes.OK).json(schools);
   } catch (error) {
     res

@@ -86,16 +86,18 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function register(userData: { userName: string; email: string; password: string; isDrivingSchool: boolean; location?: string; owner?: string; phone?: string; website?: string }) {
+  async function register(userData: { userName: string; email: string; password: string; isDrivingSchool: boolean; location?: string; owner?: string; phone?: string; website?: string; latitude?: number; longitude?: number }) {
     try {
       const body: Record<string, unknown> = {
         userName: userData.userName,
         email: userData.email,
         password: userData.password,
-        isSchool: userData.isDrivingSchool
+        isSchool: userData.isDrivingSchool,
+        location: userData.location,
+        latitude: userData.latitude,
+        longitude: userData.longitude
       }
       if (userData.isDrivingSchool) {
-        body.location = userData.location
         body.owner = userData.owner
         body.phone = userData.phone
         body.website = userData.website

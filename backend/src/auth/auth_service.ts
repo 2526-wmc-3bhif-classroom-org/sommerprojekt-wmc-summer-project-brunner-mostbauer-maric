@@ -45,7 +45,10 @@ export class AuthService {
         IsSchool: user.Role === UserRole.SCHOOL,
         AvatarPath: user.AvatarPath,
         DrivingSchoolId: user.DrivingSchoolId ?? null,
-        HasSkipped: user.HasSkipped === 1
+        HasSkipped: user.HasSkipped === 1,
+        Location: user.Location ?? null,
+        Latitude: user.Latitude ?? null,
+        Longitude: user.Longitude ?? null
       };
 
       const token = jwt.sign({ user: userClaims }, SECRET_KEY, { expiresIn: "30m" });
@@ -72,7 +75,10 @@ export class AuthService {
     password: string,
     role: UserRole = UserRole.USER,
     isSchool: boolean = false,
-    schoolData?: { location?: string; owner?: string; phone?: string; website?: string }
+    schoolData?: { location?: string; owner?: string; phone?: string; website?: string; latitude?: number; longitude?: number },
+    location?: string,
+    latitude?: number,
+    longitude?: number
   ) {
     const unit = new Unit(false);
     let success = false;
@@ -88,18 +94,20 @@ export class AuthService {
 
       const passwordHash = bcrypt.hashSync(password, 10);
       const finalRole = isSchool ? UserRole.SCHOOL : role;
-      const userId = this.repo.create(unit, userName, email, passwordHash, finalRole);
+      const userId = this.repo.create(unit, userName, email, passwordHash, finalRole, location, latitude, longitude);
 
       let drivingSchoolId: number | null = null;
       if (finalRole === UserRole.SCHOOL) {
         drivingSchoolId = this.schoolRepo.create(
           unit,
           userName,
-          schoolData?.location,
+          schoolData?.location || location,
           schoolData?.owner,
           email,
           schoolData?.website,
-          schoolData?.phone
+          schoolData?.phone,
+          schoolData?.latitude ?? latitude,
+          schoolData?.longitude ?? longitude
         );
         this.repo.linkDrivingSchool(unit, userId, drivingSchoolId);
       }
@@ -113,7 +121,10 @@ export class AuthService {
           Email: email,
           Role: finalRole,
           IsSchool: finalRole === UserRole.SCHOOL,
-          DrivingSchoolId: drivingSchoolId
+          DrivingSchoolId: drivingSchoolId,
+          Location: location ?? null,
+          Latitude: latitude ?? null,
+          Longitude: longitude ?? null
         }
       };
     } catch (e: any) {
