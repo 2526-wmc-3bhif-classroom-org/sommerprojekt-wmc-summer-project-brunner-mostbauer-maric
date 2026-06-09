@@ -105,18 +105,18 @@
                 <div
                   v-for="(school, i) in filteredSchools"
                   :key="'mob-' + i"
-                  class="p-4 active:bg-slate-50 transition-colors"
-                  @click="school.isExpanded = !school.isExpanded" >
-
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-[10px] font-bold text-blue-500 uppercase tracking-tight">#{{ i + 1 }}</span>
-                    <a v-if="school.Website" :href="school.Website" target="_blank" @click.stop class="text-blue-500 text-sm p-1">
-                      <i class="pi pi-external-link"></i>
-                    </a>
-                    <span v-else class="text-slate-300 text-sm p-1 opacity-50 cursor-not-allowed">
-                      <i class="pi pi-external-link"></i>
-                    </span>
-                  </div>
+                  class="transition-colors"
+                >
+                  <div class="p-4 active:bg-slate-50" @click="school.isExpanded = !school.isExpanded">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-[10px] font-bold text-blue-500 uppercase tracking-tight">#{{ i + 1 }}</span>
+                      <a v-if="school.Website" :href="school.Website" target="_blank" @click.stop class="text-blue-500 text-sm p-1">
+                        <i class="pi pi-external-link"></i>
+                      </a>
+                      <span v-else class="text-slate-300 text-sm p-1 opacity-50 cursor-not-allowed">
+                        <i class="pi pi-external-link"></i>
+                      </span>
+                    </div>
 
                   <h3 class="font-bold text-slate-900">
                     {{ school.Name }}
@@ -139,27 +139,31 @@
                     </p>
                   </div>
 
-                  <div class="flex items-center justify-between mt-4">
-                    <span class="text-xs text-slate-400 italic">{{ school.Owner || '—' }}</span>
-                    <div class="flex flex-col items-end gap-0.5">
-                      <div class="flex gap-1">
-                        <i
-                          v-for="star in 5"
-                          :key="star"
-                          @click.stop="authStore.isSchool ? null : setMobileRating(school, star)"
-                          class="pi text-sm"
-                          :class="[
-                            star <= Math.round(getMobileAvg(school)) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200',
-                            authStore.isSchool ? 'cursor-default opacity-80' : 'cursor-pointer'
-                          ]"
-                        ></i>
+                    <div class="flex items-center justify-between mt-4">
+                      <span class="text-xs text-slate-400 italic">{{ school.Owner || '—' }}</span>
+                      <div class="flex flex-col items-end gap-0.5">
+                        <div class="flex gap-1">
+                          <i
+                            v-for="star in 5"
+                            :key="star"
+                            @click.stop="authStore.isSchool ? null : setMobileRating(school, star)"
+                            class="pi text-sm"
+                            :class="[
+                              star <= Math.round(getMobileAvg(school)) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200',
+                              authStore.isSchool ? 'cursor-default opacity-80' : 'cursor-pointer'
+                            ]"
+                          ></i>
+                        </div>
+                        <span class="text-[10px] text-slate-400">
+                          {{ getMobileAvg(school) > 0 ? getMobileAvg(school).toFixed(1) + ' / 5' : t('schools.noRating') }}
+                        </span>
                       </div>
-                      <span class="text-[10px] text-slate-400">
-                        {{ getMobileAvg(school) > 0 ? getMobileAvg(school).toFixed(1) + ' / 5' : t('schools.noRating') }}
-                      </span>
                     </div>
                   </div>
 
+                  <div v-if="school.isExpanded" class="px-4 pb-4 border-t border-gray-50">
+                    <SchoolComments :schoolId="school.DrivingSchoolId" />
+                  </div>
                 </div>
               </div>
 

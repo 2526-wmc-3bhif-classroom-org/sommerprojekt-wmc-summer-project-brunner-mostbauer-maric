@@ -32,7 +32,7 @@
     </div>
     <div v-else class="text-sm text-slate-400 italic">Noch keine Kommentare vorhanden.</div>
     
-    <div v-if="authStore.isAuthenticated && !authStore.isSchool" class="mt-2 relative" @click.stop>
+    <div v-if="authStore.isAuthenticated && !authStore.isSchool && (!hasExistingComment || isEditing)" class="mt-2 relative" @click.stop>
       <textarea
         v-model="commentText"
         @input="errorMessage = ''"
@@ -86,6 +86,14 @@ const userRating = computed(() => {
   const rating = schoolStore.ratings.find(r => r.DrivingSchoolId === props.schoolId && r.UserId === userId)
   return rating?.Stars ?? 0
 })
+
+const currentUserComment = computed(() => {
+  const userId = authStore.user?.UserId
+  if (!userId) return null
+  return schoolStore.ratings.find(r => r.DrivingSchoolId === props.schoolId && r.UserId === userId && r.Content && r.Content.trim().length > 0) ?? null
+})
+
+const hasExistingComment = computed(() => currentUserComment.value !== null)
 
 const comments = computed(() => {
   return schoolStore.ratings.filter(r => r.DrivingSchoolId === props.schoolId && r.Content && r.Content.trim().length > 0)
