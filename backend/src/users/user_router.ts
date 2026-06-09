@@ -183,7 +183,7 @@ userRouter.delete("/:id", isAuthenticated, (req, res) => {
 userRouter.put("/:id", isAuthenticated, (req, res) => {
   try {
     const userId = parseInt(req.params.id);
-    const { userName, email } = req.body;
+    const { userName, email, location, latitude, longitude } = req.body;
     const authReq = req as AuthRequest;
 
     const result = userService.updateUser(
@@ -191,7 +191,10 @@ userRouter.put("/:id", isAuthenticated, (req, res) => {
       userName,
       email,
       authReq.payload?.user.UserId || 0,
-      authReq.payload?.user.Role as UserRole
+      authReq.payload?.user.Role as UserRole,
+      location,
+      latitude,
+      longitude
     );
 
     if (result.error) {

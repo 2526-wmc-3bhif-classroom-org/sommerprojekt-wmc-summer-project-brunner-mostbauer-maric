@@ -80,15 +80,15 @@ authRouter.post("/login", async (req, res) => {
  *         description: Conflict
  */
 authRouter.post("/register", async (req, res) => {
-  const { userName, email, password, role, isSchool, location, owner, phone, website } = req.body;
+  const { userName, email, password, role, isSchool, location, owner, phone, website, latitude, longitude } = req.body;
   if (!userName || !email || !password) {
     res.status(400).json({ error: { message: "Username, email and password are required" } });
     return;
   }
 
   try {
-    const schoolData = isSchool ? { location, owner, phone, website } : undefined;
-    const result = await authService.register(userName, email, password, role, isSchool, schoolData);
+    const schoolData = isSchool ? { location, owner, phone, website, latitude, longitude } : undefined;
+    const result = await authService.register(userName, email, password, role, isSchool, schoolData, location, latitude, longitude);
     if (result.error) {
       res.status(result.status).json({ error: result.error });
     } else {

@@ -118,21 +118,26 @@
                       </span>
                     </div>
 
-                    <h3 class="font-bold text-slate-900">{{ school.Name }}</h3>
-                    <div class="mt-1">
-                      <a
-                        v-if="school.Location"
-                        :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(school.Location)"
-                        target="_blank"
-                        @click.stop
-                        class="text-sm text-slate-500 hover:text-blue-500 active:text-blue-600 transition-colors flex items-center w-fit"
-                      >
-                        {{ school.Location }}
-                      </a>
-                      <p v-else class="text-sm text-slate-500">
-                        {{ '—' }}
-                      </p>
-                    </div>
+                  <h3 class="font-bold text-slate-900">
+                    {{ school.Name }}
+                    <span v-if="school.distance != null" class="text-xs font-normal text-slate-400 ml-1">
+                      ({{ school.distance.toFixed(1) }} km)
+                    </span>
+                  </h3>
+                  <div class="mt-1">
+                    <a
+                      v-if="school.Location"
+                      :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(school.Location)"
+                      target="_blank"
+                      @click.stop
+                      class="text-sm text-slate-500 hover:text-blue-500 active:text-blue-600 transition-colors flex items-center w-fit"
+                    >
+                      {{ school.Location }}
+                    </a>
+                    <p v-else class="text-sm text-slate-500">
+                      {{ '—' }}
+                    </p>
+                  </div>
 
                     <div class="flex items-center justify-between mt-4">
                       <span class="text-xs text-slate-400 italic">{{ school.Owner || '—' }}</span>

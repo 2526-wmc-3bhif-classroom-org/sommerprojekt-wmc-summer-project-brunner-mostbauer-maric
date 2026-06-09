@@ -98,7 +98,10 @@ export class UserService {
     userName: string,
     email: string,
     requestUserId: number,
-    requestUserRole: UserRole
+    requestUserRole: UserRole,
+    location?: string | null,
+    latitude?: number | null,
+    longitude?: number | null
   ): ServiceResult {
     if (isNaN(userId)) {
       return {
@@ -124,7 +127,7 @@ export class UserService {
     const unit = new Unit(false);
     let success = false;
     try {
-      const updated = this.userRepo.update(unit, userId, userName, email);
+      const updated = this.userRepo.update(unit, userId, userName, email, location, latitude, longitude);
       if (updated) {
         success = true;
         return {

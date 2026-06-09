@@ -42,14 +42,16 @@
               />
             </div>
 
-            <button
-              v-if="authStore.isSchool || authStore.isAdmin"
-              @click="openCreateModal"
-              class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-md hover:shadow-lg"
-            >
-              <i class="pi pi-plus text-xs"></i>
-              {{ t('manage.newCourse') }}
-            </button>
+            <div v-if="authStore.isSchool || authStore.isAdmin" class="flex flex-col w-full sm:w-auto">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 px-1 invisible">_</span>
+              <button
+                @click="openCreateModal"
+                class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-bold rounded-xl transition-all shadow-md hover:shadow-lg"
+              >
+                <i class="pi pi-plus text-xs"></i>
+                {{ t('manage.newCourse') }}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -436,6 +438,7 @@ const filterLicense = ref('')
 const filterDate = ref('')
 const filteredCourses = computed(() => {
   return courses.value.filter(c => {
+    if (!authStore.isSchool && !authStore.isAdmin && c.currentParticipants >= c.maxParticipants) return false
     if (filterLicense.value && c.licenseType !== filterLicense.value) return false
     if (filterDate.value && c.dateTo < filterDate.value) return false
     return true
