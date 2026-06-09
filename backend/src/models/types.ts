@@ -77,6 +77,7 @@ export interface Rating {
   Stars: number;
   Content?: string | null;
   Date?: string | null;
+  UserName?: string;
 }
 
 export interface Comment {

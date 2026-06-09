@@ -30,12 +30,12 @@ export class RatingService {
     }
   }
 
-  public createRating(userId: number, schoolId: number, stars: number): boolean {
+  public createRating(userId: number, schoolId: number, stars: number, content?: string): boolean {
     const unit = new Unit(false);
     try {
       const existing = RatingRepository.Instance.getByUserAndSchool(unit, userId, schoolId);
       if (existing) throw new Error("Rating already exists. Use PATCH to update.");
-      const res = RatingRepository.Instance.create(unit, userId, schoolId, stars);
+      const res = RatingRepository.Instance.create(unit, userId, schoolId, stars, content);
       unit.complete(true);
       return res;
     } catch (e) {
@@ -44,12 +44,12 @@ export class RatingService {
     }
   }
 
-  public updateRating(userId: number, schoolId: number, stars: number): boolean {
+  public updateRating(userId: number, schoolId: number, stars: number, content?: string): boolean {
     const unit = new Unit(false);
     try {
       const existing = RatingRepository.Instance.getByUserAndSchool(unit, userId, schoolId);
       if (!existing) throw new Error("Rating not found. Use POST to create.");
-      const res = RatingRepository.Instance.updateStars(unit, userId, schoolId, stars);
+      const res = RatingRepository.Instance.updateStars(unit, userId, schoolId, stars, content);
       unit.complete(true);
       return res;
     } catch (e) {

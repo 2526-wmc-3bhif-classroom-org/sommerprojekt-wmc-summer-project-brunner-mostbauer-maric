@@ -506,11 +506,13 @@ const emptyForm = () => ({ licenseType: '', dateFrom: '', dateTo: '', timeFrom: 
 function toggleWeekday(day: string) { const idx = form.value.weekdays.indexOf(day); if (idx === -1) form.value.weekdays.push(day); else form.value.weekdays.splice(idx, 1) }
 const form = ref(emptyForm())
 const errors = ref<Record<string, string>>({})
-const todayISO = new Date().toISOString().split('T')[0]
+const todayISO = new Date().toISOString().split('T')[0] as string
 
-function isValidTime(t: string): boolean {
-  if (!/^\d{2}:\d{2}$/.test(t)) return false
-  const [h, m] = t.split(':').map(Number)
+function isValidTime(timeStr: string): boolean {
+  if (!/^\d{2}:\d{2}$/.test(timeStr)) return false
+  const parts = timeStr.split(':').map(Number)
+  const h = parts[0] as number
+  const m = parts[1] as number
   return h >= 0 && h <= 23 && m >= 0 && m <= 59
 }
 

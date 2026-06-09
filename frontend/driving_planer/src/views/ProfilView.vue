@@ -206,7 +206,7 @@
             <p v-if="errors.image" class="text-red-500 text-center text-xs mt-4">{{ errors.image }}</p>
             <div class="h-8"></div>
             <input type="file" ref="fileInput" class="hidden" @change="onFileSelect" accept="image/*" />
-            <button @click="$refs.fileInput.click()" class="w-full py-4 bg-black/[0.03] border border-black/10 rounded-2xl text-sm font-semibold text-black hover:bg-black/5 transition-all cursor-pointer">
+            <button @click="triggerFileInput" class="w-full py-4 bg-black/[0.03] border border-black/10 rounded-2xl text-sm font-semibold text-black hover:bg-black/5 transition-all cursor-pointer">
               {{ t('profile.photo.select') }}
             </button>
             <button v-if="avatarUrl" @click="deleteAvatar" style="margin-top: 20px;" class="w-full py-4 bg-red-50 border border-red-100 rounded-2xl text-sm font-semibold text-red-500 hover:bg-red-100 transition-all cursor-pointer flex items-center justify-center gap-2">
@@ -311,7 +311,7 @@ import type { User } from '@/types.ts'
 const { t } = useI18n()
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 const authStore = useAuthStore()
-const userId = authStore.user.UserId
+const userId = authStore.user?.UserId
 
 const showSuccessToast = ref(false)
 const toastMessage = ref('')
@@ -410,12 +410,16 @@ async function geocodeLocation(address: string): Promise<{ lat: number; lon: num
 const passwords = reactive({ current: '', new: '', confirm: '' })
 const fileInput = ref<HTMLInputElement | null>(null)
 
+function triggerFileInput() {
+  fileInput.value?.click()
+}
+
 onMounted(async () => {
   userName.value = authStore.user.UserName
   email.value = authStore.user.Email
   userLocation.value = authStore.user.Location ?? ''
 
-  if (authStore.isSchool && authStore.user.DrivingSchoolId) {
+  if (authStore.isSchool && authStore.user?.DrivingSchoolId) {
     try {
       const res = await fetch(`${API_URL}/schools/${authStore.user.DrivingSchoolId}`, { headers: { Authorization: `Bearer ${authStore.token}` } })
       if (res.ok) {
@@ -455,7 +459,7 @@ const deleteAvatar = async () => {
   try {
     const response = await fetch(API_URL + `/users/${userId}/avatar`, { method: 'DELETE', headers: { Authorization: `Bearer ${authStore.token}` } })
     if (response.ok) {
-      authStore.updateUser({ AvatarPath: null })
+      authStore.updateUser({ AvatarPath: undefined })
       previewImage.value = null
       closeImageModal()
     } else {
@@ -488,7 +492,7 @@ const saveProfile = async () => {
     const response = await fetch(API_URL + `/users/${userId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ userName: userName.value, email: email.value, location: userLocation.value || null, latitude: lat, longitude: lng }) })
     if (!response.ok) throw new Error()
 
-    if (authStore.isSchool && authStore.user.DrivingSchoolId) {
+    if (authStore.isSchool && authStore.user?.DrivingSchoolId) {
       await fetch(API_URL + `/schools/${authStore.user.DrivingSchoolId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: userName.value, location: schoolLocation.value || undefined, owner: schoolOwner.value || undefined, email: email.value, website: schoolWebsite.value || undefined, phone: schoolPhone.value || undefined, openingDays: schoolOpeningDays.value.length > 0 ? schoolOpeningDays.value.join(',') : undefined, openingTimeFrom: schoolOpeningTimeFrom.value || undefined, openingTimeTo: schoolOpeningTimeTo.value || undefined }) })
     }
 
