@@ -318,6 +318,8 @@
     "email": "E-Mail",
     "namePlaceholder": "Deinen Namen eingeben",
     "emailPlaceholder": "Deine E-Mail eingeben",
+    "location": "Standort",
+    "locationPlaceholder": "z.B. Wien, AT",
     "schoolData": "Fahrschuldaten",
     "address": "Adresse",
     "owner": "Inhaber",

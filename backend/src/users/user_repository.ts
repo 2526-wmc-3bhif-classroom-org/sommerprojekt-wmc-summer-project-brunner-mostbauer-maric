@@ -10,6 +10,9 @@ export interface User {
   AvatarPath?: string | null;
   DrivingSchoolId?: number | null;
   HasSkipped?: number;
+  Location?: string | null;
+  Latitude?: number | null;
+  Longitude?: number | null;
 }
 
 export class UserRepository {
@@ -41,10 +44,29 @@ export class UserRepository {
       .get(userId);
   }
 
-  public create(unit: Unit, userName: string, email: string, passwordHash: string, role: UserRole): number {
+  public create(
+    unit: Unit,
+    userName: string,
+    email: string,
+    passwordHash: string,
+    role: UserRole,
+    location?: string | null,
+    latitude?: number | null,
+    longitude?: number | null
+  ): number {
     const result = unit
-      .prepare("INSERT INTO User (UserName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?)")
-      .run(userName, email, passwordHash, role);
+      .prepare(
+        "INSERT INTO User (UserName, Email, PasswordHash, Role, Location, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      )
+      .run(
+        userName,
+        email,
+        passwordHash,
+        role,
+        location ?? null,
+        latitude ?? null,
+        longitude ?? null
+      );
     return result.lastInsertRowid as number;
   }
 
@@ -59,10 +81,18 @@ export class UserRepository {
     return result.changes > 0;
   }
 
-  public update(unit: Unit, userId: number, userName: string, email: string): boolean {
+  public update(
+    unit: Unit,
+    userId: number,
+    userName: string,
+    email: string,
+    location?: string | null,
+    latitude?: number | null,
+    longitude?: number | null
+  ): boolean {
     const result = unit
-      .prepare("UPDATE User SET UserName = ?, Email = ? WHERE UserId = ?")
-      .run(userName, email, userId);
+      .prepare("UPDATE User SET UserName = ?, Email = ?, Location = ?, Latitude = ?, Longitude = ? WHERE UserId = ?")
+      .run(userName, email, location ?? null, latitude ?? null, longitude ?? null, userId);
     return result.changes > 0;
   }
 

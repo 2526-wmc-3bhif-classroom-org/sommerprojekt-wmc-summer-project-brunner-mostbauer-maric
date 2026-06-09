@@ -118,7 +118,12 @@
                     </span>
                   </div>
 
-                  <h3 class="font-bold text-slate-900">{{ school.Name }}</h3>
+                  <h3 class="font-bold text-slate-900">
+                    {{ school.Name }}
+                    <span v-if="school.distance != null" class="text-xs font-normal text-slate-400 ml-1">
+                      ({{ school.distance.toFixed(1) }} km)
+                    </span>
+                  </h3>
                   <div class="mt-1">
                     <a
                       v-if="school.Location"

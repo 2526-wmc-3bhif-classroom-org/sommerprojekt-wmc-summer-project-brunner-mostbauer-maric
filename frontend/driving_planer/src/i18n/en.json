@@ -318,6 +318,8 @@
     "email": "E-Mail",
     "namePlaceholder": "Enter your name",
     "emailPlaceholder": "Enter your email",
+    "location": "Location",
+    "locationPlaceholder": "e.g. Vienna, AT",
     "schoolData": "Driving School Data",
     "address": "Address",
     "owner": "Owner",

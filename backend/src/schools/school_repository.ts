@@ -38,10 +38,31 @@ export class SchoolRepository {
     return result.changes > 0;
   }
 
-  public create(unit: Unit, name: string, location?: string, owner?: string, email?: string, website?: string, phone?: string): number {
+  public create(
+    unit: Unit,
+    name: string,
+    location?: string,
+    owner?: string,
+    email?: string,
+    website?: string,
+    phone?: string,
+    latitude?: number | null,
+    longitude?: number | null
+  ): number {
     const result = unit
-      .prepare("INSERT INTO DrivingSchool (Name, Location, Owner, Email, Website, Phone) VALUES (?, ?, ?, ?, ?, ?)")
-      .run(name, location ?? null, owner ?? null, email ?? null, website ?? null, phone ?? null);
+      .prepare(
+        "INSERT INTO DrivingSchool (Name, Location, Owner, Email, Website, Phone, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+      )
+      .run(
+        name,
+        location ?? null,
+        owner ?? null,
+        email ?? null,
+        website ?? null,
+        phone ?? null,
+        latitude ?? null,
+        longitude ?? null
+      );
     return result.lastInsertRowid as number;
   }
 }

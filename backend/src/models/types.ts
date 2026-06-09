@@ -17,6 +17,9 @@ export interface DrivingSchool {
   OpeningDays?: string | null;
   OpeningTimeFrom?: string | null;
   OpeningTimeTo?: string | null;
+  Latitude?: number | null;
+  Longitude?: number | null;
+  distance?: number | null;
 }
 
 export interface DocType {
