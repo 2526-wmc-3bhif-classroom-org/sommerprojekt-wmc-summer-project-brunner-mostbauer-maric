@@ -58,7 +58,8 @@ const schoolService: SchoolService = SchoolService.Instance;
  */
 schoolRouter.get("/", isAuthenticated, (req, res) => {
   try {
-    const schools = schoolService.getAllSchools();
+    const userId = (req as AuthRequest).payload?.user.UserId;
+    const schools = schoolService.getAllSchools(userId);
     res.status(StatusCodes.OK).json(schools);
   } catch (error) {
     res
@@ -149,12 +150,12 @@ schoolRouter.put("/:schoolId", isAuthenticated, (req, res) => {
       res.status(StatusCodes.FORBIDDEN).json({ error: { message: "Not authorized" } });
       return;
     }
-    const { name, location, owner, email, website, phone } = req.body;
+    const { name, location, owner, email, website, phone, openingDays, openingTimeFrom, openingTimeTo } = req.body;
     if (!name) {
       res.status(StatusCodes.BAD_REQUEST).json({ error: { message: "Name is required" } });
       return;
     }
-    const result = schoolService.updateSchool(id, name, location, owner, email, website, phone);
+    const result = schoolService.updateSchool(id, name, location, owner, email, website, phone, openingDays, openingTimeFrom, openingTimeTo);
     if (result.error) {
       res.status(result.status).json({ error: result.error });
     } else {

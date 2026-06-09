@@ -8,6 +8,9 @@ export interface User {
   AvatarPath?: string;
   DrivingSchoolId?: number | null;
   HasSkipped?: boolean;
+  Location?: string | null;
+  Latitude?: number | null;
+  Longitude?: number | null;
 }
 
 export interface AuthResponse {
@@ -22,6 +25,9 @@ export interface DrivingSchool {
   Owner?: string | null;
   Email?: string | null;
   Website?: string | null;
+  Latitude?: number | null;
+  Longitude?: number | null;
+  distance?: number | null;
 }
 
 export interface DocType {
@@ -69,6 +75,7 @@ export interface Rating {
   Stars: number;
   Content?: string | null;
   Date?: string | null;
+  UserName?: string;
 }
 
 export interface Comment {

@@ -81,13 +81,18 @@ ratingRouter.get("/school/:id", (req, res: Response) => {
  */
 ratingRouter.post("/", isAuthenticated, (req: AuthRequest, res: Response) => {
   const userId = req.payload?.user.UserId;
+  const role = req.payload?.user.Role;
   if (!userId) {
     res.status(StatusCodes.UNAUTHORIZED).json({ error: { message: "User ID not found" } });
     return;
   }
-  const { schoolId, stars } = req.body;
+  if (role === 'school') {
+    res.status(StatusCodes.FORBIDDEN).json({ error: { message: "Driving schools are not allowed to submit ratings." } });
+    return;
+  }
+  const { schoolId, stars, content } = req.body;
   try {
-    RatingService.Instance.createRating(userId, schoolId, stars);
+    RatingService.Instance.createRating(userId, schoolId, stars, content);
     res.status(StatusCodes.CREATED).json({ message: "Rating created" });
   } catch (err: any) {
     res.status(StatusCodes.BAD_REQUEST).json({ error: { message: err.message } });
@@ -118,6 +123,8 @@ ratingRouter.post("/", isAuthenticated, (req: AuthRequest, res: Response) => {
  *                 type: integer
  *                 minimum: 1
  *                 maximum: 5
+ *               content:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Rating updated successfully
@@ -126,13 +133,18 @@ ratingRouter.post("/", isAuthenticated, (req: AuthRequest, res: Response) => {
  */
 ratingRouter.patch("/", isAuthenticated, (req: AuthRequest, res: Response) => {
   const userId = req.payload?.user.UserId;
+  const role = req.payload?.user.Role;
   if (!userId) {
     res.status(StatusCodes.UNAUTHORIZED).json({ error: { message: "User ID not found" } });
     return;
   }
-  const { schoolId, stars } = req.body;
+  if (role === 'school') {
+    res.status(StatusCodes.FORBIDDEN).json({ error: { message: "Driving schools are not allowed to submit ratings." } });
+    return;
+  }
+  const { schoolId, stars, content } = req.body;
   try {
-    RatingService.Instance.updateRating(userId, schoolId, stars);
+    RatingService.Instance.updateRating(userId, schoolId, stars, content);
     res.status(StatusCodes.OK).json({ message: "Rating updated" });
   } catch (err: any) {
     res.status(StatusCodes.BAD_REQUEST).json({ error: { message: err.message } });
@@ -159,8 +171,13 @@ ratingRouter.patch("/", isAuthenticated, (req: AuthRequest, res: Response) => {
  */
 ratingRouter.delete("/:schoolId", isAuthenticated, (req: AuthRequest, res: Response) => {
   const userId = req.payload?.user.UserId;
+  const role = req.payload?.user.Role;
   if (!userId) {
     res.status(StatusCodes.UNAUTHORIZED).json({ error: { message: "User ID not found" } });
+    return;
+  }
+  if (role === 'school') {
+    res.status(StatusCodes.FORBIDDEN).json({ error: { message: "Driving schools are not allowed to delete ratings." } });
     return;
   }
   const schoolId = parseInt(req.params.schoolId);

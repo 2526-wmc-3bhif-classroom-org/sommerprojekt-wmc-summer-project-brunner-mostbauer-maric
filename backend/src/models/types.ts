@@ -14,6 +14,12 @@ export interface DrivingSchool {
   Email?: string | null;
   Website?: string | null;
   Phone?: string | null;
+  OpeningDays?: string | null;
+  OpeningTimeFrom?: string | null;
+  OpeningTimeTo?: string | null;
+  Latitude?: number | null;
+  Longitude?: number | null;
+  distance?: number | null;
 }
 
 export interface DocType {
@@ -71,6 +77,7 @@ export interface Rating {
   Stars: number;
   Content?: string | null;
   Date?: string | null;
+  UserName?: string;
 }
 
 export interface Comment {

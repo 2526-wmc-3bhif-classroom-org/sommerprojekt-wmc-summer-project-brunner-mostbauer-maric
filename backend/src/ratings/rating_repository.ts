@@ -12,13 +12,13 @@ export class RatingRepository {
   private constructor() {}
 
   public getAll(unit: Unit): Rating[] {
-    return unit.prepare<Rating>("SELECT * FROM Rating").all();
+    return unit.prepare<Rating>("SELECT r.*, u.UserName FROM Rating r JOIN User u ON r.UserId = u.UserId").all();
   }
 
   public getAllBySchoolId(unit: Unit, schoolId: number): Rating[] {
     return unit
       .prepare<Rating, { schoolId: number }>(
-        "SELECT * FROM Rating WHERE DrivingSchoolId = :schoolId",
+        "SELECT r.*, u.UserName FROM Rating r JOIN User u ON r.UserId = u.UserId WHERE r.DrivingSchoolId = :schoolId",
         { schoolId }
       )
       .all();
@@ -27,23 +27,23 @@ export class RatingRepository {
   public getByUserAndSchool(unit: Unit, userId: number, schoolId: number): Rating | undefined {
     return unit
       .prepare<Rating, { userId: number; schoolId: number }>(
-        "SELECT * FROM Rating WHERE UserId = :userId AND DrivingSchoolId = :schoolId",
+        "SELECT r.*, u.UserName FROM Rating r JOIN User u ON r.UserId = u.UserId WHERE r.UserId = :userId AND r.DrivingSchoolId = :schoolId",
         { userId, schoolId }
       )
       .get();
   }
 
-  public create(unit: Unit, userId: number, schoolId: number, stars: number): boolean {
+  public create(unit: Unit, userId: number, schoolId: number, stars: number, content?: string): boolean {
     const result = unit
-      .prepare("INSERT INTO Rating (UserId, DrivingSchoolId, Stars, Date) VALUES (?, ?, ?, CURRENT_TIMESTAMP)")
-      .run(userId, schoolId, stars);
+      .prepare("INSERT INTO Rating (UserId, DrivingSchoolId, Stars, Content, Date) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)")
+      .run(userId, schoolId, stars, content || null);
     return result.changes > 0;
   }
 
-  public updateStars(unit: Unit, userId: number, schoolId: number, stars: number): boolean {
+  public updateStars(unit: Unit, userId: number, schoolId: number, stars: number, content?: string): boolean {
     const result = unit
-      .prepare("UPDATE Rating SET Stars = ?, Date = CURRENT_TIMESTAMP WHERE UserId = ? AND DrivingSchoolId = ?")
-      .run(stars, userId, schoolId);
+      .prepare("UPDATE Rating SET Stars = ?, Content = ?, Date = CURRENT_TIMESTAMP WHERE UserId = ? AND DrivingSchoolId = ?")
+      .run(stars, content || null, userId, schoolId);
     return result.changes > 0;
   }
 

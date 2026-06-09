@@ -12,7 +12,10 @@ export const buildTables = (connection: Database) => {
         Email TEXT NOT NULL UNIQUE,
         PasswordHash TEXT NOT NULL,
         Role TEXT NOT NULL DEFAULT 'user',
-        AvatarPath TEXT
+        AvatarPath TEXT,
+        Location TEXT,
+        Latitude REAL,
+        Longitude REAL
       );`,
       );
 
@@ -24,7 +27,9 @@ export const buildTables = (connection: Database) => {
         Owner TEXT,
         Email TEXT,
         Website TEXT,
-        Phone TEXT
+        Phone TEXT,
+        Latitude REAL,
+        Longitude REAL
       );`,
       );
 
@@ -154,6 +159,15 @@ export const buildTables = (connection: Database) => {
     // migration: add DrivingSchoolId to User table for school users
     try { connection.exec(`ALTER TABLE User ADD COLUMN DrivingSchoolId INTEGER REFERENCES DrivingSchool(DrivingSchoolId)`); } catch {}
 
+    // migration: add distance recommendation columns to User table
+    try { connection.exec(`ALTER TABLE User ADD COLUMN Location TEXT`); } catch {}
+    try { connection.exec(`ALTER TABLE User ADD COLUMN Latitude REAL`); } catch {}
+    try { connection.exec(`ALTER TABLE User ADD COLUMN Longitude REAL`); } catch {}
+
+    // migration: add distance recommendation columns to DrivingSchool table
+    try { connection.exec(`ALTER TABLE DrivingSchool ADD COLUMN Latitude REAL`); } catch {}
+    try { connection.exec(`ALTER TABLE DrivingSchool ADD COLUMN Longitude REAL`); } catch {}
+
     // migration: add IsDefault if table existed before this column was added
     try { connection.exec(`ALTER TABLE Task ADD COLUMN IsDefault INTEGER NOT NULL DEFAULT 0`); } catch {}
 
@@ -167,6 +181,11 @@ export const buildTables = (connection: Database) => {
 
     // migration: add HasSkipped flag to User
     try { connection.exec(`ALTER TABLE User ADD COLUMN HasSkipped INTEGER NOT NULL DEFAULT 0`); } catch {}
+
+    // migration: add opening hours to DrivingSchool
+    try { connection.exec(`ALTER TABLE DrivingSchool ADD COLUMN OpeningDays TEXT`); } catch {}
+    try { connection.exec(`ALTER TABLE DrivingSchool ADD COLUMN OpeningTimeFrom TEXT`); } catch {}
+    try { connection.exec(`ALTER TABLE DrivingSchool ADD COLUMN OpeningTimeTo TEXT`); } catch {}
 
     // migration: add missing license types B1, C1E, D1E, F
     for (const name of ['B1', 'C1E', 'D1E', 'F']) {

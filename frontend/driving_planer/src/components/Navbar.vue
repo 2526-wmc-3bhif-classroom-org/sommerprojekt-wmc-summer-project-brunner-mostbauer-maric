@@ -227,10 +227,10 @@ const menuItems = computed(() => {
  })
 
 const toggleMenu = (event: Event) => {
-   if (menu.value) {
-     menu.value.toggle(event)
-   }
- }
+  if (menu.value) {
+    menu.value.toggle(event)
+  }
+}
 
 const handleLogout = () => {
   authStore.logout()

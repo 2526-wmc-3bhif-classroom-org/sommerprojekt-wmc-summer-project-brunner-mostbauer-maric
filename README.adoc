@@ -1,3 +1,13 @@
+= Driving school planer
+Jan Brunner, Julian Mostbauer, Luka Maric
+1.0.0, {docdate}
+:experimental:
+:sectnums:
+
+== Description
+
+Running on: https://2526-wmc-3bhif-classroom-org.github.io/sommerprojekt-wmc-summer-project-brunner-mostbauer-maric/
+
 == Docker Setup
 
 Manage the application using the provided scripts:

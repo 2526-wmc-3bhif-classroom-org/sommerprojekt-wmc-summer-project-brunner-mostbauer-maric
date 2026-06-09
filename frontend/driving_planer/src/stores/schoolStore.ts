@@ -56,9 +56,9 @@ export const useSchoolStore = defineStore('schools', () => {
     }
   }
 
-  async function setRating(schoolId: number, stars: number): Promise<boolean> {
+  async function setRating(schoolId: number, stars: number, content?: string): Promise<boolean> {
     try {
-      const success = await schoolService.setRating(schoolId, stars)
+      const success = await schoolService.setRating(schoolId, stars, content)
       if (success) {
         // Refresh ratings after update
         await fetchRatings(true)

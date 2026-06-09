@@ -59,7 +59,7 @@ class SchoolService {
   /**
    * Add or update a rating
    */
-  async setRating(schoolId: number, stars: number): Promise<boolean> {
+  async setRating(schoolId: number, stars: number, content?: string): Promise<boolean> {
     try {
       // Get userId from sessionStorage to avoid circular imports
       const userJson = sessionStorage.getItem('user');
@@ -71,7 +71,7 @@ class SchoolService {
         return false;
       }
 
-      if (stars === 0) {
+      if (stars === 0 && !content) {
         // Delete rating
         await apiClient.delete(`/ratings/${schoolId}`);
       } else {
@@ -83,10 +83,10 @@ class SchoolService {
 
         if (existingRating) {
           // Update existing rating for current user
-          await apiClient.patch('/ratings', { schoolId, stars });
+          await apiClient.patch('/ratings', { schoolId, stars, content });
         } else {
           // Create new rating for current user
-          await apiClient.post('/ratings', { schoolId, stars });
+          await apiClient.post('/ratings', { schoolId, stars: stars || 1, content });
         }
       }
 

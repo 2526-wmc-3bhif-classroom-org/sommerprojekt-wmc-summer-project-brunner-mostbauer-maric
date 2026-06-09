@@ -34,7 +34,7 @@
     "readyToStart": "Ready to get started?",
     "startNow": "Start Now",
     "stats": {
-      "students": "Students",
+      "students": "User",
       "successRate": "Success Rate",
       "schools": "Driving Schools"
     },
@@ -138,7 +138,8 @@
         "practice": "Practice",
         "grundwissen": "Basic Knowledge",
         "theoriePruefung": "Theory Exam",
-        "praxisPruefung": "Practice Exam"
+        "praxisPruefung": "Practice Exam",
+        "drivingLessons": "Driving Lessons"
       }
     },
     "events": {
@@ -317,11 +318,17 @@
     "email": "E-Mail",
     "namePlaceholder": "Enter your name",
     "emailPlaceholder": "Enter your email",
+    "location": "Location",
+    "locationPlaceholder": "e.g. Vienna, AT",
     "schoolData": "Driving School Data",
     "address": "Address",
     "owner": "Owner",
     "phone": "Phone",
     "website": "Website",
+    "openingDays": "Opening Days",
+    "openingHours": "Opening Hours",
+    "from": "From",
+    "to": "To",
     "addressPlaceholder": "Street, ZIP City",
     "ownerPlaceholder": "First and Last Name",
     "phonePlaceholder": "+43 ...",
@@ -388,6 +395,7 @@
   "eventTypes": {
     "Theorie": "Theory",
     "Praxis": "Practice",
+    "Fahrstunde": "Driving Lesson",
     "Voraussichtliche Grundwissensprüfung": "Estimated Basic Knowledge Exam",
     "Voraussichtliche Kursspezifische Theorieprüfung": "Estimated Course-Specific Theory Exam",
     "Voraussichtliche Praxisprüfung": "Estimated Practical Exam"

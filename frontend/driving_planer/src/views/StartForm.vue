@@ -130,20 +130,19 @@ const selectClass = (cls: string) => {
 }
 
 const submitForm = () => {
-   goalValid.value = !!formData.goal
-   const dateValue = formData.startDate ?? ''
-   const timestampForm = new Date(dateValue).getTime()
-   if (!formData.startDate || Number.isNaN(timestampForm) || !checkIfFuture(new Date(dateValue), new Date(Date.now()))) {
-     dateValid.value = false
-   } else {
-     dateValid.value = true
-   }
-   if (!dateValid.value || !goalValid.value) return
+  goalValid.value = !!formData.goal
+  const timestampForm = new Date(formData.startDate || '').getTime()
+  if (!formData.startDate || Number.isNaN(timestampForm) || !checkIfFuture(new Date(formData.startDate), new Date(Date.now()))) {
+    dateValid.value = false
+  } else {
+    dateValid.value = true
+  }
+  if (!dateValid.value || !goalValid.value) return
 
-   classValid.value = availableCourses.value.some(
-      c => c.licenseType === formData.licenseClass && c.dateTo >= (formData.startDate ?? '')
-    )
-   if (!classValid.value) return
+  classValid.value = availableCourses.value.some(
+    c => c.licenseType === formData.licenseClass && c.dateTo >= (formData.startDate || '')
+  )
+  if (!classValid.value) return
 
    sessionStorage.setItem('pendingEnrollment', JSON.stringify({
      licenseClass: formData.licenseClass,

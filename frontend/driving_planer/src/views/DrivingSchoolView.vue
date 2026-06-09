@@ -105,20 +105,25 @@
                 <div
                   v-for="(school, i) in filteredSchools"
                   :key="'mob-' + i"
-                  class="p-4 active:bg-slate-50 transition-colors"
-                  @click="school.isExpanded = !school.isExpanded" >
+                  class="transition-colors"
+                >
+                  <div class="p-4 active:bg-slate-50" @click="school.isExpanded = !school.isExpanded">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-[10px] font-bold text-blue-500 uppercase tracking-tight">#{{ i + 1 }}</span>
+                      <a v-if="school.Website" :href="school.Website" target="_blank" @click.stop class="text-blue-500 text-sm p-1">
+                        <i class="pi pi-external-link"></i>
+                      </a>
+                      <span v-else class="text-slate-300 text-sm p-1 opacity-50 cursor-not-allowed">
+                        <i class="pi pi-external-link"></i>
+                      </span>
+                    </div>
 
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-[10px] font-bold text-blue-500 uppercase tracking-tight">#{{ i + 1 }}</span>
-                    <a v-if="school.Website" :href="school.Website" target="_blank" @click.stop class="text-blue-500 text-sm p-1">
-                      <i class="pi pi-external-link"></i>
-                    </a>
-                    <span v-else class="text-slate-300 text-sm p-1 opacity-50 cursor-not-allowed">
-                      <i class="pi pi-external-link"></i>
+                  <h3 class="font-bold text-slate-900">
+                    {{ school.Name }}
+                    <span v-if="school.distance != null" class="text-xs font-normal text-slate-400 ml-1">
+                      ({{ school.distance.toFixed(1) }} km)
                     </span>
-                  </div>
-
-                  <h3 class="font-bold text-slate-900">{{ school.Name }}</h3>
+                  </h3>
                   <div class="mt-1">
                     <a
                       v-if="school.Location"
@@ -134,24 +139,31 @@
                     </p>
                   </div>
 
-                  <div class="flex items-center justify-between mt-4">
-                    <span class="text-xs text-slate-400 italic">{{ school.Owner || '—' }}</span>
-                    <div class="flex flex-col items-end gap-0.5">
-                      <div class="flex gap-1">
-                        <i
-                          v-for="star in 5"
-                          :key="star"
-                          @click.stop="setMobileRating(school, star)"
-                          class="pi text-sm cursor-pointer"
-                          :class="[star <= Math.round(getMobileAvg(school)) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200']"
-                        ></i>
+                    <div class="flex items-center justify-between mt-4">
+                      <span class="text-xs text-slate-400 italic">{{ school.Owner || '—' }}</span>
+                      <div class="flex flex-col items-end gap-0.5">
+                        <div class="flex gap-1">
+                          <i
+                            v-for="star in 5"
+                            :key="star"
+                            @click.stop="authStore.isSchool ? null : setMobileRating(school, star)"
+                            class="pi text-sm"
+                            :class="[
+                              star <= Math.round(getMobileAvg(school)) ? 'pi-star-fill text-yellow-400' : 'pi-star text-slate-200',
+                              authStore.isSchool ? 'cursor-default opacity-80' : 'cursor-pointer'
+                            ]"
+                          ></i>
+                        </div>
+                        <span class="text-[10px] text-slate-400">
+                          {{ getMobileAvg(school) > 0 ? getMobileAvg(school).toFixed(1) + ' / 5' : t('schools.noRating') }}
+                        </span>
                       </div>
-                      <span class="text-[10px] text-slate-400">
-                        {{ getMobileAvg(school) > 0 ? getMobileAvg(school).toFixed(1) + ' / 5' : t('schools.noRating') }}
-                      </span>
                     </div>
                   </div>
 
+                  <div v-if="school.isExpanded" class="px-4 pb-4 border-t border-gray-50">
+                    <SchoolComments :schoolId="school.DrivingSchoolId" />
+                  </div>
                 </div>
               </div>
 
@@ -171,6 +183,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DrivingSchoolLine from "@/components/DrivingSchoolLine.vue";
+import SchoolComments from "@/components/SchoolComments.vue";
 import Background from '@/components/Background.vue';
 import FooterCmp from '@/components/FooterCmp.vue';
 import HeaderMain from '@/components/HeaderMain.vue';
@@ -197,10 +210,16 @@ async function setMobileRating(school: WebsiteDrivingSchool, stars: number) {
   const userId = authStore.user?.UserId
   if (!userId) return
   
-  const currentRating = schoolStore.ratings.find(r => r.DrivingSchoolId === school.DrivingSchoolId && r.UserId === userId)?.Stars ?? 0
+  const ratingRecord = schoolStore.ratings.find(r => r.DrivingSchoolId === school.DrivingSchoolId && r.UserId === userId)
+  const currentRating = ratingRecord?.Stars ?? 0
+  const currentContent = ratingRecord?.Content || undefined
   const newRating = currentRating === stars ? 0 : stars
 
-  await schoolStore.setRating(school.DrivingSchoolId, newRating)
+  if (newRating === 0) {
+    await schoolStore.setRating(school.DrivingSchoolId, 0)
+  } else {
+    await schoolStore.setRating(school.DrivingSchoolId, newRating, currentContent)
+  }
 }
 
 const schools = ref<WebsiteDrivingSchool[]>([]);

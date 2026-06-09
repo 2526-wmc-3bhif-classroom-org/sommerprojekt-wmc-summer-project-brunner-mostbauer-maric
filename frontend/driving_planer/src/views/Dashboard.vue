@@ -208,6 +208,12 @@
                     style="bottom: calc(100% + 6px); transform: translateX(-50%)">
                     {{ joinedCourseWithTimes.timeFrom }} – {{ joinedCourseWithTimes.timeTo }}
                   </div>
+                  <div
+                    v-else-if="day && hoveredDay === day && !isCourseDay(day) && isDrivingLessonDay(day) && joinedSchool?.OpeningTimeFrom && joinedSchool?.OpeningTimeTo"
+                    class="absolute left-1/2 bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-xl whitespace-nowrap pointer-events-none z-30 shadow-lg"
+                    style="bottom: calc(100% + 6px); transform: translateX(-50%)">
+                    {{ joinedSchool.OpeningTimeFrom }} – {{ joinedSchool.OpeningTimeTo }}
+                  </div>
                 </div>
                 <div v-if="day && eventsForDay(day).length > 0" class="flex gap-0.5 flex-wrap justify-center" style="margin-top: 3px">
                   <span
@@ -371,7 +377,9 @@ async function fetchEvents() {
     })
     if (res.ok) {
       const data = await res.json()
-      dates.value = (data ?? []).map((e: any) => ({ id: e.EventId, type: e.Type, date: e.Date }))
+      const all = (data ?? []).map((e: any) => ({ id: e.EventId, type: e.Type, date: e.Date }))
+      drivingLessons.value = all.filter((e: any) => e.type === 'Fahrstunde')
+      dates.value = all.filter((e: any) => e.type !== 'Fahrstunde')
     }
   } catch {}
 }
@@ -395,9 +403,18 @@ const isCourseDay = (day: number | null): boolean => {
   return courseDays.includes(new Date(calendarYear.value, calendarMonth.value, day).getDay())
 }
 
+const isDrivingLessonDay = (day: number | null): boolean => {
+  if (!day) return false
+  const m = String(calendarMonth.value + 1).padStart(2, '0')
+  const d = String(day).padStart(2, '0')
+  const dateStr = `${calendarYear.value}-${m}-${d}`
+  return drivingLessons.value.some(e => e.date === dateStr)
+}
+
 const eventColorMap: Record<string, string> = {
   Theorie: 'bg-amber-400',
   Praxis:  'bg-emerald-400',
+  Fahrstunde: 'bg-green-400',
   'Voraussichtliche Grundwissensprüfung': 'bg-sky-400',
   'Voraussichtliche Kursspezifische Theorieprüfung':      'bg-rose-400',
   'Voraussichtliche Praxisprüfung':       'bg-violet-400',
@@ -406,6 +423,7 @@ const eventColorMap: Record<string, string> = {
 const calendarLegend = computed(() => {
   const items: { label: string; color: string }[] = []
   if (joinedCourse.value) items.push({ label: t('dashboard.calendar.legend.course'), color: 'bg-indigo-400' })
+  if (drivingLessons.value.length > 0) items.push({ label: t('dashboard.calendar.legend.drivingLessons'), color: 'bg-green-400' })
   if (dates.value.some(e => e.type === 'Theorie')) items.push({ label: t('dashboard.calendar.legend.theory'), color: 'bg-amber-400' })
   if (dates.value.some(e => e.type === 'Praxis')) items.push({ label: t('dashboard.calendar.legend.practice'), color: 'bg-emerald-400' })
   if (examDates.value.some(e => e.type === 'Voraussichtliche Grundwissensprüfung')) items.push({ label: t('dashboard.calendar.legend.grundwissen'), color: 'bg-sky-400' })
@@ -419,7 +437,7 @@ const eventsForDay = (day: number | null) => {
   const m = String(calendarMonth.value + 1).padStart(2, '0')
   const d = String(day).padStart(2, '0')
   const dateStr = `${calendarYear.value}-${m}-${d}`
-  return [...dates.value, ...examDates.value].filter(e => e.date === dateStr)
+  return [...dates.value, ...examDates.value, ...drivingLessons.value].filter(e => e.date === dateStr)
 }
 
 // KM-LOG LOGIC
@@ -744,6 +762,7 @@ const typeInput = ref('')
 const dateInput = ref('')
 const dates = ref<any[]>([])
 const examDates = ref<any[]>([])
+const drivingLessons = ref<any[]>([])
 const eventError = ref('')
 
 onMounted(async () => {

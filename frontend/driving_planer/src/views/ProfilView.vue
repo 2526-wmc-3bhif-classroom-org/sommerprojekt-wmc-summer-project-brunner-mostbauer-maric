@@ -1,6 +1,6 @@
 <template>
   <Background>
-    <div class="min-h-screen px-4 py-20 md:py-32 flex flex-col items-center">
+    <div class="min-h-screen px-4 py-8 md:py-16 flex flex-col items-center relative">
       <div
         v-motion
         :initial="{ opacity: 0, y: 40 }"
@@ -27,9 +27,9 @@
             </div>
           </div>
 
-          <div class="-mt-10 mx-4 mb-8 bg-white rounded-2xl shadow-md border border-black/5 px-8 py-10 flex flex-col gap-6">
+          <div class="-mt-10 mx-4 mb-8 bg-white rounded-2xl shadow-md border border-black/5 px-8 py-8 flex flex-col gap-4">
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.name') }}</label>
+              <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.name') }}</label>
               <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-user text-sm"></i></span>
                 <input
@@ -45,7 +45,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.email') }}</label>
+              <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.email') }}</label>
               <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-envelope text-sm"></i></span>
                 <input
@@ -60,6 +60,30 @@
               <p v-if="errors.email" class="text-red-500 text-xs mt-2 ml-1">{{ errors.email }}</p>
             </div>
 
+            <div v-if="!authStore.isSchool">
+              <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.location') }}</label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-map-marker text-sm"></i></span>
+                <input
+                  v-model="userLocation"
+                  @input="errors.userLocation = ''"
+                  type="text"
+                  :placeholder="t('profile.locationPlaceholder')"
+                  :class="[errors.userLocation ? 'border-red-500 focus:ring-red-200' : 'border-black/10 focus:ring-black/20']"
+                  class="w-full bg-black/[0.03] border rounded-2xl pl-10 pr-12 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 transition-all"
+                />
+                <button
+                  @click="detectUserLocation"
+                  :disabled="detectingLocation"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-black/30 hover:text-black/60 transition-colors cursor-pointer disabled:opacity-40"
+                  title="Detect location"
+                >
+                  <i :class="detectingLocation ? 'pi pi-spin pi-spinner' : 'pi pi-crosshair'"></i>
+                </button>
+              </div>
+              <p v-if="errors.userLocation" class="text-red-500 text-xs mt-2 ml-1">{{ errors.userLocation }}</p>
+            </div>
+
             <template v-if="authStore.isSchool">
               <div class="flex items-center gap-3" style="margin-top: 0.5rem;">
                 <div class="flex-1 h-px bg-black/10"></div>
@@ -68,7 +92,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.address') }}</label>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.address') }}</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-map-marker text-sm"></i></span>
                   <input v-model="schoolLocation" type="text" :placeholder="t('profile.addressPlaceholder')" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
@@ -76,7 +100,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.owner') }}</label>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.owner') }}</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-id-card text-sm"></i></span>
                   <input v-model="schoolOwner" type="text" :placeholder="t('profile.ownerPlaceholder')" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
@@ -84,7 +108,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.phone') }}</label>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.phone') }}</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-phone text-sm"></i></span>
                   <input v-model="schoolPhone" type="tel" :placeholder="t('profile.phonePlaceholder')" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
@@ -92,10 +116,40 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.website') }}</label>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.website') }}</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-globe text-sm"></i></span>
                   <input v-model="schoolWebsite" type="url" :placeholder="t('profile.websitePlaceholder')" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.openingDays') }}</label>
+                <div class="flex flex-wrap gap-2">
+                  <label v-for="day in allWeekdays" :key="day" class="flex items-center gap-2 cursor-pointer select-none">
+                    <div
+                      @click="toggleOpeningDay(day)"
+                      class="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0"
+                      :class="schoolOpeningDays.includes(day) ? 'bg-black border-black' : 'bg-white border-black/20 hover:border-black/50'"
+                    >
+                      <i v-if="schoolOpeningDays.includes(day)" class="pi pi-check text-white text-[10px]"></i>
+                    </div>
+                    <span class="text-sm text-black/70 font-semibold">{{ day }}</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.openingHours') }}</label>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-[10px] text-black/30 font-semibold mb-1">{{ t('profile.from') }}</label>
+                    <input v-model="schoolOpeningTimeFrom" type="time" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl px-4 py-4 text-black text-sm font-bold focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-black/30 font-semibold mb-1">{{ t('profile.to') }}</label>
+                    <input v-model="schoolOpeningTimeTo" type="time" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl px-4 py-4 text-black text-sm font-bold focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
+                  </div>
                 </div>
               </div>
             </template>
@@ -151,8 +205,8 @@
             </div>
             <p v-if="errors.image" class="text-red-500 text-center text-xs mt-4">{{ errors.image }}</p>
             <div class="h-8"></div>
-             <input type="file" ref="fileInput" class="hidden" @change="onFileSelect" accept="image/*" />
-             <button @click="fileInput?.click()" class="w-full py-4 bg-black/[0.03] border border-black/10 rounded-2xl text-sm font-semibold text-black hover:bg-black/5 transition-all cursor-pointer">
+            <input type="file" ref="fileInput" class="hidden" @change="onFileSelect" accept="image/*" />
+            <button @click="triggerFileInput" class="w-full py-4 bg-black/[0.03] border border-black/10 rounded-2xl text-sm font-semibold text-black hover:bg-black/5 transition-all cursor-pointer">
               {{ t('profile.photo.select') }}
             </button>
             <button v-if="avatarUrl" @click="deleteAvatar" style="margin-top: 20px;" class="w-full py-4 bg-red-50 border border-red-100 rounded-2xl text-sm font-semibold text-red-500 hover:bg-red-100 transition-all cursor-pointer flex items-center justify-center gap-2">
@@ -290,6 +344,7 @@ const previewImage = ref<string | null>(null)
 
 const userName = ref('')
 const email = ref('')
+const userLocation = ref('')
 const displayName = ref(authStore.user?.UserName ?? '')
 const displayEmail = ref(authStore.user?.Email ?? '')
 
@@ -297,30 +352,92 @@ const schoolLocation = ref('')
 const schoolOwner = ref('')
 const schoolPhone = ref('')
 const schoolWebsite = ref('')
+const schoolOpeningDays = ref<string[]>([])
+const schoolOpeningTimeFrom = ref('')
+const schoolOpeningTimeTo = ref('')
+const allWeekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
+
+function toggleOpeningDay(day: string) {
+  const idx = schoolOpeningDays.value.indexOf(day)
+  if (idx === -1) schoolOpeningDays.value.push(day)
+  else schoolOpeningDays.value.splice(idx, 1)
+}
+
+const detectingLocation = ref(false)
+
+async function detectUserLocation() {
+  if (!navigator.geolocation) return
+  detectingLocation.value = true
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      userLocation.value = `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`
+      try {
+        const revRes = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`,
+          { headers: { 'User-Agent': 'DrivingSchoolApp/1.0' } }
+        )
+        if (revRes.ok) {
+          const data = await revRes.json() as any
+          if (data?.display_name) {
+            const parts = data.display_name.split(', ')
+            userLocation.value = parts.slice(0, 3).join(', ')
+          }
+        }
+      } catch { /* fallback to coords */ }
+      detectingLocation.value = false
+    },
+    () => { detectingLocation.value = false },
+    { enableHighAccuracy: false, timeout: 15000 }
+  )
+}
+
+async function geocodeLocation(address: string): Promise<{ lat: number; lon: number } | null> {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`,
+      { headers: { 'User-Agent': 'DrivingSchoolApp/1.0' } }
+    )
+    if (response.ok) {
+      const data = await response.json() as any[]
+      if (data?.length > 0) {
+        return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) }
+      }
+    }
+  } catch { /* ignore */ }
+  return null
+}
 
 const passwords = reactive({ current: '', new: '', confirm: '' })
 const fileInput = ref<HTMLInputElement | null>(null)
 
+function triggerFileInput() {
+  fileInput.value?.click()
+}
+
 onMounted(async () => {
-   if (!authStore.user) return
-   userName.value = authStore.user.UserName
-   email.value = authStore.user.Email
+  if (!authStore.user) return
+  userName.value = authStore.user.UserName
+  email.value = authStore.user.Email
+  userLocation.value = authStore.user.Location ?? ''
 
-   if (authStore.isSchool && authStore.user.DrivingSchoolId) {
-     try {
-       const res = await fetch(`${API_URL}/schools/${authStore.user.DrivingSchoolId}`, { headers: { Authorization: `Bearer ${authStore.token}` } })
-       if (res.ok) {
-         const school = await res.json()
-         schoolLocation.value = school.Location ?? ''
-         schoolOwner.value = school.Owner ?? ''
-         schoolPhone.value = school.Phone ?? ''
-         schoolWebsite.value = school.Website ?? ''
-       }
-     } catch {}
-   }
- })
+  if (authStore.isSchool && authStore.user.DrivingSchoolId) {
+    try {
+      const res = await fetch(`${API_URL}/schools/${authStore.user.DrivingSchoolId}`, { headers: { Authorization: `Bearer ${authStore.token}` } })
+      if (res.ok) {
+        const school = await res.json()
+        schoolLocation.value = school.Location ?? ''
+        schoolOwner.value = school.Owner ?? ''
+        schoolPhone.value = school.Phone ?? ''
+        schoolWebsite.value = school.Website ?? ''
+        schoolOpeningDays.value = school.OpeningDays ? school.OpeningDays.split(',') : []
+        schoolOpeningTimeFrom.value = school.OpeningTimeFrom ?? ''
+        schoolOpeningTimeTo.value = school.OpeningTimeTo ?? ''
+      }
+    } catch {}
+  }
+})
 
-const errors = reactive({ userName: '', email: '', currentPass: '', newPass: '', confirmPass: '', image: '' })
+const errors = reactive({ userName: '', email: '', userLocation: '', currentPass: '', newPass: '', confirmPass: '', image: '' })
 
 const uploadAvatar = async (file: File) => {
   const formData = new FormData()
@@ -356,32 +473,40 @@ const deleteAvatar = async () => {
 }
 
 const saveProfile = async () => {
-   let valid = true
-   if (!userName.value) { errors.userName = t('profile.errors.userName'); valid = false }
-   if (!email.value) { errors.email = t('profile.errors.email'); valid = false }
-   if (!valid) return
+  let valid = true
+  if (!userName.value) { errors.userName = t('profile.errors.userName'); valid = false }
+  if (!email.value) { errors.email = t('profile.errors.email'); valid = false }
+  if (!valid) return
 
-   try {
-     const response = await fetch(API_URL + `/users/${userId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ userName: userName.value, email: email.value }) })
-     if (!response.ok) throw new Error()
+  let lat = authStore.user?.Latitude ?? null
+  let lng = authStore.user?.Longitude ?? null
 
-     if (authStore.isSchool && authStore.user?.DrivingSchoolId) {
-       await fetch(API_URL + `/schools/${authStore.user.DrivingSchoolId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: userName.value, location: schoolLocation.value || undefined, owner: schoolOwner.value || undefined, email: email.value, website: schoolWebsite.value || undefined, phone: schoolPhone.value || undefined }) })
-     }
+  if (userLocation.value && (lat === null || lng === null || userLocation.value !== authStore.user?.Location)) {
+    const coords = await geocodeLocation(userLocation.value)
+    if (coords) {
+      lat = coords.lat
+      lng = coords.lon
+    }
+  }
 
-     displayName.value = userName.value
-     displayEmail.value = email.value
-     const user: User = JSON.parse(<string>sessionStorage.getItem('user'))
-     user.UserName = displayName.value
-     user.Email = email.value
-     sessionStorage.setItem('user', JSON.stringify(user))
+  try {
+    const response = await fetch(API_URL + `/users/${userId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ userName: userName.value, email: email.value, location: userLocation.value || null, latitude: lat, longitude: lng }) })
+    if (!response.ok) throw new Error()
 
-     triggerToast(t('profile.saveSuccess'))
-   } catch {
-     errors.userName = t('profile.errors.networkSave')
-     errors.email = t('profile.errors.networkSave')
-   }
- }
+    if (authStore.isSchool && authStore.user?.DrivingSchoolId) {
+      await fetch(API_URL + `/schools/${authStore.user.DrivingSchoolId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: userName.value, location: schoolLocation.value || undefined, owner: schoolOwner.value || undefined, email: email.value, website: schoolWebsite.value || undefined, phone: schoolPhone.value || undefined, openingDays: schoolOpeningDays.value.length > 0 ? schoolOpeningDays.value.join(',') : undefined, openingTimeFrom: schoolOpeningTimeFrom.value || undefined, openingTimeTo: schoolOpeningTimeTo.value || undefined }) })
+    }
+
+    displayName.value = userName.value
+    displayEmail.value = email.value
+    authStore.updateUser({ UserName: userName.value, Email: email.value, Location: userLocation.value || null, Latitude: lat as number | null, Longitude: lng as number | null })
+
+    triggerToast(t('profile.saveSuccess'))
+  } catch {
+    errors.userName = t('profile.errors.networkSave')
+    errors.email = t('profile.errors.networkSave')
+  }
+}
 
 const updatePassword = async () => {
   let valid = true
@@ -454,6 +579,8 @@ const handleImageUpload = (file: File) => {
 </script>
 
 <style scoped>
+.field-label { margin-bottom: 0.5rem; }
+
 .fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 

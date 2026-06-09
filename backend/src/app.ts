@@ -16,6 +16,7 @@ import swaggerJSDoc from "swagger-jsdoc";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
+import { geocodeSchoolsBackground } from "./schools/school_geocoder.js";
 
 const swaggerOptions = {
   definition: {
@@ -148,6 +149,7 @@ if (process.env.NODE_ENV !== "test") {
     const result = ensureSampleDataInserted(unit);
     unit.complete(true);
     console.log(`Sample data status: ${result}`);
+    geocodeSchoolsBackground();
   } catch (err) {
     console.error("Failed to ensure sample data:", err);
   }
