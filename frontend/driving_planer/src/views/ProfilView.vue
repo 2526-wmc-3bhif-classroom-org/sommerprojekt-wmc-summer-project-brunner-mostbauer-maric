@@ -60,7 +60,7 @@
               <p v-if="errors.email" class="text-red-500 text-xs mt-2 ml-1">{{ errors.email }}</p>
             </div>
 
-            <div>
+            <div v-if="!authStore.isSchool">
               <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.location') }}</label>
               <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-map-marker text-sm"></i></span>
@@ -288,7 +288,7 @@
     </Transition>
 
     <Transition name="toast">
-      <div v-if="showSuccessToast" class="absolute top-24 left-1/2 -translate-x-1/2 z-[100] pointer-events-none">
+      <div v-if="showSuccessToast" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] pointer-events-none">
         <div class="bg-emerald-500 text-white px-6 py-3 rounded-2xl shadow-2xl shadow-emerald-200 flex items-center gap-3">
           <i class="pi pi-check-circle text-lg"></i>
           <span class="font-semibold text-sm">{{ toastMessage }}</span>
