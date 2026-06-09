@@ -6,3 +6,4 @@ dist
 lighthouse_report.json
 .claude/
 skills-lock.json
+sessions.txt

@@ -81,10 +81,18 @@ export class UserRepository {
     return result.changes > 0;
   }
 
-  public update(unit: Unit, userId: number, userName: string, email: string): boolean {
+  public update(
+    unit: Unit,
+    userId: number,
+    userName: string,
+    email: string,
+    location?: string | null,
+    latitude?: number | null,
+    longitude?: number | null
+  ): boolean {
     const result = unit
-      .prepare("UPDATE User SET UserName = ?, Email = ? WHERE UserId = ?")
-      .run(userName, email, userId);
+      .prepare("UPDATE User SET UserName = ?, Email = ?, Location = ?, Latitude = ?, Longitude = ? WHERE UserId = ?")
+      .run(userName, email, location ?? null, latitude ?? null, longitude ?? null, userId);
     return result.changes > 0;
   }
 

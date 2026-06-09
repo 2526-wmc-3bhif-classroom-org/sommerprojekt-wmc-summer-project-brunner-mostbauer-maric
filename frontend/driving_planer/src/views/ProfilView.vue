@@ -1,6 +1,6 @@
 <template>
   <Background>
-    <div class="min-h-screen px-4 py-20 md:py-32 flex flex-col items-center">
+    <div class="min-h-screen px-4 py-8 md:py-16 flex flex-col items-center relative">
       <div
         v-motion
         :initial="{ opacity: 0, y: 40 }"
@@ -27,9 +27,9 @@
             </div>
           </div>
 
-          <div class="-mt-10 mx-4 mb-8 bg-white rounded-2xl shadow-md border border-black/5 px-8 py-10 flex flex-col gap-6">
+          <div class="-mt-10 mx-4 mb-8 bg-white rounded-2xl shadow-md border border-black/5 px-8 py-8 flex flex-col gap-4">
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.name') }}</label>
+              <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.name') }}</label>
               <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-user text-sm"></i></span>
                 <input
@@ -45,7 +45,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.email') }}</label>
+              <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.email') }}</label>
               <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-envelope text-sm"></i></span>
                 <input
@@ -60,6 +60,30 @@
               <p v-if="errors.email" class="text-red-500 text-xs mt-2 ml-1">{{ errors.email }}</p>
             </div>
 
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.location') }}</label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-map-marker text-sm"></i></span>
+                <input
+                  v-model="userLocation"
+                  @input="errors.userLocation = ''"
+                  type="text"
+                  :placeholder="t('profile.locationPlaceholder')"
+                  :class="[errors.userLocation ? 'border-red-500 focus:ring-red-200' : 'border-black/10 focus:ring-black/20']"
+                  class="w-full bg-black/[0.03] border rounded-2xl pl-10 pr-12 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 transition-all"
+                />
+                <button
+                  @click="detectUserLocation"
+                  :disabled="detectingLocation"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-black/30 hover:text-black/60 transition-colors cursor-pointer disabled:opacity-40"
+                  title="Detect location"
+                >
+                  <i :class="detectingLocation ? 'pi pi-spin pi-spinner' : 'pi pi-crosshair'"></i>
+                </button>
+              </div>
+              <p v-if="errors.userLocation" class="text-red-500 text-xs mt-2 ml-1">{{ errors.userLocation }}</p>
+            </div>
+
             <template v-if="authStore.isSchool">
               <div class="flex items-center gap-3" style="margin-top: 0.5rem;">
                 <div class="flex-1 h-px bg-black/10"></div>
@@ -68,7 +92,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.address') }}</label>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.address') }}</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-map-marker text-sm"></i></span>
                   <input v-model="schoolLocation" type="text" :placeholder="t('profile.addressPlaceholder')" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
@@ -76,7 +100,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.owner') }}</label>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.owner') }}</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-id-card text-sm"></i></span>
                   <input v-model="schoolOwner" type="text" :placeholder="t('profile.ownerPlaceholder')" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
@@ -84,7 +108,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.phone') }}</label>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.phone') }}</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-phone text-sm"></i></span>
                   <input v-model="schoolPhone" type="tel" :placeholder="t('profile.phonePlaceholder')" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
@@ -92,7 +116,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.website') }}</label>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.website') }}</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/30"><i class="pi pi-globe text-sm"></i></span>
                   <input v-model="schoolWebsite" type="url" :placeholder="t('profile.websitePlaceholder')" class="w-full bg-black/[0.03] border border-black/10 rounded-2xl pl-10 pr-4 py-4 text-black placeholder-black/25 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all" />
@@ -100,7 +124,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.openingDays') }}</label>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.openingDays') }}</label>
                 <div class="flex flex-wrap gap-2">
                   <label v-for="day in allWeekdays" :key="day" class="flex items-center gap-2 cursor-pointer select-none">
                     <div
@@ -116,7 +140,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 mb-3">{{ t('profile.openingHours') }}</label>
+                <label class="block text-xs font-semibold uppercase tracking-widest text-black/40 field-label">{{ t('profile.openingHours') }}</label>
                 <div class="grid grid-cols-2 gap-3">
                   <div>
                     <label class="block text-[10px] text-black/30 font-semibold mb-1">{{ t('profile.from') }}</label>
@@ -264,7 +288,7 @@
     </Transition>
 
     <Transition name="toast">
-      <div v-if="showSuccessToast" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] pointer-events-none">
+      <div v-if="showSuccessToast" class="absolute top-24 left-1/2 -translate-x-1/2 z-[100] pointer-events-none">
         <div class="bg-emerald-500 text-white px-6 py-3 rounded-2xl shadow-2xl shadow-emerald-200 flex items-center gap-3">
           <i class="pi pi-check-circle text-lg"></i>
           <span class="font-semibold text-sm">{{ toastMessage }}</span>
@@ -320,6 +344,7 @@ const previewImage = ref<string | null>(null)
 
 const userName = ref('')
 const email = ref('')
+const userLocation = ref('')
 const displayName = ref(authStore.user.UserName)
 const displayEmail = ref(authStore.user.Email)
 
@@ -338,12 +363,57 @@ function toggleOpeningDay(day: string) {
   else schoolOpeningDays.value.splice(idx, 1)
 }
 
+const detectingLocation = ref(false)
+
+async function detectUserLocation() {
+  if (!navigator.geolocation) return
+  detectingLocation.value = true
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      userLocation.value = `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`
+      try {
+        const revRes = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`,
+          { headers: { 'User-Agent': 'DrivingSchoolApp/1.0' } }
+        )
+        if (revRes.ok) {
+          const data = await revRes.json() as any
+          if (data?.display_name) {
+            const parts = data.display_name.split(', ')
+            userLocation.value = parts.slice(0, 3).join(', ')
+          }
+        }
+      } catch { /* fallback to coords */ }
+      detectingLocation.value = false
+    },
+    () => { detectingLocation.value = false },
+    { enableHighAccuracy: false, timeout: 15000 }
+  )
+}
+
+async function geocodeLocation(address: string): Promise<{ lat: number; lon: number } | null> {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`,
+      { headers: { 'User-Agent': 'DrivingSchoolApp/1.0' } }
+    )
+    if (response.ok) {
+      const data = await response.json() as any[]
+      if (data?.length > 0) {
+        return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) }
+      }
+    }
+  } catch { /* ignore */ }
+  return null
+}
+
 const passwords = reactive({ current: '', new: '', confirm: '' })
 const fileInput = ref<HTMLInputElement | null>(null)
 
 onMounted(async () => {
   userName.value = authStore.user.UserName
   email.value = authStore.user.Email
+  userLocation.value = authStore.user.Location ?? ''
 
   if (authStore.isSchool && authStore.user.DrivingSchoolId) {
     try {
@@ -362,7 +432,7 @@ onMounted(async () => {
   }
 })
 
-const errors = reactive({ userName: '', email: '', currentPass: '', newPass: '', confirmPass: '', image: '' })
+const errors = reactive({ userName: '', email: '', userLocation: '', currentPass: '', newPass: '', confirmPass: '', image: '' })
 
 const uploadAvatar = async (file: File) => {
   const formData = new FormData()
@@ -403,8 +473,19 @@ const saveProfile = async () => {
   if (!email.value) { errors.email = t('profile.errors.email'); valid = false }
   if (!valid) return
 
+  let lat = authStore.user.Latitude ?? null
+  let lng = authStore.user.Longitude ?? null
+
+  if (userLocation.value && (lat === null || lng === null || userLocation.value !== authStore.user.Location)) {
+    const coords = await geocodeLocation(userLocation.value)
+    if (coords) {
+      lat = coords.lat
+      lng = coords.lon
+    }
+  }
+
   try {
-    const response = await fetch(API_URL + `/users/${userId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ userName: userName.value, email: email.value }) })
+    const response = await fetch(API_URL + `/users/${userId}`, { method: 'PUT', headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ userName: userName.value, email: email.value, location: userLocation.value || null, latitude: lat, longitude: lng }) })
     if (!response.ok) throw new Error()
 
     if (authStore.isSchool && authStore.user.DrivingSchoolId) {
@@ -413,10 +494,7 @@ const saveProfile = async () => {
 
     displayName.value = userName.value
     displayEmail.value = email.value
-    const user: User = JSON.parse(<string>sessionStorage.getItem('user'))
-    user.UserName = displayName.value
-    user.Email = email.value
-    sessionStorage.setItem('user', JSON.stringify(user))
+    authStore.updateUser({ UserName: userName.value, Email: email.value, Location: userLocation.value || null, Latitude: lat as number | null, Longitude: lng as number | null })
 
     triggerToast(t('profile.saveSuccess'))
   } catch {
@@ -496,6 +574,8 @@ const handleImageUpload = (file: File) => {
 </script>
 
 <style scoped>
+.field-label { margin-bottom: 0.5rem; }
+
 .fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 
