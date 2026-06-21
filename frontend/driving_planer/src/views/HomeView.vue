@@ -132,7 +132,7 @@ const statistics = computed(() => [
     textColor: "text-white",
     backgroundColor: "bg-blue-700",
     endValue: userStore.countOfTotalUsers,
-    suffix: "+",
+    suffix: "",
     duration: 400,
   },
   {
@@ -150,7 +150,7 @@ const statistics = computed(() => [
     textColor: "text-white",
     backgroundColor: "bg-violet-700",
     endValue: schoolStore.countOfSchools,
-    suffix: "+",
+    suffix: "",
     duration: mobile.value ? 400 : 800,
   },
 ])

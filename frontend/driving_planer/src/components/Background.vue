@@ -30,6 +30,18 @@ interface Particle {
   fade: 0 | 1
 }
 
+/* Simple car SVG for background animation */
+const CAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 16" fill="#475569">
+  <rect x="2" y="2" width="28" height="12" rx="3" />
+  <rect x="18" y="3" width="3" height="10" rx="1" fill="white" opacity="0.6" />
+  <rect x="6" y="3" width="2" height="10" rx="1" fill="white" opacity="0.6" />
+  <rect x="18" y="0" width="2" height="2" rx="0.5" />
+  <rect x="18" y="14" width="2" height="2" rx="0.5" />
+</svg>`
+
+const carImg = new Image()
+carImg.src = `data:image/svg+xml;utf8,${encodeURIComponent(CAR_SVG)}`
+
 /* References to DOM elements */
 const canvas = ref<HTMLCanvasElement | null>(null)
 const container = ref<HTMLElement | null>(null)
@@ -47,7 +59,7 @@ let cleanupResize: (() => void) | null = null
 const MAX_DISTANCE: number = 160
 
 /* Maximum number of active particles to prevent cluttering */
-const MAX_PARTICLES: number = 200
+const MAX_PARTICLES: number = 50
 
 /* Array storing all active particles */
 const particles: Particle[] = []
@@ -145,7 +157,7 @@ onMounted(async () => {
 
 
   /* Initial particle population */
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 25; i++) {
     particles.push(spawnParticle(c.width, c.height))
   }
 
@@ -189,11 +201,19 @@ onMounted(async () => {
       if (p.y < 0 || p.y > c.height) p.vy *= -1
 
 
-      /* Draw particle */
-      ctx.beginPath()
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(0, 0, 0, ${p.opacity})`
-      ctx.fill()
+      /* Draw car SVG */
+      ctx.save()
+      ctx.translate(p.x, p.y)
+      const angle = Math.atan2(p.vy, p.vx)
+      ctx.rotate(angle)
+      ctx.globalAlpha = p.opacity
+
+      const scale = p.radius * 6
+      const carWidth = scale * 2
+      const carHeight = scale
+
+      ctx.drawImage(carImg, -carWidth / 2, -carHeight / 2, carWidth, carHeight)
+      ctx.restore()
     }
 
 
